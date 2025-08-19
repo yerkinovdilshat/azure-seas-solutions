@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "catalog": "Catalog",
+    "projects": "Projects",
+    "news": "News",
+    "contacts": "Contacts",
+    "contactUs": "Contact Us"
+  },
+  "hero": {
+    "title": "Marine & Industrial Services in Kazakhstan",
+    "subtitle": "Reliable supplier of equipment and spares from leading European manufacturers to Kazakhstan projects",
+    "exploreServices": "Explore Services",
+    "requestQuote": "Request Quote"
+  },
+  "footer": {
+    "address": "Aktau, Kazakhstan",
+    "phone": "+7 (7292) xxx-xxx",
+    "email": "info@marines.kz",
+    "workingHours": "Mon-Fri: 9:00 - 18:00",
+    "socialMedia": "Follow Us"
+  },
+  "seo": {
+    "home": {
+      "title": "Marine Support Services - Industrial Equipment & Spares | Kazakhstan",
+      "description": "Leading marine and industrial services provider in Kazakhstan. European equipment suppliers, spare parts, and technical support for marine projects."
+    },
+    "about": {
+      "title": "About Marine Support Services - Industrial Solutions Kazakhstan",
+      "description": "Learn about our expertise in marine and industrial services, equipment supply, and technical support across Kazakhstan."
+    },
+    "services": {
+      "title": "Marine & Industrial Services - Equipment Supply Kazakhstan",
+      "description": "Comprehensive marine and industrial services including equipment supply, spare parts, maintenance, and technical support."
+    },
+    "catalog": {
+      "title": "Equipment Catalog - Marine & Industrial Parts Kazakhstan",
+      "description": "Browse our extensive catalog of marine and industrial equipment, spare parts from leading European manufacturers."
+    },
+    "projects": {
+      "title": "Our Projects - Marine Support Services Kazakhstan",
+      "description": "Explore our successful marine and industrial projects across Kazakhstan and the Caspian region."
+    },
+    "news": {
+      "title": "News & Updates - Marine Support Services",
+      "description": "Latest news, industry updates, and company announcements from Marine Support Services Kazakhstan."
+    },
+    "contacts": {
+      "title": "Contact Marine Support Services - Aktau Kazakhstan",
+      "description": "Get in touch with Marine Support Services for marine and industrial equipment needs in Kazakhstan."
+    }
+  }
+}
