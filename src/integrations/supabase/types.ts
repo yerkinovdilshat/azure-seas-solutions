@@ -14,7 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      about_certificates: {
+        Row: {
+          date: string | null
+          file_url: string | null
+          id: string
+          image_url: string | null
+          issuer: string | null
+          locale: string
+          order: number | null
+          title: string
+        }
+        Insert: {
+          date?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          issuer?: string | null
+          locale: string
+          order?: number | null
+          title: string
+        }
+        Update: {
+          date?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          issuer?: string | null
+          locale?: string
+          order?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
+      about_compliance: {
+        Row: {
+          badge_icon: string | null
+          id: string
+          link_url: string | null
+          locale: string
+          order: number | null
+          title: string
+        }
+        Insert: {
+          badge_icon?: string | null
+          id?: string
+          link_url?: string | null
+          locale: string
+          order?: number | null
+          title: string
+        }
+        Update: {
+          badge_icon?: string | null
+          id?: string
+          link_url?: string | null
+          locale?: string
+          order?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
+      about_partners: {
+        Row: {
+          id: string
+          logo: string | null
+          name: string
+          order: number | null
+          website_url: string | null
+        }
+        Insert: {
+          id?: string
+          logo?: string | null
+          name: string
+          order?: number | null
+          website_url?: string | null
+        }
+        Update: {
+          id?: string
+          logo?: string | null
+          name?: string
+          order?: number | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      about_story: {
+        Row: {
+          body_rich: Json | null
+          hero_image: string | null
+          id: string
+          locale: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          body_rich?: Json | null
+          hero_image?: string | null
+          id?: string
+          locale: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          body_rich?: Json | null
+          hero_image?: string | null
+          id?: string
+          locale?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      about_team: {
+        Row: {
+          bio: string | null
+          id: string
+          locale: string
+          name: string
+          order: number | null
+          photo: string | null
+          role: string | null
+        }
+        Insert: {
+          bio?: string | null
+          id?: string
+          locale: string
+          name: string
+          order?: number | null
+          photo?: string | null
+          role?: string | null
+        }
+        Update: {
+          bio?: string | null
+          id?: string
+          locale?: string
+          name?: string
+          order?: number | null
+          photo?: string | null
+          role?: string | null
+        }
+        Relationships: []
+      }
+      about_timeline: {
+        Row: {
+          description: string | null
+          id: string
+          image: string | null
+          locale: string
+          order: number | null
+          title: string
+          year: number
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          image?: string | null
+          locale: string
+          order?: number | null
+          title: string
+          year: number
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          image?: string | null
+          locale?: string
+          order?: number | null
+          title?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      about_values: {
+        Row: {
+          description: string | null
+          icon_key: string | null
+          id: string
+          locale: string
+          order: number | null
+          title: string
+        }
+        Insert: {
+          description?: string | null
+          icon_key?: string | null
+          id?: string
+          locale: string
+          order?: number | null
+          title: string
+        }
+        Update: {
+          description?: string | null
+          icon_key?: string | null
+          id?: string
+          locale?: string
+          order?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
