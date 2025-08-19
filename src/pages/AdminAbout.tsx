@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminStory from '@/components/admin/sections/AdminStory';
 import AdminValues from '@/components/admin/sections/AdminValues';
 import AdminTimeline from '@/components/admin/sections/AdminTimeline';
@@ -18,33 +18,45 @@ const AdminAbout = () => {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">About Us Management</h2>
         
-        <TabsContent value="story" className="space-y-6">
-          <AdminStory locale={locale} />
-        </TabsContent>
-        
-        <TabsContent value="values" className="space-y-6">
-          <AdminValues locale={locale} />
-        </TabsContent>
-        
-        <TabsContent value="timeline" className="space-y-6">
-          <AdminTimeline locale={locale} />
-        </TabsContent>
-        
-        <TabsContent value="team" className="space-y-6">
-          <AdminTeam locale={locale} />
-        </TabsContent>
-        
-        <TabsContent value="partners" className="space-y-6">
-          <AdminPartners />
-        </TabsContent>
-        
-        <TabsContent value="certificates" className="space-y-6">
-          <AdminCertificates locale={locale} />
-        </TabsContent>
-        
-        <TabsContent value="compliance" className="space-y-6">
-          <AdminCompliance locale={locale} />
-        </TabsContent>
+        <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="story">Story</TabsTrigger>
+            <TabsTrigger value="values">Values</TabsTrigger>
+            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+            <TabsTrigger value="team">Team</TabsTrigger>
+            <TabsTrigger value="partners">Partners</TabsTrigger>
+            <TabsTrigger value="certificates">Certificates</TabsTrigger>
+            <TabsTrigger value="compliance">Compliance</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="story" className="space-y-6 mt-6">
+            <AdminStory locale={locale} />
+          </TabsContent>
+          
+          <TabsContent value="values" className="space-y-6 mt-6">
+            <AdminValues locale={locale} />
+          </TabsContent>
+          
+          <TabsContent value="timeline" className="space-y-6 mt-6">
+            <AdminTimeline locale={locale} />
+          </TabsContent>
+          
+          <TabsContent value="team" className="space-y-6 mt-6">
+            <AdminTeam locale={locale} />
+          </TabsContent>
+          
+          <TabsContent value="partners" className="space-y-6 mt-6">
+            <AdminPartners />
+          </TabsContent>
+          
+          <TabsContent value="certificates" className="space-y-6 mt-6">
+            <AdminCertificates locale={locale} />
+          </TabsContent>
+          
+          <TabsContent value="compliance" className="space-y-6 mt-6">
+            <AdminCompliance locale={locale} />
+          </TabsContent>
+        </Tabs>
       </div>
     </AdminLayout>
   );
