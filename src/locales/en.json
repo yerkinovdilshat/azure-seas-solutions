@@ -7,11 +7,11 @@
     "projects": "Projects",
     "news": "News",
     "contacts": "Contacts",
-    "contactUs": "Contact Us"
+    "requestQuote": "Request Quote"
   },
   "hero": {
-    "title": "Marine & Industrial Services in Kazakhstan",
-    "subtitle": "Reliable supplier of equipment and spares from leading European manufacturers to Kazakhstan projects",
+    "title": "Equipment Supply & Integrated Commissioning in Kazakhstan",
+    "subtitle": "Reliable supplier of equipment and spares from leading European manufacturers. Full cycle — from supply to installation and commissioning.",
     "exploreServices": "Explore Services",
     "requestQuote": "Request Quote"
   },
@@ -24,8 +24,8 @@
   },
   "seo": {
     "home": {
-      "title": "Marine Support Services - Industrial Equipment & Spares | Kazakhstan",
-      "description": "Leading marine and industrial services provider in Kazakhstan. European equipment suppliers, spare parts, and technical support for marine projects."
+      "title": "Marine Support Services - Equipment Supply & Commissioning | Kazakhstan",
+      "description": "Leading equipment supplier and integrator in Kazakhstan. European equipment, spare parts, installation and commissioning services for industrial projects."
     },
     "about": {
       "title": "About Marine Support Services - Industrial Solutions Kazakhstan",

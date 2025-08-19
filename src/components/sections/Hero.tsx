@@ -11,35 +11,34 @@ const Hero = () => {
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 87, 163, 0.7), rgba(0, 159, 227, 0.5)), url(${heroImage})`,
+        backgroundImage: `url(${heroImage})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundPosition: 'center'
       }}
     >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/60 to-secondary/40" />
+      {/* Subtle bottom gradient only */}
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
       
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center text-white">
-        <div className="max-w-5xl mx-auto space-y-8">
+      {/* Content with generous whitespace */}
+      <div className="relative z-10 container mx-auto px-6 text-center text-white">
+        <div className="max-w-6xl mx-auto space-y-12">
           
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
             {t('hero.title')}
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl lg:text-3xl font-light max-w-4xl mx-auto leading-relaxed text-white/90">
+          <p className="text-xl md:text-2xl lg:text-3xl font-light max-w-5xl mx-auto leading-relaxed text-white/95">
             {t('hero.subtitle')}
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
             <Link to="/services">
               <Button 
                 size="lg" 
-                className="btn-marine-secondary w-full sm:w-auto group"
+                className="btn-primary w-full sm:w-auto group"
               >
                 {t('hero.exploreServices')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -49,7 +48,7 @@ const Hero = () => {
             <Link to="/contacts">
               <Button 
                 size="lg" 
-                className="btn-marine-accent w-full sm:w-auto group"
+                className="btn-outline w-full sm:w-auto group"
               >
                 <Quote className="mr-2 h-5 w-5" />
                 {t('hero.requestQuote')}
@@ -57,19 +56,19 @@ const Hero = () => {
             </Link>
           </div>
           
-          {/* Trust Indicators */}
-          <div className="pt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          {/* Optional lighter stats row */}
+          <div className="pt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center opacity-90">
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">15+</div>
-              <div className="text-white/80">Years of Experience</div>
+              <div className="text-2xl md:text-3xl font-semibold text-white">15+</div>
+              <div className="text-white/80 text-sm">Years of Experience</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">200+</div>
-              <div className="text-white/80">Successful Projects</div>
+              <div className="text-2xl md:text-3xl font-semibold text-white">200+</div>
+              <div className="text-white/80 text-sm">Successful Projects</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">50+</div>
-              <div className="text-white/80">Partner Companies</div>
+              <div className="text-2xl md:text-3xl font-semibold text-white">50+</div>
+              <div className="text-white/80 text-sm">European Partners</div>
             </div>
           </div>
         </div>
@@ -77,8 +76,8 @@ const Hero = () => {
       
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse" />
+        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white/30 rounded-full mt-2 animate-pulse" />
         </div>
       </div>
     </section>
