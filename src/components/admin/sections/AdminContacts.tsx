@@ -64,8 +64,8 @@ const AdminContacts = ({ locale }: AdminContactsProps) => {
           email: data.email,
           working_hours: data.working_hours,
           map_link: data.map_link || '',
-          fax: data.additional_info?.fax || '',
-          emergency_phone: data.additional_info?.emergency_phone || ''
+          fax: (data.additional_info as any)?.fax || '',
+          emergency_phone: (data.additional_info as any)?.emergency_phone || ''
         });
       }
     } catch (error: any) {
