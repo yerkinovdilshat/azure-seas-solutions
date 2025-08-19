@@ -1,26 +1,47 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, User, Globe } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LogOut, User, Globe, FileText, Newspaper, FolderOpen, Wrench, Package, Phone, Info } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger
+} from '@/components/ui/sidebar';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  currentTab?: string;
-  onTabChange?: (tab: string) => void;
   locale: string;
   onLocaleChange: (locale: string) => void;
 }
 
-const AdminLayout = ({ children, currentTab, onTabChange, locale, onLocaleChange }: AdminLayoutProps) => {
+const AdminLayout = ({ children, locale, onLocaleChange }: AdminLayoutProps) => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  const sidebarItems = [
+    { title: 'About Us', url: '/admin/about', icon: Info },
+    { title: 'News', url: '/admin/news', icon: Newspaper },
+    { title: 'Projects', url: '/admin/projects', icon: FolderOpen },
+    { title: 'Services', url: '/admin/services', icon: Wrench },
+    { title: 'Catalog', url: '/admin/catalog', icon: Package },
+    { title: 'Contacts', url: '/admin/contacts', icon: Phone },
+  ];
+
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
     // Check initial auth state
@@ -78,70 +99,95 @@ const AdminLayout = ({ children, currentTab, onTabChange, locale, onLocaleChange
   }
 
   return (
-    <div className="min-h-screen bg-light">
-      {/* Admin Header */}
-      <header className="bg-white border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold text-navy">Admin Panel</h1>
-              <span className="text-sm text-muted-foreground">Marine Support Services</span>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-light">
+        {/* Sidebar */}
+        <Sidebar className="w-64">
+          <SidebarContent>
+            <div className="p-4 border-b border-border">
+              <h1 className="text-lg font-bold text-navy">Admin Panel</h1>
+              <p className="text-xs text-muted-foreground">Marine Support Services</p>
             </div>
             
-            <div className="flex items-center space-x-4">
-              {/* Locale Switcher */}
-              <div className="flex items-center space-x-2">
-                <Globe className="h-4 w-4 text-muted-foreground" />
-                <Select value={locale} onValueChange={onLocaleChange}>
-                  <SelectTrigger className="w-20">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">EN</SelectItem>
-                    <SelectItem value="ru">RU</SelectItem>
-                    <SelectItem value="kk">KK</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <SidebarGroup>
+              <SidebarGroupLabel>Content Management</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {sidebarItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to={item.url} 
+                          className={({ isActive }) => 
+                            isActive 
+                              ? "bg-muted text-primary font-medium flex items-center space-x-2" 
+                              : "hover:bg-muted/50 flex items-center space-x-2"
+                          }
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
 
-              {/* User Info */}
-              <div className="flex items-center space-x-2">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{user.email}</span>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-white border-b border-border shadow-sm">
+            <div className="flex justify-between items-center h-16 px-6">
+              <div className="flex items-center space-x-4">
+                <SidebarTrigger />
               </div>
+              
+              <div className="flex items-center space-x-4">
+                {/* Locale Switcher */}
+                <div className="flex items-center space-x-2">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <Select value={locale} onValueChange={onLocaleChange}>
+                    <SelectTrigger className="w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">EN</SelectItem>
+                      <SelectItem value="ru">RU</SelectItem>
+                      <SelectItem value="kk">KK</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              {/* Logout Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center space-x-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
+                {/* User Info */}
+                <div className="flex items-center space-x-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">{user.email}</span>
+                </div>
+
+                {/* Logout Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
-      </header>
+          </header>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={currentTab} onValueChange={onTabChange}>
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="story">Story</TabsTrigger>
-            <TabsTrigger value="values">Values</TabsTrigger>
-            <TabsTrigger value="timeline">Timeline</TabsTrigger>
-            <TabsTrigger value="team">Team</TabsTrigger>
-            <TabsTrigger value="partners">Partners</TabsTrigger>
-            <TabsTrigger value="certificates">Certificates</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance</TabsTrigger>
-          </TabsList>
-          
-          {children}
-        </Tabs>
+          {/* Page Content */}
+          <main className="flex-1 p-6">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

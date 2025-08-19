@@ -36,7 +36,7 @@ const AuthLogin = () => {
           title: "Login Successful",
           description: "Welcome to the admin panel!",
         });
-        navigate('/admin/about');
+        navigate('/admin');
       }
     } catch (error) {
       toast({

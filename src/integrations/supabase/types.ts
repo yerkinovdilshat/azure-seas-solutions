@@ -212,6 +212,316 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          locale: string
+          name: string
+          order: number | null
+          parent_id: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          locale: string
+          name: string
+          order?: number | null
+          parent_id?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          locale?: string
+          name?: string
+          order?: number | null
+          parent_id?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_products: {
+        Row: {
+          category_id: string | null
+          content_rich: Json | null
+          created_at: string
+          description: string | null
+          featured_image: string | null
+          gallery_images: string[] | null
+          id: string
+          is_featured: boolean | null
+          locale: string
+          manufacturer: string | null
+          order: number | null
+          pdf_files: string[] | null
+          sku: string | null
+          slug: string
+          specifications: Json | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          locale: string
+          manufacturer?: string | null
+          order?: number | null
+          pdf_files?: string[] | null
+          sku?: string | null
+          slug: string
+          specifications?: Json | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          locale?: string
+          manufacturer?: string | null
+          order?: number | null
+          pdf_files?: string[] | null
+          sku?: string | null
+          slug?: string
+          specifications?: Json | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          additional_info: Json | null
+          address: string
+          company_name: string
+          email: string
+          id: string
+          locale: string
+          map_link: string | null
+          phone: string
+          updated_at: string
+          working_hours: string
+        }
+        Insert: {
+          additional_info?: Json | null
+          address: string
+          company_name: string
+          email: string
+          id?: string
+          locale: string
+          map_link?: string | null
+          phone: string
+          updated_at?: string
+          working_hours: string
+        }
+        Update: {
+          additional_info?: Json | null
+          address?: string
+          company_name?: string
+          email?: string
+          id?: string
+          locale?: string
+          map_link?: string | null
+          phone?: string
+          updated_at?: string
+          working_hours?: string
+        }
+        Relationships: []
+      }
+      news: {
+        Row: {
+          content_rich: Json | null
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          gallery_images: string[] | null
+          id: string
+          is_published: boolean | null
+          locale: string
+          order: number | null
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          content_rich?: Json | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_published?: boolean | null
+          locale: string
+          order?: number | null
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          content_rich?: Json | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_published?: boolean | null
+          locale?: string
+          order?: number | null
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          client_name: string | null
+          content_rich: Json | null
+          created_at: string
+          description: string | null
+          featured_image: string | null
+          gallery_images: string[] | null
+          id: string
+          is_featured: boolean | null
+          locale: string
+          order: number | null
+          project_date: string | null
+          project_location: string | null
+          project_status: string | null
+          slug: string
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          client_name?: string | null
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          locale: string
+          order?: number | null
+          project_date?: string | null
+          project_location?: string | null
+          project_status?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          client_name?: string | null
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          locale?: string
+          order?: number | null
+          project_date?: string | null
+          project_location?: string | null
+          project_status?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          content_rich: Json | null
+          created_at: string
+          description: string | null
+          featured_image: string | null
+          gallery_images: string[] | null
+          icon_key: string | null
+          id: string
+          is_featured: boolean | null
+          locale: string
+          order: number | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          icon_key?: string | null
+          id?: string
+          is_featured?: boolean | null
+          locale: string
+          order?: number | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_rich?: Json | null
+          created_at?: string
+          description?: string | null
+          featured_image?: string | null
+          gallery_images?: string[] | null
+          icon_key?: string | null
+          id?: string
+          is_featured?: boolean | null
+          locale?: string
+          order?: number | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

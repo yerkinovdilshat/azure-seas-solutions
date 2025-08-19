@@ -14,39 +14,38 @@ const AdminAbout = () => {
   const [locale, setLocale] = useState('en');
 
   return (
-    <AdminLayout
-      currentTab={currentTab}
-      onTabChange={setCurrentTab}
-      locale={locale}
-      onLocaleChange={setLocale}
-    >
-      <TabsContent value="story" className="space-y-6">
-        <AdminStory locale={locale} />
-      </TabsContent>
-      
-      <TabsContent value="values" className="space-y-6">
-        <AdminValues locale={locale} />
-      </TabsContent>
-      
-      <TabsContent value="timeline" className="space-y-6">
-        <AdminTimeline locale={locale} />
-      </TabsContent>
-      
-      <TabsContent value="team" className="space-y-6">
-        <AdminTeam locale={locale} />
-      </TabsContent>
-      
-      <TabsContent value="partners" className="space-y-6">
-        <AdminPartners />
-      </TabsContent>
-      
-      <TabsContent value="certificates" className="space-y-6">
-        <AdminCertificates locale={locale} />
-      </TabsContent>
-      
-      <TabsContent value="compliance" className="space-y-6">
-        <AdminCompliance locale={locale} />
-      </TabsContent>
+    <AdminLayout locale={locale} onLocaleChange={setLocale}>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">About Us Management</h2>
+        
+        <TabsContent value="story" className="space-y-6">
+          <AdminStory locale={locale} />
+        </TabsContent>
+        
+        <TabsContent value="values" className="space-y-6">
+          <AdminValues locale={locale} />
+        </TabsContent>
+        
+        <TabsContent value="timeline" className="space-y-6">
+          <AdminTimeline locale={locale} />
+        </TabsContent>
+        
+        <TabsContent value="team" className="space-y-6">
+          <AdminTeam locale={locale} />
+        </TabsContent>
+        
+        <TabsContent value="partners" className="space-y-6">
+          <AdminPartners />
+        </TabsContent>
+        
+        <TabsContent value="certificates" className="space-y-6">
+          <AdminCertificates locale={locale} />
+        </TabsContent>
+        
+        <TabsContent value="compliance" className="space-y-6">
+          <AdminCompliance locale={locale} />
+        </TabsContent>
+      </div>
     </AdminLayout>
   );
 };

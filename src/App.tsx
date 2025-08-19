@@ -20,6 +20,16 @@ import Contacts from "./pages/Contacts";
 import Error404 from "./pages/Error404";
 import Error500 from "./pages/Error500";
 
+// Admin pages
+import AuthLogin from "./pages/AuthLogin";
+import Admin from "./pages/Admin";
+import AdminAbout from "./pages/AdminAbout";
+import AdminNews from "./pages/AdminNews";
+import AdminProjects from "./pages/AdminProjects";
+import AdminServices from "./pages/AdminServices";
+import AdminCatalog from "./pages/AdminCatalog";
+import AdminContacts from "./pages/AdminContacts";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -31,6 +41,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
+              {/* Public routes */}
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
@@ -38,6 +49,18 @@ const App = () => (
               <Route path="/projects" element={<Projects />} />
               <Route path="/news" element={<News />} />
               <Route path="/contacts" element={<Contacts />} />
+              
+              {/* Admin routes */}
+              <Route path="/auth/login" element={<AuthLogin />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/about" element={<AdminAbout />} />
+              <Route path="/admin/news" element={<AdminNews />} />
+              <Route path="/admin/projects" element={<AdminProjects />} />
+              <Route path="/admin/services" element={<AdminServices />} />
+              <Route path="/admin/catalog" element={<AdminCatalog />} />
+              <Route path="/admin/contacts" element={<AdminContacts />} />
+              
+              {/* Error routes */}
               <Route path="/404" element={<Error404 />} />
               <Route path="/500" element={<Error500 />} />
               {/* Catch-all route for 404 */}
