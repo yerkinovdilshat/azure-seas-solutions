@@ -30,13 +30,15 @@ export const useTranslationHelper = (): TranslationHelperResult => {
         }
         
         // As last resort, return a human-readable version of the key
-        return key.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || 'Translation missing';
+        const humanReadable = key.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || 'Missing translation';
+        return humanReadable.charAt(0).toUpperCase() + humanReadable.slice(1);
       }
       
       return translation;
     } catch (error) {
       console.warn(`Translation error for key "${key}":`, error);
-      return fallback || key.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || 'Translation missing';
+      const humanReadable = fallback || key.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || 'Missing translation';
+      return humanReadable.charAt(0).toUpperCase() + humanReadable.slice(1);
     }
   };
 

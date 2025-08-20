@@ -1,16 +1,16 @@
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
 import { useProject } from '@/hooks/useContent';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, MapPin, User, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { t } = useTranslation();
+  const { t, showFallbackIndicator } = useTranslationHelper();
   const { data: project, loading, error } = useProject(slug!);
 
   if (loading) {
@@ -35,14 +35,14 @@ const ProjectDetail = () => {
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t('common.error')}</h1>
+            <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
             <p className="text-muted-foreground mb-4">
-              {error || 'Project not found'}
+              The requested project could not be found or may have been removed.
             </p>
             <Link to="/projects">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                {t('common.back')}
+                Back to Projects
               </Button>
             </Link>
           </div>
@@ -177,6 +177,15 @@ const ProjectDetail = () => {
                       title={`${project.title} Video`}
                     />
                   </div>
+                </div>
+              )}
+              
+              {/* Translation Notice */}
+              {showFallbackIndicator && (
+                <div className="mt-12 p-4 bg-muted/50 rounded-lg border border-border/50">
+                  <p className="text-sm text-muted-foreground text-center">
+                    {t('common.translationComingSoon')}
+                  </p>
                 </div>
               )}
             </div>

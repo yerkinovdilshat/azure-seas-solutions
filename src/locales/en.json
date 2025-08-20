@@ -70,13 +70,17 @@
     "description": "Successful project implementations across Kazakhstan and the Caspian region",
     "searchPlaceholder": "Search projects...",
     "allYears": "All Years",
-    "allStatuses": "All Statuses", 
+    "allStatuses": "All Statuses",
     "completed": "Completed",
-    "ongoing": "Ongoing",
+    "ongoing": "Ongoing", 
     "planned": "Planned",
     "showingResults": "Showing {{count}} projects",
     "noProjects": "No projects found",
-    "noProjectsDescription": "Try adjusting your filters or search terms"
+    "noProjectsDescription": "Try adjusting your filters or search terms",
+    "client": "Client",
+    "location": "Location",
+    "date": "Date",
+    "status": "Status"
   },
   "news": {
     "title": "Latest News",
@@ -105,22 +109,24 @@
     "socialMedia": "Follow Us"
   },
   "about": {
-    "values": "Our Values",
+    "values": {
+      "title": "Our Values"
+    },
     "timeline": "Our Journey",
-    "team": "Our Team",
+    "team": "Our Team", 
     "partners": "Our Partners",
     "certificates": "Certificates & Accreditations",
-    "compliance": "Compliance & Standards",
-    "complianceComingSoon": "Content will be published soon",
-    "complianceNote": "Our compliance certifications and standards information will be available here shortly.",
+    "compliance": {
+      "title": "Compliance & Standards",
+      "comingSoon": "Content will be published soon",
+      "note": "Our compliance certifications and standards information will be available here shortly."
+    },
     "issuer": "Issued by"
   },
   "contact": {
     "form": {
       "title": "Get in Touch",
-      "subtitle": "Ready to discuss your project? Contact us today for a consultation.",
-      "title": "Contact Form",
-      "subtitle": "Send us a message and we'll respond as soon as possible"
+      "subtitle": "Ready to discuss your project? Contact us today for a consultation."
     },
     "name": "Full Name",
     "phone": "Phone Number", 

@@ -111,25 +111,29 @@ const Header = () => {
           <div className="flex items-center space-x-8">
             {navigationLinks.map((link) => {
               if (link.dropdown) {
-                const isActiveDropdown = link.dropdown.some(item => isActive(item.href));
+                const isActiveDropdown = isActive(link.href!) || link.dropdown.some(item => isActive(item.href));
                 return (
                   <DropdownMenu key={link.labelKey}>
-                    <DropdownMenuTrigger className="flex items-center gap-1 font-medium text-sm transition-colors group outline-none relative">
-                      <span className={`transition-colors ${
-                        isActiveDropdown ? 'text-primary' : 'text-foreground hover:text-primary'
-                      }`}>
-                        {t(link.labelKey)}
-                      </span>
-                      <ChevronDown className={`h-4 w-4 transition-transform group-data-[state=open]:rotate-180 ${
-                        isActiveDropdown ? 'text-primary' : 'text-foreground group-hover:text-primary'
-                      }`} />
-                      <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full ${
-                        isActiveDropdown ? 'w-full' : ''
-                      }`} />
+                    <DropdownMenuTrigger asChild>
+                      <Link
+                        to={link.href!}
+                        className={`flex items-center gap-1 font-medium text-sm transition-colors group outline-none relative ${
+                          isActiveDropdown ? 'text-primary' : 'text-foreground hover:text-primary'
+                        }`}
+                      >
+                        <span>{t(link.labelKey)}</span>
+                        <ChevronDown className={`h-4 w-4 transition-transform group-data-[state=open]:rotate-180 ${
+                          isActiveDropdown ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                        }`} />
+                        <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full ${
+                          isActiveDropdown ? 'w-full' : ''
+                        }`} />
+                      </Link>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent 
-                      className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg min-w-48"
+                      className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg min-w-48 z-50"
                       sideOffset={8}
+                      onCloseAutoFocus={(e) => e.preventDefault()}
                     >
                       {link.dropdown.map((item) => (
                         <DropdownMenuItem key={item.href} asChild>
