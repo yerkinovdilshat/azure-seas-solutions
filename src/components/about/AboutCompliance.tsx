@@ -1,13 +1,13 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { useAboutCompliance } from '@/hooks/useAboutData';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Shield, Award, CheckCircle, FileCheck } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const AboutCompliance: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, showFallbackIndicator } = useTranslationHelper();
   const { data: compliance, loading, error } = useAboutCompliance();
 
   if (loading) {
@@ -32,10 +32,23 @@ const AboutCompliance: React.FC = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-8 text-primary">{t('about.compliance')}</h2>
-            <p className="text-muted-foreground">
-              {error ? t('common.error') : t('common.noData')}
-            </p>
+            <h2 className="text-3xl font-bold mb-8 text-primary">
+              {t('about.compliance', 'Compliance & Standards')}
+            </h2>
+            {showFallbackIndicator && (
+              <p className="text-xs text-muted-foreground/70 italic mb-4">
+                {t('common.translationComingSoon', 'Translation coming soon')}
+              </p>
+            )}
+            <div className="bg-muted/30 rounded-lg p-8">
+              <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground mb-2">
+                {error ? t('common.error', 'Something went wrong') : t('about.complianceComingSoon', 'Content will be published soon')}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t('about.complianceNote', 'Our compliance certifications and standards information will be available here shortly.')}
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -43,9 +56,35 @@ const AboutCompliance: React.FC = () => {
   }
 
   const getIcon = (iconKey: string | undefined) => {
-    if (!iconKey) return null;
-    const IconComponent = (Icons as any)[iconKey];
-    return IconComponent ? <IconComponent className="h-5 w-5" /> : null;
+    if (!iconKey) return <Shield className="h-4 w-4" />; // Default icon
+    
+    try {
+      // Handle specific known icons
+      const iconMap: { [key: string]: React.ComponentType<any> } = {
+        'iso-9001': Award,
+        'safety-helmet': Shield,
+        'check-circle': CheckCircle,
+        'file-check': FileCheck,
+        'shield': Shield
+      };
+
+      if (iconMap[iconKey]) {
+        const IconComponent = iconMap[iconKey];
+        return <IconComponent className="h-4 w-4" />;
+      }
+
+      // Try to get from lucide-react dynamically
+      const IconComponent = (Icons as any)[iconKey];
+      if (IconComponent) {
+        return <IconComponent className="h-4 w-4" />;
+      }
+      
+      // Fallback to default icon
+      return <Shield className="h-4 w-4" />;
+    } catch (error) {
+      console.warn(`Failed to load icon: ${iconKey}`, error);
+      return <Shield className="h-4 w-4" />;
+    }
   };
 
   return (
@@ -53,8 +92,13 @@ const AboutCompliance: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-primary">
-            {t('about.compliance')}
+            {t('about.compliance', 'Compliance & Standards')}
           </h2>
+          {showFallbackIndicator && (
+            <p className="text-xs text-muted-foreground/70 italic text-center mb-8">
+              {t('common.translationComingSoon', 'Translation coming soon')}
+            </p>
+          )}
           
           <div className="flex flex-wrap gap-4 justify-center">
             {compliance.map((item) => (
@@ -70,7 +114,7 @@ const AboutCompliance: React.FC = () => {
                       variant="secondary"
                       className="px-4 py-2 text-sm flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                     >
-                      {item.badge_icon && getIcon(item.badge_icon)}
+                      {getIcon(item.badge_icon)}
                       {item.title}
                       <ExternalLink className="h-4 w-4" />
                     </Badge>
@@ -80,7 +124,7 @@ const AboutCompliance: React.FC = () => {
                     variant="secondary"
                     className="px-4 py-2 text-sm flex items-center gap-2"
                   >
-                    {item.badge_icon && getIcon(item.badge_icon)}
+                    {getIcon(item.badge_icon)}
                     {item.title}
                   </Badge>
                 )}
@@ -88,9 +132,9 @@ const AboutCompliance: React.FC = () => {
             ))}
           </div>
           
-          {i18n.language !== 'en' && compliance.length > 0 && (
+          {showFallbackIndicator && compliance.length > 0 && (
             <p className="text-xs text-muted-foreground text-center mt-8 italic">
-              {t('common.translationNote')}
+              {t('common.translationNote', 'Translation coming soon')}
             </p>
           )}
         </div>
