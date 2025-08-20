@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useServices } from '@/hooks/useContent';
+import { useServicesData } from '@/hooks/useServicesData';
 import { ArrowRight } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const Services = () => {
   const { t, i18n } = useTranslation();
-  const { data: services, loading, error } = useServices();
+  const { services, loading, error } = useServicesData();
 
   if (loading) {
     return (
