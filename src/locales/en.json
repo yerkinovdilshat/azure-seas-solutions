@@ -104,41 +104,59 @@
     "location": "Location",
     "viewOnMap": "View on Map"
   },
-  "contact": {
-    "title": "Contact Us",
-    "getInTouch": "Get in Touch",
-    "name": "Name",
-    "phone": "Phone",
-    "message": "Message",
-    "send": "Send Message",
-    "sending": "Sending...",
-    "namePlaceholder": "Your full name",
-    "phonePlaceholder": "+7 (xxx) xxx-xxxx",
-    "messagePlaceholder": "Tell us about your project or requirements...",
-    "address": "Address",
-    "workingHours": "Working Hours",
-    "email": "Email",
-    "form": {
-      "title": "Request Quote",
-      "subtitle": "Get in touch with us for any inquiries or project discussions",
-      "privacy": "Your information is secure and will only be used to respond to your inquiry"
-    },
-    "validation": {
-      "error": "Validation Error",
-      "nameRequired": "Name is required (minimum 2 characters)",
-      "phoneRequired": "Phone is required (minimum 5 characters)", 
-      "messageRequired": "Message is required (minimum 10 characters)"
-    },
-    "success": {
-      "title": "Message Sent!",
-      "description": "Thank you for your inquiry. We'll get back to you soon."
-    },
-    "error": {
-      "title": "Error",
-      "generic": "Failed to send message. Please try again.",
-      "rateLimited": "Too many requests. Please try again in 15 minutes.",
-      "validation": "Please check your input and try again."
-    }
+  "catalog": {
+    "title": "Product Categories",
+    "subtitle": "Comprehensive range of marine and industrial equipment from leading European manufacturers",
+    "viewAll": "View All Products",
+    "production": "Production (CT-KZ)",
+    "supply": "Supply",
+    "productionDescription": "Locally manufactured marine and industrial equipment meeting international standards",
+    "supplyDescription": "Premium equipment and spare parts sourced from leading European manufacturers",
+    "searchPlaceholder": "Search products...",
+    "allManufacturers": "All Manufacturers",
+    "allTypes": "All Types",
+    "showingResults": "Showing {{count}} products",
+    "noProducts": "No products found",
+    "noProductsDescription": "Try adjusting your filters or search terms",
+    "manufacturer": "Manufacturer",
+    "sku": "SKU",
+    "specifications": "Technical Specifications",
+    "gallery": "Gallery",
+    "downloadDatasheet": "Download Datasheet"
+  },
+  "projects": {
+    "description": "Successful project implementations across Kazakhstan and the Caspian region",
+    "searchPlaceholder": "Search projects...",
+    "allYears": "All Years",
+    "allStatuses": "All Statuses", 
+    "completed": "Completed",
+    "ongoing": "Ongoing",
+    "planned": "Planned",
+    "showingResults": "Showing {{count}} projects",
+    "noProjects": "No projects found",
+    "noProjectsDescription": "Try adjusting your filters or search terms"
+  },
+  "news": {
+    "description": "Stay updated with industry insights and company announcements",
+    "searchPlaceholder": "Search news...",
+    "allYears": "All Years",
+    "showingResults": "Showing {{count}} articles",
+    "pageInfo": "Page {{current}} of {{total}}",
+    "noNews": "No news articles found",
+    "noNewsDescription": "Try adjusting your filters or search terms"
+  },
+  "common": {
+    "home": "Home",
+    "learnMore": "Learn More",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "viewDetails": "View Details",
+    "download": "Download",
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "noData": "No data available.",
+    "translationNote": "Translation coming soon",
+    "clearFilters": "Clear Filters"
   },
   "seo": {
     "home": {
