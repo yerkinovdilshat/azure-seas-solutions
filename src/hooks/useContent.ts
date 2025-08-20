@@ -223,5 +223,5 @@ export const useAboutContent = (section: string) => {
 
 // Hook for contacts
 export const useContacts = () => {
-  return useContentList<any>('contacts');
+  return useContentItem<any>('contacts', 'default');
 };

@@ -1,6 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
+import AboutStory from '@/components/about/AboutStory';
+import AboutValues from '@/components/about/AboutValues';
+import AboutTimeline from '@/components/about/AboutTimeline';
+import AboutTeam from '@/components/about/AboutTeam';
+import AboutPartners from '@/components/about/AboutPartners';
+import AboutCertificates from '@/components/about/AboutCertificates';
+import AboutCompliance from '@/components/about/AboutCompliance';
 
 const About = () => {
   const { t } = useTranslation();
@@ -13,29 +20,13 @@ const About = () => {
         canonical="/about"
       />
       
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-8 text-primary">
-              {t('navigation.about')}
-            </h1>
-            <div className="prose prose-lg max-w-none">
-              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Marine Support Services has been a trusted partner in Kazakhstan's marine and industrial sector for over 15 years. 
-                We specialize in providing high-quality equipment, spare parts, and technical support from leading European manufacturers.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Our mission is to deliver reliable, efficient solutions that meet the demanding requirements of marine and industrial 
-                projects across Kazakhstan and the Caspian Sea region.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                With our headquarters in Aktau and strong partnerships with European suppliers, we ensure timely delivery and 
-                exceptional service quality for all our clients.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutStory />
+      <AboutValues />
+      <AboutTimeline />
+      <AboutTeam />
+      <AboutPartners />
+      <AboutCertificates />
+      <AboutCompliance />
     </Layout>
   );
 };

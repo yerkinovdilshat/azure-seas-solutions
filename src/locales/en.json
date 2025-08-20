@@ -86,6 +86,24 @@
     "workingHours": "Mon-Fri: 9:00 - 18:00",
     "socialMedia": "Follow Us"
   },
+  "about": {
+    "values": "Our Values",
+    "timeline": "Our Journey",
+    "team": "Our Team",
+    "partners": "Our Partners",
+    "certificates": "Certificates & Accreditations",
+    "compliance": "Compliance & Standards",
+    "issuer": "Issued by"
+  },
+  "contacts": {
+    "getInTouch": "Get in Touch",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "workingHours": "Working Hours",
+    "location": "Location",
+    "viewOnMap": "View on Map"
+  },
   "contact": {
     "title": "Contact Us",
     "getInTouch": "Get in Touch",
