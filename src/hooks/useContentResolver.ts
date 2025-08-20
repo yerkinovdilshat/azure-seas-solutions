@@ -13,8 +13,9 @@ interface ContentResolverResult<T> {
 /**
  * Universal content resolver with proper slug+locale handling and fallbacks
  * 1. Try exact match: slug + current locale + published status
- * 2. If not found, try default locale (en) + published status  
- * 3. If still not found, return proper 404
+ * 2. If not found, try any locale to verify slug exists (for proper 404)
+ * 3. If found in another locale, try fallback to default locale
+ * 4. If still not found, return proper 404
  */
 export const useContentResolver = <T>(
   tableName: string,
@@ -50,6 +51,10 @@ export const useContentResolver = <T>(
       setTranslationNote(undefined);
 
       try {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[ContentResolver] Fetching from ${tableName} with slug: ${slug}, locale: ${i18n.language}`);
+        }
+
         // Step 1: Try exact match with current locale
         let query = (supabase as any)
           .from(tableName)
@@ -68,12 +73,39 @@ export const useContentResolver = <T>(
         }
 
         if (result) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[ContentResolver] Found exact match:`, result);
+          }
           setData(result as T);
           setLoading(false);
           return;
         }
 
-        // Step 2: Try fallback to default locale if enabled and not already using it
+        // Step 2: Check if slug exists in any locale (for proper 404 detection)
+        let anyLocaleQuery = (supabase as any)
+          .from(tableName)
+          .select('locale')
+          .eq('slug', slug);
+
+        if (requirePublished) {
+          anyLocaleQuery = anyLocaleQuery.eq('status', 'published');
+        }
+
+        const { data: anyLocaleResults, error: anyLocaleError } = await anyLocaleQuery;
+
+        if (anyLocaleError) {
+          throw anyLocaleError;
+        }
+
+        // If no results in any locale, this is a true 404
+        if (!anyLocaleResults || anyLocaleResults.length === 0) {
+          setData(null);
+          setError('Content not found');
+          setLoading(false);
+          return;
+        }
+
+        // Step 3: Try fallback to default locale if enabled and slug exists
         if (fallbackToDefaultLocale && i18n.language !== 'en') {
           let fallbackQuery = (supabase as any)
             .from(tableName)
@@ -92,6 +124,9 @@ export const useContentResolver = <T>(
           }
 
           if (fallbackResult) {
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`[ContentResolver] Using fallback locale (en):`, fallbackResult);
+            }
             setData(fallbackResult as T);
             setIsTranslationFallback(true);
             setTranslationNote('Translation coming soon');
@@ -100,9 +135,9 @@ export const useContentResolver = <T>(
           }
         }
 
-        // Step 3: Content not found in any locale
+        // Step 4: Content exists but not in current or default locale
         setData(null);
-        setError('Content not found');
+        setError('Content not found in current language');
       } catch (err: any) {
         console.error(`Error fetching ${tableName} with slug "${slug}":`, err);
         setError(err.message || 'Failed to fetch content');

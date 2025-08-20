@@ -30,19 +30,19 @@ const ProjectDetail = () => {
     return (
       <Layout>
         <SEO 
-          title="Project Not Found"
-          description="The requested project could not be found."
+          title={t('projects.notFound')}
+          description={t('projects.notFoundMessage')}
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
+            <h1 className="text-2xl font-bold mb-4">{t('projects.notFound')}</h1>
             <p className="text-muted-foreground mb-4">
-              The requested project could not be found or may have been removed.
+              {t('projects.notFoundMessage')}
             </p>
             <Link to="/projects">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Projects
+                {t('projects.backToProjects')}
               </Button>
             </Link>
           </div>
