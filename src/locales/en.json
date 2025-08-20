@@ -11,7 +11,7 @@
   },
   "services": {
     "civilMaintenance": "Civil Maintenance",
-    "steelFabrication": "Steel Fabrication",
+    "steelFabrication": "Steel Fabrication", 
     "hydraulicWorkshop": "Hydraulic Workshop"
   },
   "catalog": {

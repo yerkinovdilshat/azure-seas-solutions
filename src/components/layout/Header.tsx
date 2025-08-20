@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Globe } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navigationLinks = [
     { href: '/', labelKey: 'navigation.home' },
     { href: '/about', labelKey: 'navigation.about' },
     { 
       labelKey: 'navigation.services',
+      href: '/services',
       dropdown: [
         { href: '/services/civil-maintenance', labelKey: 'services.civilMaintenance' },
         { href: '/services/steel-fabrication', labelKey: 'services.steelFabrication' },
@@ -23,6 +25,7 @@ const Header = () => {
     },
     { 
       labelKey: 'navigation.catalog',
+      href: '/catalog',
       dropdown: [
         { href: '/catalog/production', labelKey: 'catalog.production' },
         { href: '/catalog/supply', labelKey: 'catalog.supply' },
@@ -34,13 +37,60 @@ const Header = () => {
   ];
 
   const languages = [
-    { code: 'en', name: 'ENG' },
-    { code: 'ru', name: 'RUS' },
-    { code: 'kk', name: 'KAZ' },
+    { code: 'en', name: 'ENG', flag: '🇺🇸' },
+    { code: 'ru', name: 'RUS', flag: '🇷🇺' },
+    { code: 'kk', name: 'KAZ', flag: '🇰🇿' },
   ];
 
+  // Persist language preference and update URL if needed
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('preferred-language');
+    if (savedLanguage && savedLanguage !== i18n.language) {
+      i18n.changeLanguage(savedLanguage);
+    }
+  }, [i18n]);
+
   const changeLanguage = (languageCode: string) => {
+    // Save preference
+    localStorage.setItem('preferred-language', languageCode);
+    
+    // Change language
     i18n.changeLanguage(languageCode);
+    
+    // Update meta tags for SEO
+    updateSEOMetaTags(languageCode);
+    
+    // Update URL if needed for better SEO
+    const currentPath = location.pathname;
+    if (currentPath !== '/') {
+      // Could implement locale-specific URLs here if needed
+      // For now, we'll just refresh the page content
+      window.location.reload();
+    }
+  };
+
+  const updateSEOMetaTags = (languageCode: string) => {
+    // Update HTML lang attribute
+    document.documentElement.lang = languageCode;
+    
+    // Update hreflang links
+    const existingHreflangLinks = document.querySelectorAll('link[hreflang]');
+    existingHreflangLinks.forEach(link => link.remove());
+    
+    languages.forEach(lang => {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = lang.code;
+      link.href = `${window.location.origin}${location.pathname}`;
+      document.head.appendChild(link);
+    });
+    
+    // Add x-default hreflang
+    const defaultLink = document.createElement('link');
+    defaultLink.rel = 'alternate';
+    defaultLink.hreflang = 'x-default';
+    defaultLink.href = `${window.location.origin}${location.pathname}`;
+    document.head.appendChild(defaultLink);
   };
 
   const isActive = (href: string) => {
@@ -64,7 +114,7 @@ const Header = () => {
                 const isActiveDropdown = link.dropdown.some(item => isActive(item.href));
                 return (
                   <DropdownMenu key={link.labelKey}>
-                    <DropdownMenuTrigger className="flex items-center gap-1 font-medium text-sm transition-colors group outline-none">
+                    <DropdownMenuTrigger className="flex items-center gap-1 font-medium text-sm transition-colors group outline-none relative">
                       <span className={`transition-colors ${
                         isActiveDropdown ? 'text-primary' : 'text-foreground hover:text-primary'
                       }`}>
@@ -77,7 +127,10 @@ const Header = () => {
                         isActiveDropdown ? 'w-full' : ''
                       }`} />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-background/95 backdrop-blur-md border border-border/20">
+                    <DropdownMenuContent 
+                      className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg min-w-48"
+                      sideOffset={8}
+                    >
                       {link.dropdown.map((item) => (
                         <DropdownMenuItem key={item.href} asChild>
                           <Link
@@ -118,25 +171,39 @@ const Header = () => {
         {/* Desktop Right Section */}
         <div className="hidden lg:flex items-center space-x-4 flex-shrink-0">
           {/* Language Switcher */}
-          <div className="flex items-center space-x-1 text-sm">
-            {languages.map((lang, index) => (
-              <React.Fragment key={lang.code}>
-                <button
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`px-2 py-1 rounded transition-colors ${
-                    i18n.language === lang.code
-                      ? 'text-primary font-semibold'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {lang.name}
-                </button>
-                {index < languages.length - 1 && (
-                  <span className="text-border">/</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent group outline-none">
+              <Globe className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+              <span className="text-foreground group-hover:text-primary">
+                {languages.find(lang => lang.code === i18n.language)?.name || 'ENG'}
+              </span>
+              <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-foreground group-data-[state=open]:rotate-180 transition-transform" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg"
+              sideOffset={8}
+              align="end"
+            >
+              {languages.map((lang) => (
+                <DropdownMenuItem key={lang.code} asChild>
+                  <button
+                    onClick={() => changeLanguage(lang.code)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
+                      i18n.language === lang.code
+                        ? 'text-primary font-medium bg-accent/50'
+                        : 'text-foreground hover:text-primary hover:bg-accent/30'
+                    }`}
+                  >
+                    <span className="text-lg">{lang.flag}</span>
+                    <span>{lang.name}</span>
+                    {i18n.language === lang.code && (
+                      <span className="ml-auto text-xs text-primary">✓</span>
+                    )}
+                  </button>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <div className="w-px h-6 bg-border/40" />
 
@@ -203,24 +270,25 @@ const Header = () => {
               })}
               
               {/* Mobile Language Switcher */}
-              <div className="flex items-center space-x-2 pt-4 border-t border-border/20">
-                <div className="flex space-x-1">
-                  {languages.map((lang, index) => (
-                    <React.Fragment key={lang.code}>
-                      <button
-                        onClick={() => changeLanguage(lang.code)}
-                        className={`text-sm px-2 py-1 rounded ${
-                          i18n.language === lang.code 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        {lang.name}
-                      </button>
-                      {index < languages.length - 1 && (
-                        <span className="text-border text-sm">/</span>
-                      )}
-                    </React.Fragment>
+              <div className="pt-4 border-t border-border/20">
+                <span className="text-sm font-medium text-muted-foreground mb-3 block">Language / Язык / Тіл</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLanguage(lang.code);
+                        setIsMenuOpen(false);
+                      }}
+                      className={`flex items-center gap-2 p-3 rounded-lg text-sm font-medium transition-colors ${
+                        i18n.language === lang.code 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-accent/30 text-foreground hover:bg-accent/50'
+                      }`}
+                    >
+                      <span className="text-base">{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
                   ))}
                 </div>
               </div>
