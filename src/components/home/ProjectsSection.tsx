@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { ArrowRight, Calendar, MapPin, User, Image } from 'lucide-react';
 import { useLatestProjects } from '@/hooks/useHomeData';
 
 const ProjectsSection: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, showFallbackIndicator } = useTranslationHelper();
   const { data: projects, loading, error } = useLatestProjects();
 
   if (loading) {
@@ -41,14 +41,19 @@ const ProjectsSection: React.FC = () => {
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('projects.title')}
+            {t('projects.title', 'Completed Projects')}
           </h2>
+          {showFallbackIndicator && (
+            <p className="text-xs text-muted-foreground/70 italic mb-2">
+              {t('common.translationComingSoon', 'Translation coming soon')}
+            </p>
+          )}
           <p className="text-muted-foreground mb-8">
-            {t('common.noData')}
+            {t('common.noData', 'No data available')}
           </p>
           <Link to="/projects">
             <Button className="btn-primary">
-              {t('projects.viewAll')}
+              {t('projects.viewAll', 'View All Projects')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
@@ -62,10 +67,15 @@ const ProjectsSection: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('projects.title')}
+            {t('projects.title', 'Completed Projects')}
           </h2>
+          {showFallbackIndicator && (
+            <p className="text-xs text-muted-foreground/70 italic mb-2">
+              {t('common.translationComingSoon', 'Translation coming soon')}
+            </p>
+          )}
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t('projects.subtitle')}
+            {t('projects.subtitle', 'Successful project implementations across Kazakhstan and the Caspian region')}
           </p>
         </div>
 
@@ -154,7 +164,7 @@ const ProjectsSection: React.FC = () => {
         <div className="text-center">
           <Link to="/projects">
             <Button size="lg" className="btn-primary">
-              {t('projects.viewAll')}
+              {t('projects.viewAll', 'View All Projects')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>

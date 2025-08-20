@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,7 +16,7 @@ interface ContactFormData {
 }
 
 const ContactForm: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, showFallbackIndicator } = useTranslationHelper();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<ContactFormData>({
@@ -126,10 +126,15 @@ const ContactForm: React.FC = () => {
     <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-foreground mb-2">
-          {t('contact.form.title')}
+          {t('contact.form.title', 'Get in Touch')}
         </h3>
+        {showFallbackIndicator && (
+          <p className="text-xs text-muted-foreground/70 italic mb-2">
+            {t('common.translationComingSoon', 'Translation coming soon')}
+          </p>
+        )}
         <p className="text-muted-foreground">
-          {t('contact.form.subtitle')}
+          {t('contact.form.subtitle', 'Ready to discuss your project? Contact us today for a consultation.')}
         </p>
       </div>
 
@@ -212,13 +217,13 @@ const ContactForm: React.FC = () => {
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              {t('contact.send')}
+              {t('contact.submit', 'Send Message')}
             </>
           )}
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          {t('contact.form.privacy')}
+          {t('contact.form.privacy', 'Your information will be handled according to our privacy policy.')}
         </p>
       </form>
     </div>

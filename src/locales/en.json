@@ -65,13 +65,31 @@
   "projects": {
     "title": "Completed Projects",
     "subtitle": "Successful project implementations across Kazakhstan and the Caspian region",
-    "viewAll": "View All Projects"
+    "viewAll": "View All Projects",
+    "viewProject": "View Project",
+    "description": "Successful project implementations across Kazakhstan and the Caspian region",
+    "searchPlaceholder": "Search projects...",
+    "allYears": "All Years",
+    "allStatuses": "All Statuses", 
+    "completed": "Completed",
+    "ongoing": "Ongoing",
+    "planned": "Planned",
+    "showingResults": "Showing {{count}} projects",
+    "noProjects": "No projects found",
+    "noProjectsDescription": "Try adjusting your filters or search terms"
   },
   "news": {
     "title": "Latest News",
     "subtitle": "Stay updated with industry insights and company announcements",
     "viewAll": "View All News",
-    "noNews": "No news articles available"
+    "noNews": "No news articles available",
+    "description": "Stay updated with industry insights and company announcements",
+    "searchPlaceholder": "Search news...",
+    "allYears": "All Years",
+    "showingResults": "Showing {{count}} articles",
+    "pageInfo": "Page {{current}} of {{total}}",
+    "noNews": "No news articles found",
+    "noNewsDescription": "Try adjusting your filters or search terms"
   },
   "hero": {
     "title": "Equipment Supply & Integrated Commissioning in Kazakhstan",
@@ -95,7 +113,20 @@
     "compliance": "Compliance & Standards",
     "issuer": "Issued by"
   },
-  "contacts": {
+  "contact": {
+    "form": {
+      "title": "Get in Touch",
+      "subtitle": "Ready to discuss your project? Contact us today for a consultation.",
+      "title": "Contact Form",
+      "subtitle": "Send us a message and we'll respond as soon as possible"
+    },
+    "name": "Full Name",
+    "phone": "Phone Number", 
+    "message": "Message",
+    "namePlaceholder": "Enter your full name",
+    "phonePlaceholder": "Enter your phone number",
+    "messagePlaceholder": "Tell us about your project or inquiry...",
+    "submit": "Send Message",
     "getInTouch": "Get in Touch",
     "address": "Address",
     "phone": "Phone",
@@ -112,17 +143,25 @@
     "supply": "Supply",
     "productionDescription": "Locally manufactured marine and industrial equipment meeting international standards",
     "supplyDescription": "Premium equipment and spare parts sourced from leading European manufacturers",
+    "searchProducts": "Search products...",
     "searchPlaceholder": "Search products...",
     "allManufacturers": "All Manufacturers",
     "allTypes": "All Types",
     "showingResults": "Showing {{count}} products",
     "noProducts": "No products found",
     "noProductsDescription": "Try adjusting your filters or search terms",
+    "tryAdjustingFilters": "Try adjusting your filters or search terms",
     "manufacturer": "Manufacturer",
     "sku": "SKU",
     "specifications": "Technical Specifications",
     "gallery": "Gallery",
-    "downloadDatasheet": "Download Datasheet"
+    "downloadDatasheet": "Download Datasheet",
+    "details": "Product Details",
+    "interestedInProduct": "Interested in this product?",
+    "contactUsForMore": "Contact us for more information and pricing",
+    "filters": "Filters",
+    "type": "Type",
+    "ctkzOnly": "CT-KZ Only"
   },
   "projects": {
     "description": "Successful project implementations across Kazakhstan and the Caspian region",
@@ -156,7 +195,19 @@
     "error": "Something went wrong. Please try again.",
     "noData": "No data available.",
     "translationNote": "Translation coming soon",
-    "clearFilters": "Clear Filters"
+    "clearFilters": "Clear Filters",
+    "noImage": "No image available",
+    "featured": "Featured",
+    "published": "Published",
+    "draft": "Draft",
+    "all": "All",
+    "on": "On",
+    "off": "Off",
+    "back": "Back",
+    "requestQuote": "Request Quote",
+    "sendEmail": "Send Email",
+    "callUs": "Call Us",
+    "translationComingSoon": "Translation coming soon"
   },
   "seo": {
     "home": {
