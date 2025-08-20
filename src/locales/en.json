@@ -9,6 +9,29 @@
     "contacts": "Contacts",
     "requestQuote": "Request Quote"
   },
+  "services": {
+    "civilMaintenance": "Civil Maintenance",
+    "steelFabrication": "Steel Fabrication",
+    "hydraulicWorkshop": "Hydraulic Workshop"
+  },
+  "catalog": {
+    "production": "Production (CT-KZ)",
+    "supply": "Supply"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "noData": "No data available",
+    "translationComingSoon": "Translation coming soon",
+    "readMore": "Read More",
+    "viewDetails": "View Details",
+    "download": "Download",
+    "back": "Back",
+    "home": "Home",
+    "featured": "Featured",
+    "published": "Published",
+    "draft": "Draft"
+  },
   "hero": {
     "title": "Equipment Supply & Integrated Commissioning in Kazakhstan",
     "subtitle": "Reliable supplier of equipment and spares from leading European manufacturers. Full cycle — from supply to installation and commissioning.",

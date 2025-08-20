@@ -20,6 +20,12 @@ import Contacts from "./pages/Contacts";
 import Error404 from "./pages/Error404";
 import Error500 from "./pages/Error500";
 
+// Detail pages
+import ServiceDetail from "./pages/ServiceDetail";
+import ProjectDetail from "./pages/ProjectDetail";
+import NewsDetail from "./pages/NewsDetail";
+import CatalogDetail from "./pages/CatalogDetail";
+
 // Admin pages
 import AuthLogin from "./pages/AuthLogin";
 import Admin from "./pages/Admin";
@@ -45,9 +51,13 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/catalog" element={<Catalog />} />
+              <Route path="/catalog/:slug" element={<CatalogDetail />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:slug" element={<ProjectDetail />} />
               <Route path="/news" element={<News />} />
+              <Route path="/news/:slug" element={<NewsDetail />} />
               <Route path="/contacts" element={<Contacts />} />
               
               {/* Admin routes */}
