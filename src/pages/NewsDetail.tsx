@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
 import { useNewsArticle } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, Download } from 'lucide-react';
@@ -68,7 +68,7 @@ const NewsDetail = () => {
         {/* Hero Section */}
         <section className="py-12 bg-muted/30">
           <div className="container mx-auto px-4">
-            <Breadcrumb items={breadcrumbItems} className="mb-6" />
+            <CustomBreadcrumb items={breadcrumbItems} className="mb-6" />
             
             <div className="max-w-4xl mx-auto">
               <h1 className="text-4xl lg:text-5xl font-bold mb-6">

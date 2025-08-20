@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
 import { useProject } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, MapPin, User, Activity } from 'lucide-react';
@@ -68,7 +68,7 @@ const ProjectDetail = () => {
         {/* Hero Section */}
         <section className="py-12 bg-muted/30">
           <div className="container mx-auto px-4">
-            <Breadcrumb items={breadcrumbItems} className="mb-6" />
+            <CustomBreadcrumb items={breadcrumbItems} className="mb-6" />
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
