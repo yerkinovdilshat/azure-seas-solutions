@@ -125,7 +125,7 @@ export const useProjectsData = (filters: ProjectFilters = {}) => {
     };
 
     fetchData();
-  }, [i18n.language, isPreview, JSON.stringify(filters)]);
+  }, [i18n.language, isPreview, filters.search, filters.year, filters.status, filters.location]);
 
   return { data, loading, error, totalCount };
 };

@@ -48,35 +48,41 @@ export const useCatalogData = (filters: CatalogFilters = {}) => {
         setLoading(true);
         setError(null);
 
-        let query = supabase
-          .from('catalog_products')
-          .select('*', { count: 'exact' })
-          .eq('locale', i18n.language)
-          .order('is_featured', { ascending: false })
-          .order('published_at', { ascending: false });
+        // Build query conditions object to avoid complex type chaining
+        const conditions: any = {
+          locale: i18n.language
+        };
 
         if (!isPreview) {
-          query = query.eq('status', 'published');
-        }
-
-        // Apply filters
-        if (filters.search) {
-          query = query.ilike('title', `%${filters.search}%`);
+          conditions.status = 'published';
         }
 
         if (filters.manufacturer) {
-          query = query.eq('manufacturer', filters.manufacturer);
+          conditions.manufacturer = filters.manufacturer;
         }
 
+        // Handle type filters
         if (filters.type === 'production') {
-          // Assuming production items have a specific marker
-          query = query.eq('is_ctkz', true);
+          conditions.is_ctkz = true;
         } else if (filters.type === 'supply') {
-          query = query.eq('is_ctkz', false);
+          conditions.is_ctkz = false;
         }
 
         if (filters.is_ctkz !== undefined) {
-          query = query.eq('is_ctkz', filters.is_ctkz);
+          conditions.is_ctkz = filters.is_ctkz;
+        }
+
+        // Build the query
+        let query = supabase
+          .from('catalog_products')
+          .select('*', { count: 'exact' })
+          .match(conditions)
+          .order('is_featured', { ascending: false })
+          .order('published_at', { ascending: false });
+
+        // Apply search filter separately to avoid type issues
+        if (filters.search) {
+          query = query.ilike('title', `%${filters.search}%`);
         }
 
         const { data: result, error: queryError, count } = await query;
@@ -85,31 +91,37 @@ export const useCatalogData = (filters: CatalogFilters = {}) => {
 
         // Fallback to default locale if no results
         if ((!result || result.length === 0) && i18n.language !== 'en') {
+          const fallbackConditions: any = {
+            locale: 'en'
+          };
+
+          if (!isPreview) {
+            fallbackConditions.status = 'published';
+          }
+
+          if (filters.manufacturer) {
+            fallbackConditions.manufacturer = filters.manufacturer;
+          }
+
+          if (filters.type === 'production') {
+            fallbackConditions.is_ctkz = true;
+          } else if (filters.type === 'supply') {
+            fallbackConditions.is_ctkz = false;
+          }
+
+          if (filters.is_ctkz !== undefined) {
+            fallbackConditions.is_ctkz = filters.is_ctkz;
+          }
+
           let fallbackQuery = supabase
             .from('catalog_products')
             .select('*', { count: 'exact' })
-            .eq('locale', 'en')
+            .match(fallbackConditions)
             .order('is_featured', { ascending: false })
             .order('published_at', { ascending: false });
 
-          if (!isPreview) {
-            fallbackQuery = fallbackQuery.eq('status', 'published');
-          }
-
-          // Apply same filters to fallback
           if (filters.search) {
             fallbackQuery = fallbackQuery.ilike('title', `%${filters.search}%`);
-          }
-          if (filters.manufacturer) {
-            fallbackQuery = fallbackQuery.eq('manufacturer', filters.manufacturer);
-          }
-          if (filters.type === 'production') {
-            fallbackQuery = fallbackQuery.eq('is_ctkz', true);
-          } else if (filters.type === 'supply') {
-            fallbackQuery = fallbackQuery.eq('is_ctkz', false);
-          }
-          if (filters.is_ctkz !== undefined) {
-            fallbackQuery = fallbackQuery.eq('is_ctkz', filters.is_ctkz);
           }
 
           const { data: fallbackData, error: fallbackError, count: fallbackCount } = await fallbackQuery;
@@ -128,7 +140,7 @@ export const useCatalogData = (filters: CatalogFilters = {}) => {
     };
 
     fetchData();
-  }, [i18n.language, isPreview, JSON.stringify(filters)]);
+  }, [i18n.language, isPreview, filters.search, filters.manufacturer, filters.type, filters.is_ctkz]);
 
   return { data, loading, error, totalCount };
 };

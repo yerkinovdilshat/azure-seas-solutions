@@ -114,7 +114,7 @@ export const useNewsData = (filters: NewsFilters = {}) => {
     };
 
     fetchData();
-  }, [i18n.language, isPreview, from, to, JSON.stringify(filters)]);
+  }, [i18n.language, isPreview, from, to, filters.search, filters.year]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
