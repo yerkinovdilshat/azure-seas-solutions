@@ -469,6 +469,16 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
                   </div>
 
                   <div>
+                    <Label htmlFor="video_url">Video URL</Label>
+                    <Input
+                      id="video_url"
+                      value={productFormData.video_url}
+                      onChange={(e) => setProductFormData({ ...productFormData, video_url: e.target.value })}
+                      placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+                    />
+                  </div>
+
+                  <div>
                     <Label htmlFor="manufacturer">Manufacturer</Label>
                     <Input
                       id="manufacturer"
