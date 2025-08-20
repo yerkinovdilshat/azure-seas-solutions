@@ -20,8 +20,19 @@ export const useFileUpload = () => {
   ): Promise<string | null> => {
     const { bucket, folder = '', allowedTypes, maxSize = 10 } = options;
     
+    console.log('🔍 Upload attempt started:', {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      bucket,
+      folder,
+      allowedTypes,
+      maxSize
+    });
+    
     // Validate file type
     if (allowedTypes && !allowedTypes.includes(file.type)) {
+      console.error('❌ File type validation failed:', file.type, 'not in', allowedTypes);
       toast({
         title: "Invalid file type",
         description: `Please upload files of type: ${allowedTypes.join(', ')}`,
@@ -32,6 +43,7 @@ export const useFileUpload = () => {
 
     // Validate file size
     if (file.size > maxSize * 1024 * 1024) {
+      console.error('❌ File size validation failed:', file.size, 'exceeds', maxSize * 1024 * 1024);
       toast({
         title: "File too large",
         description: `File size must be less than ${maxSize}MB`,
@@ -40,6 +52,7 @@ export const useFileUpload = () => {
       return null;
     }
 
+    console.log('✅ Validations passed, starting upload...');
     setUploading(true);
     setProgress(0);
 
@@ -48,16 +61,21 @@ export const useFileUpload = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = folder ? `${folder}/${fileName}` : fileName;
+      
+      console.log('📂 Upload path:', filePath);
 
       // Upload file
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data: uploadData } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false
         });
 
+      console.log('📤 Upload result:', { error: uploadError, data: uploadData });
+
       if (uploadError) {
+        console.error('❌ Upload error:', uploadError);
         throw uploadError;
       }
 
@@ -65,6 +83,8 @@ export const useFileUpload = () => {
       const { data } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
+
+      console.log('🔗 Public URL generated:', data.publicUrl);
 
       setProgress(100);
       
@@ -75,6 +95,7 @@ export const useFileUpload = () => {
 
       return data.publicUrl;
     } catch (error: any) {
+      console.error('❌ Upload failed with error:', error);
       toast({
         title: "Upload failed",
         description: error.message || "Failed to upload file",

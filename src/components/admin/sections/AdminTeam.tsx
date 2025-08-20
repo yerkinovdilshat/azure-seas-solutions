@@ -35,6 +35,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
   }, [locale]);
 
   const fetchTeam = async () => {
+    console.log('🏃 Fetching team data for locale:', locale);
     try {
       const { data, error } = await supabase
         .from('about_team')
@@ -42,9 +43,13 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         .eq('locale', locale)
         .order('order', { ascending: true });
 
+      console.log('👥 Team fetch result:', { data, error });
+
       if (error) throw error;
       setTeam(data || []);
+      console.log('✅ Team data set successfully:', data?.length || 0, 'members');
     } catch (error: any) {
+      console.error('❌ Error loading team:', error);
       toast({
         title: "Error loading team",
         description: error.message,
@@ -56,6 +61,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
   };
 
   const handleSave = async (memberData: TeamData) => {
+    console.log('💾 Saving team member:', memberData);
     try {
       const payload = {
         locale,
@@ -66,6 +72,8 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         order: memberData.order,
       };
 
+      console.log('📤 Saving payload:', payload);
+
       if (memberData.id) {
         const { error } = await supabase
           .from('about_team')
@@ -73,12 +81,14 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           .eq('id', memberData.id);
 
         if (error) throw error;
+        console.log('✅ Team member updated successfully');
       } else {
         const { error } = await supabase
           .from('about_team')
           .insert([payload]);
 
         if (error) throw error;
+        console.log('✅ Team member created successfully');
       }
 
       toast({
@@ -90,6 +100,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
       setDialogOpen(false);
       setEditingMember(null);
     } catch (error: any) {
+      console.error('❌ Error saving team member:', error);
       toast({
         title: "Error saving team member",
         description: error.message,
