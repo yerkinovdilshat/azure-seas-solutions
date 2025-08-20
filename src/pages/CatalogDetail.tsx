@@ -6,13 +6,17 @@ import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
 import { useCatalogProduct } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { ArrowLeft, Download, Mail, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const CatalogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
   const { data: product, loading, error } = useCatalogProduct(slug!);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   if (loading) {
     return (
