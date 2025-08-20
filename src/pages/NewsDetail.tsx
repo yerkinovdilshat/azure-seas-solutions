@@ -3,15 +3,17 @@ import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
-import { useNewsArticle } from '@/hooks/useContent';
+import { useContentResolver } from '@/hooks/useContentResolver';
+import { NewsItem } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Calendar, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const NewsDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
-  const { data: article, loading, error } = useNewsArticle(slug!);
+  const { data: article, loading, error, isTranslationFallback, translationNote } = useContentResolver<NewsItem>('news', slug!);
 
   if (loading) {
     return (
@@ -35,14 +37,15 @@ const NewsDetail = () => {
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t('common.error')}</h1>
-            <p className="text-muted-foreground mb-4">
-              {error || 'Article not found'}
+            <div className="text-6xl font-bold text-primary mb-4">404</div>
+            <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+            <p className="text-muted-foreground mb-8">
+              The article you are looking for might have been removed or is temporarily unavailable.
             </p>
             <Link to="/news">
-              <Button variant="outline">
+              <Button className="btn-primary">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                {t('common.back')}
+                Back to News
               </Button>
             </Link>
           </div>

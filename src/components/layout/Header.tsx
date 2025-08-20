@@ -113,42 +113,40 @@ const Header = () => {
               if (link.dropdown) {
                 const isActiveDropdown = isActive(link.href!) || link.dropdown.some(item => isActive(item.href));
                 return (
-                  <DropdownMenu key={link.labelKey}>
-                    <DropdownMenuTrigger asChild>
-                      <Link
-                        to={link.href!}
-                        className={`flex items-center gap-1 font-medium text-sm transition-colors group outline-none relative ${
-                          isActiveDropdown ? 'text-primary' : 'text-foreground hover:text-primary'
-                        }`}
-                      >
-                        <span>{t(link.labelKey)}</span>
-                        <ChevronDown className={`h-4 w-4 transition-transform group-data-[state=open]:rotate-180 ${
-                          isActiveDropdown ? 'text-primary' : 'text-foreground group-hover:text-primary'
-                        }`} />
-                        <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full ${
-                          isActiveDropdown ? 'w-full' : ''
-                        }`} />
-                      </Link>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent 
-                      className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg min-w-48 z-50"
-                      sideOffset={8}
-                      onCloseAutoFocus={(e) => e.preventDefault()}
+                  <div key={link.labelKey} className="relative group">
+                    {/* Parent link - clickable to navigate */}
+                    <Link
+                      to={link.href!}
+                      className={`flex items-center gap-1 font-medium text-sm transition-colors relative ${
+                        isActiveDropdown ? 'text-primary' : 'text-foreground hover:text-primary'
+                      }`}
                     >
-                      {link.dropdown.map((item) => (
-                        <DropdownMenuItem key={item.href} asChild>
+                      <span>{t(link.labelKey)}</span>
+                      <ChevronDown className={`h-4 w-4 transition-transform group-hover:rotate-180 ${
+                        isActiveDropdown ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                      }`} />
+                      <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full ${
+                        isActiveDropdown ? 'w-full' : ''
+                      }`} />
+                    </Link>
+                    
+                    {/* Dropdown menu - appears on hover */}
+                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg rounded-md min-w-48 py-2">
+                        {link.dropdown.map((item) => (
                           <Link
+                            key={item.href}
                             to={item.href}
-                            className={`w-full px-3 py-2 text-sm transition-colors ${
-                              isActive(item.href) ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
+                            className={`block w-full px-4 py-2 text-sm transition-colors hover:bg-accent/50 ${
+                              isActive(item.href) ? 'text-primary font-medium bg-accent/30' : 'text-foreground hover:text-primary'
                             }`}
                           >
                             {t(item.labelKey)}
                           </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 );
               }
 

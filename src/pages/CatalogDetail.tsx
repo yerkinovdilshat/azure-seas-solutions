@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
-import { useCatalogProduct } from '@/hooks/useContent';
+import { useContentResolver } from '@/hooks/useContentResolver';
+import { CatalogItem } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import CatalogBadge from '@/components/catalog/CatalogBadge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Download, Mail, Phone } from 'lucide-react';
@@ -15,7 +17,7 @@ import { useState } from 'react';
 const CatalogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
-  const { data: product, loading, error } = useCatalogProduct(slug!);
+  const { data: product, loading, error, isTranslationFallback, translationNote } = useContentResolver<CatalogItem>('catalog_products', slug!);
   const [selectedImage, setSelectedImage] = useState(0);
 
   if (loading) {
@@ -40,14 +42,15 @@ const CatalogDetail = () => {
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t('common.error')}</h1>
-            <p className="text-muted-foreground mb-4">
-              {error || 'Product not found'}
+            <div className="text-6xl font-bold text-primary mb-4">404</div>
+            <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+            <p className="text-muted-foreground mb-8">
+              The product you are looking for might have been removed or is temporarily unavailable.
             </p>
             <Link to="/catalog">
-              <Button variant="outline">
+              <Button className="btn-primary">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                {t('common.back')}
+                Back to Catalog
               </Button>
             </Link>
           </div>
@@ -83,15 +86,16 @@ const CatalogDetail = () => {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <h1 className="text-4xl lg:text-5xl font-bold">
+                {isTranslationFallback && translationNote && (
+                  <p className="text-xs text-muted-foreground/70 italic mb-4">
+                    {translationNote}
+                  </p>
+                )}
+                <div className="flex items-start gap-4 mb-4">
+                  <h1 className="text-4xl lg:text-5xl font-bold flex-1">
                     {product.title}
                   </h1>
-                  {(product as any).is_ctkz && (
-                    <Badge variant="secondary" className="bg-primary/10 text-primary text-lg px-3 py-1">
-                      CT-KZ
-                    </Badge>
-                  )}
+                  <CatalogBadge isCtKz={(product as any).is_ctkz} />
                 </div>
                 
                 {product.manufacturer && (

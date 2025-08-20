@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import CatalogBadge from './CatalogBadge';
 
 interface CatalogItem {
   id: string;
@@ -43,14 +44,8 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({ product }) => {
       </CardHeader>
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-xl font-semibold line-clamp-2">{product.title}</h3>
-          {product.is_ctkz && (
-            <img 
-              src="/ctkz.svg" 
-              alt="CT-KZ Badge" 
-              className="h-6 ml-2 flex-shrink-0"
-            />
-          )}
+          <h3 className="text-xl font-semibold line-clamp-2 flex-1 mr-2">{product.title}</h3>
+          <CatalogBadge isCtKz={product.is_ctkz} />
         </div>
         {product.manufacturer && (
           <p className="text-sm text-muted-foreground mb-2">

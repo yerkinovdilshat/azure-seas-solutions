@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
-import { useService } from '@/hooks/useContent';
+import { useContentResolver } from '@/hooks/useContentResolver';
+import { ServiceItem } from '@/hooks/useContent';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -11,7 +12,7 @@ import { Link } from 'react-router-dom';
 const ServiceDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
-  const { data: service, loading, error } = useService(slug!);
+  const { data: service, loading, error, isTranslationFallback, translationNote } = useContentResolver<ServiceItem>('services', slug!);
 
   if (loading) {
     return (
@@ -35,14 +36,15 @@ const ServiceDetail = () => {
         />
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">{t('common.error')}</h1>
-            <p className="text-muted-foreground mb-4">
-              {error || 'Service not found'}
+            <div className="text-6xl font-bold text-primary mb-4">404</div>
+            <h1 className="text-2xl font-bold mb-4">Service Not Found</h1>
+            <p className="text-muted-foreground mb-8">
+              The service you are looking for might have been removed or is temporarily unavailable.
             </p>
             <Link to="/services">
-              <Button variant="outline">
+              <Button className="btn-primary">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                {t('common.back')}
+                Back to Services
               </Button>
             </Link>
           </div>
@@ -72,6 +74,11 @@ const ServiceDetail = () => {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
+                {isTranslationFallback && translationNote && (
+                  <p className="text-xs text-muted-foreground/70 italic mb-4">
+                    {translationNote}
+                  </p>
+                )}
                 <h1 className="text-4xl lg:text-5xl font-bold mb-6">
                   {service.title}
                 </h1>
