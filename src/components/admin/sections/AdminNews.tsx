@@ -23,7 +23,8 @@ interface NewsItem {
   gallery_images: string[];
   video_url: string;
   published_at: string;
-  is_published: boolean;
+  status: 'draft' | 'published';
+  is_featured: boolean;
   order: number;
 }
 
@@ -46,7 +47,8 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
     featured_image: '',
     gallery_images: [] as string[],
     video_url: '',
-    is_published: false,
+    status: 'draft' as 'draft' | 'published',
+    is_featured: false,
     order: 0
   });
 
@@ -63,7 +65,7 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
         .order('order', { ascending: true });
 
       if (error) throw error;
-      setNews(data || []);
+      setNews((data || []) as NewsItem[]);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -82,7 +84,7 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
       const newsData = {
         ...formData,
         locale,
-        published_at: formData.is_published ? new Date().toISOString() : null
+        published_at: formData.status === 'published' ? new Date().toISOString() : null
       };
 
       if (editingNews) {
@@ -157,7 +159,8 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
       featured_image: '',
       gallery_images: [],
       video_url: '',
-      is_published: false,
+      status: 'draft',
+      is_featured: false,
       order: 0
     });
     setEditingNews(null);
@@ -173,7 +176,8 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
       featured_image: newsItem.featured_image || '',
       gallery_images: newsItem.gallery_images || [],
       video_url: newsItem.video_url || '',
-      is_published: newsItem.is_published,
+      status: newsItem.status,
+      is_featured: newsItem.is_featured,
       order: newsItem.order
     });
     setIsDialogOpen(true);
@@ -187,7 +191,7 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
           ...newsItem,
           id: undefined,
           locale: targetLocale,
-          is_published: false
+          status: 'draft'
         }]);
 
       if (error) throw error;
@@ -289,13 +293,23 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_published"
-                  checked={formData.is_published}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })}
-                />
-                <Label htmlFor="is_published">Published</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="status"
+                    checked={formData.status === 'published'}
+                    onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? 'published' : 'draft' })}
+                  />
+                  <Label htmlFor="status">Published</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                  />
+                  <Label htmlFor="is_featured">Featured</Label>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-2">
@@ -321,12 +335,17 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
                   <p className="text-sm text-muted-foreground">{item.excerpt}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <span className={`px-2 py-1 rounded text-xs ${
-                      item.is_published 
+                      item.status === 'published'
                         ? 'bg-green-100 text-green-800' 
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {item.is_published ? 'Published' : 'Draft'}
+                      {item.status === 'published' ? 'Published' : 'Draft'}
                     </span>
+                    {item.is_featured && (
+                      <span className="px-2 py-1 rounded text-xs bg-blue-100 text-blue-800">
+                        Featured
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex space-x-2">

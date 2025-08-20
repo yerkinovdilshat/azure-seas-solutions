@@ -22,6 +22,7 @@ interface Service {
   featured_image: string;
   gallery_images: string[];
   icon_key: string;
+  status: 'draft' | 'published';
   is_featured: boolean;
   order: number;
 }
@@ -45,6 +46,7 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
     featured_image: '',
     gallery_images: [] as string[],
     icon_key: '',
+    status: 'draft' as 'draft' | 'published',
     is_featured: false,
     order: 0
   });
@@ -62,7 +64,7 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
         .order('order', { ascending: true });
 
       if (error) throw error;
-      setServices(data || []);
+      setServices((data || []) as Service[]);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -155,6 +157,7 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
       featured_image: '',
       gallery_images: [],
       icon_key: '',
+      status: 'draft',
       is_featured: false,
       order: 0
     });
@@ -171,6 +174,7 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
       featured_image: service.featured_image || '',
       gallery_images: service.gallery_images || [],
       icon_key: service.icon_key || '',
+      status: service.status,
       is_featured: service.is_featured,
       order: service.order
     });
@@ -286,13 +290,23 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_featured"
-                  checked={formData.is_featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
-                />
-                <Label htmlFor="is_featured">Featured Service</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="status"
+                    checked={formData.status === 'published'}
+                    onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? 'published' : 'draft' })}
+                  />
+                  <Label htmlFor="status">Published</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                  />
+                  <Label htmlFor="is_featured">Featured</Label>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-2">
@@ -318,12 +332,17 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
                   <p className="text-sm text-muted-foreground">{item.description}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <span className={`px-2 py-1 rounded text-xs ${
-                      item.is_featured 
-                        ? 'bg-blue-100 text-blue-800' 
+                      item.status === 'published'
+                        ? 'bg-green-100 text-green-800' 
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {item.is_featured ? 'Featured' : 'Regular'}
+                      {item.status === 'published' ? 'Published' : 'Draft'}
                     </span>
+                    {item.is_featured && (
+                      <span className="px-2 py-1 rounded text-xs bg-blue-100 text-blue-800">
+                        Featured
+                      </span>
+                    )}
                     {item.icon_key && (
                       <span className="px-2 py-1 rounded text-xs bg-purple-100 text-purple-800">
                         {item.icon_key}

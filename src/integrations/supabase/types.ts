@@ -23,6 +23,8 @@ export type Database = {
           issuer: string | null
           locale: string
           order: number | null
+          published_at: string | null
+          status: string | null
           title: string
         }
         Insert: {
@@ -33,6 +35,8 @@ export type Database = {
           issuer?: string | null
           locale: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title: string
         }
         Update: {
@@ -43,6 +47,8 @@ export type Database = {
           issuer?: string | null
           locale?: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title?: string
         }
         Relationships: []
@@ -54,6 +60,8 @@ export type Database = {
           link_url: string | null
           locale: string
           order: number | null
+          published_at: string | null
+          status: string | null
           title: string
         }
         Insert: {
@@ -62,6 +70,8 @@ export type Database = {
           link_url?: string | null
           locale: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title: string
         }
         Update: {
@@ -70,6 +80,8 @@ export type Database = {
           link_url?: string | null
           locale?: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title?: string
         }
         Relationships: []
@@ -80,6 +92,8 @@ export type Database = {
           logo: string | null
           name: string
           order: number | null
+          published_at: string | null
+          status: string | null
           website_url: string | null
         }
         Insert: {
@@ -87,6 +101,8 @@ export type Database = {
           logo?: string | null
           name: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           website_url?: string | null
         }
         Update: {
@@ -94,6 +110,8 @@ export type Database = {
           logo?: string | null
           name?: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -104,6 +122,8 @@ export type Database = {
           hero_image: string | null
           id: string
           locale: string
+          published_at: string | null
+          status: string | null
           title: string
           updated_at: string | null
         }
@@ -112,6 +132,8 @@ export type Database = {
           hero_image?: string | null
           id?: string
           locale: string
+          published_at?: string | null
+          status?: string | null
           title: string
           updated_at?: string | null
         }
@@ -120,6 +142,8 @@ export type Database = {
           hero_image?: string | null
           id?: string
           locale?: string
+          published_at?: string | null
+          status?: string | null
           title?: string
           updated_at?: string | null
         }
@@ -133,7 +157,9 @@ export type Database = {
           name: string
           order: number | null
           photo: string | null
+          published_at: string | null
           role: string | null
+          status: string | null
         }
         Insert: {
           bio?: string | null
@@ -142,7 +168,9 @@ export type Database = {
           name: string
           order?: number | null
           photo?: string | null
+          published_at?: string | null
           role?: string | null
+          status?: string | null
         }
         Update: {
           bio?: string | null
@@ -151,7 +179,9 @@ export type Database = {
           name?: string
           order?: number | null
           photo?: string | null
+          published_at?: string | null
           role?: string | null
+          status?: string | null
         }
         Relationships: []
       }
@@ -162,6 +192,8 @@ export type Database = {
           image: string | null
           locale: string
           order: number | null
+          published_at: string | null
+          status: string | null
           title: string
           year: number
         }
@@ -171,6 +203,8 @@ export type Database = {
           image?: string | null
           locale: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title: string
           year: number
         }
@@ -180,6 +214,8 @@ export type Database = {
           image?: string | null
           locale?: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title?: string
           year?: number
         }
@@ -192,6 +228,8 @@ export type Database = {
           id: string
           locale: string
           order: number | null
+          published_at: string | null
+          status: string | null
           title: string
         }
         Insert: {
@@ -200,6 +238,8 @@ export type Database = {
           id?: string
           locale: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title: string
         }
         Update: {
@@ -208,6 +248,8 @@ export type Database = {
           id?: string
           locale?: string
           order?: number | null
+          published_at?: string | null
+          status?: string | null
           title?: string
         }
         Relationships: []
@@ -217,33 +259,42 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_featured: boolean | null
           locale: string
           name: string
           order: number | null
           parent_id: string | null
+          published_at: string | null
           slug: string
+          status: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: string
+          is_featured?: boolean | null
           locale: string
           name: string
           order?: number | null
           parent_id?: string | null
+          published_at?: string | null
           slug: string
+          status?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: string
+          is_featured?: boolean | null
           locale?: string
           name?: string
           order?: number | null
           parent_id?: string | null
+          published_at?: string | null
           slug?: string
+          status?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -270,9 +321,11 @@ export type Database = {
           manufacturer: string | null
           order: number | null
           pdf_files: string[] | null
+          published_at: string | null
           sku: string | null
           slug: string
           specifications: Json | null
+          status: string | null
           title: string
           updated_at: string
         }
@@ -289,9 +342,11 @@ export type Database = {
           manufacturer?: string | null
           order?: number | null
           pdf_files?: string[] | null
+          published_at?: string | null
           sku?: string | null
           slug: string
           specifications?: Json | null
+          status?: string | null
           title: string
           updated_at?: string
         }
@@ -308,9 +363,11 @@ export type Database = {
           manufacturer?: string | null
           order?: number | null
           pdf_files?: string[] | null
+          published_at?: string | null
           sku?: string | null
           slug?: string
           specifications?: Json | null
+          status?: string | null
           title?: string
           updated_at?: string
         }
@@ -324,6 +381,33 @@ export type Database = {
           },
         ]
       }
+      contact_requests: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          meta: Json | null
+          name: string
+          phone: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          meta?: Json | null
+          name: string
+          phone: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          meta?: Json | null
+          name?: string
+          phone?: string
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           additional_info: Json | null
@@ -334,6 +418,8 @@ export type Database = {
           locale: string
           map_link: string | null
           phone: string
+          published_at: string | null
+          status: string | null
           updated_at: string
           working_hours: string
         }
@@ -346,6 +432,8 @@ export type Database = {
           locale: string
           map_link?: string | null
           phone: string
+          published_at?: string | null
+          status?: string | null
           updated_at?: string
           working_hours: string
         }
@@ -358,6 +446,8 @@ export type Database = {
           locale?: string
           map_link?: string | null
           phone?: string
+          published_at?: string | null
+          status?: string | null
           updated_at?: string
           working_hours?: string
         }
@@ -371,11 +461,12 @@ export type Database = {
           featured_image: string | null
           gallery_images: string[] | null
           id: string
-          is_published: boolean | null
+          is_featured: boolean | null
           locale: string
           order: number | null
           published_at: string | null
           slug: string
+          status: string | null
           title: string
           updated_at: string
           video_url: string | null
@@ -387,11 +478,12 @@ export type Database = {
           featured_image?: string | null
           gallery_images?: string[] | null
           id?: string
-          is_published?: boolean | null
+          is_featured?: boolean | null
           locale: string
           order?: number | null
           published_at?: string | null
           slug: string
+          status?: string | null
           title: string
           updated_at?: string
           video_url?: string | null
@@ -403,11 +495,12 @@ export type Database = {
           featured_image?: string | null
           gallery_images?: string[] | null
           id?: string
-          is_published?: boolean | null
+          is_featured?: boolean | null
           locale?: string
           order?: number | null
           published_at?: string | null
           slug?: string
+          status?: string | null
           title?: string
           updated_at?: string
           video_url?: string | null
@@ -429,7 +522,9 @@ export type Database = {
           project_date: string | null
           project_location: string | null
           project_status: string | null
+          published_at: string | null
           slug: string
+          status: string | null
           title: string
           updated_at: string
           video_url: string | null
@@ -448,7 +543,9 @@ export type Database = {
           project_date?: string | null
           project_location?: string | null
           project_status?: string | null
+          published_at?: string | null
           slug: string
+          status?: string | null
           title: string
           updated_at?: string
           video_url?: string | null
@@ -467,7 +564,9 @@ export type Database = {
           project_date?: string | null
           project_location?: string | null
           project_status?: string | null
+          published_at?: string | null
           slug?: string
+          status?: string | null
           title?: string
           updated_at?: string
           video_url?: string | null
@@ -486,7 +585,9 @@ export type Database = {
           is_featured: boolean | null
           locale: string
           order: number | null
+          published_at: string | null
           slug: string
+          status: string | null
           title: string
           updated_at: string
         }
@@ -501,7 +602,9 @@ export type Database = {
           is_featured?: boolean | null
           locale: string
           order?: number | null
+          published_at?: string | null
           slug: string
+          status?: string | null
           title: string
           updated_at?: string
         }
@@ -516,7 +619,9 @@ export type Database = {
           is_featured?: boolean | null
           locale?: string
           order?: number | null
+          published_at?: string | null
           slug?: string
+          status?: string | null
           title?: string
           updated_at?: string
         }
