@@ -137,8 +137,7 @@ export const useAboutValues = () => {
           .from('about_values')
           .select('*')
           .eq('locale', i18n.language)
-          .order('order')
-          .order('created_at');
+          .order('order');
 
         if (!isPreview) {
           query = query.eq('status', 'published');
@@ -154,8 +153,7 @@ export const useAboutValues = () => {
             .from('about_values')
             .select('*')
             .eq('locale', 'en')
-            .order('order')
-            .order('created_at');
+            .order('order');
 
           if (!isPreview) {
             fallbackQuery = fallbackQuery.eq('status', 'published');
@@ -416,8 +414,7 @@ export const useAboutCompliance = () => {
           .from('about_compliance')
           .select('*')
           .eq('locale', i18n.language)
-          .order('order')
-          .order('created_at');
+          .order('order');
 
         if (!isPreview) {
           query = query.eq('status', 'published');
@@ -432,8 +429,7 @@ export const useAboutCompliance = () => {
             .from('about_compliance')
             .select('*')
             .eq('locale', 'en')
-            .order('order')
-            .order('created_at');
+            .order('order');
 
           if (!isPreview) {
             fallbackQuery = fallbackQuery.eq('status', 'published');

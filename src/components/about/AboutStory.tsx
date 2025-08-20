@@ -67,10 +67,17 @@ const AboutStory: React.FC = () => {
           </h1>
           
           {story.body_rich && (
-            <div 
-              className="prose prose-lg max-w-none text-foreground"
-              dangerouslySetInnerHTML={{ __html: story.body_rich }}
-            />
+            <div className="prose prose-lg max-w-none text-foreground">
+              {typeof story.body_rich === 'string' ? (
+                <div dangerouslySetInnerHTML={{ __html: story.body_rich }} />
+              ) : (
+                story.body_rich.blocks?.map((block: any, index: number) => (
+                  <p key={index} className="mb-4 leading-relaxed">
+                    {block.data?.text || ''}
+                  </p>
+                ))
+              )}
+            </div>
           )}
           
           {i18n.language !== 'en' && (

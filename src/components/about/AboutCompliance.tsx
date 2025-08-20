@@ -33,20 +33,20 @@ const AboutCompliance: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8 text-primary">
-              {t('about.compliance', 'Compliance & Standards')}
+              {t('about.compliance.title')}
             </h2>
             {showFallbackIndicator && (
               <p className="text-xs text-muted-foreground/70 italic mb-4">
-                {t('common.translationComingSoon', 'Translation coming soon')}
+                {t('common.translationComingSoon')}
               </p>
             )}
             <div className="bg-muted/30 rounded-lg p-8">
               <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground mb-2">
-                {error ? t('common.error', 'Something went wrong') : t('about.complianceComingSoon', 'Content will be published soon')}
+                {error ? t('common.error') : t('about.compliance.comingSoon')}
               </p>
               <p className="text-sm text-muted-foreground">
-                {t('about.complianceNote', 'Our compliance certifications and standards information will be available here shortly.')}
+                {t('about.compliance.note')}
               </p>
             </div>
           </div>
@@ -92,11 +92,11 @@ const AboutCompliance: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-primary">
-            {t('about.compliance', 'Compliance & Standards')}
+            {t('about.compliance.title')}
           </h2>
           {showFallbackIndicator && (
             <p className="text-xs text-muted-foreground/70 italic text-center mb-8">
-              {t('common.translationComingSoon', 'Translation coming soon')}
+              {t('common.translationComingSoon')}
             </p>
           )}
           
@@ -134,7 +134,7 @@ const AboutCompliance: React.FC = () => {
           
           {showFallbackIndicator && compliance.length > 0 && (
             <p className="text-xs text-muted-foreground text-center mt-8 italic">
-              {t('common.translationNote', 'Translation coming soon')}
+              {t('common.translationComingSoon')}
             </p>
           )}
         </div>
