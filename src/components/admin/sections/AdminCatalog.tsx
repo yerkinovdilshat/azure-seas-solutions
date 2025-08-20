@@ -7,8 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, Copy, Package, FolderOpen } from 'lucide-react';
+import { Plus, Edit, Trash2, Copy, Package, FolderOpen, Badge } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import FileUpload from '@/components/admin/FileUpload';
@@ -39,6 +41,9 @@ interface CatalogProduct {
   specifications: any;
   is_featured: boolean;
   order: number;
+  type: 'production' | 'supply';
+  is_ctkz: boolean;
+  tags: string[] | null;
 }
 
 interface AdminCatalogProps {
@@ -48,8 +53,11 @@ interface AdminCatalogProps {
 const AdminCatalog = ({ locale }: AdminCatalogProps) => {
   const [categories, setCategories] = useState<CatalogCategory[]>([]);
   const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('categories');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [ctkzFilter, setCtkzFilter] = useState<string>('all');
   const { toast } = useToast();
 
   // Category form state
@@ -79,12 +87,34 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
     manufacturer: '',
     specifications: null,
     is_featured: false,
-    order: 0
+    order: 0,
+    type: 'supply' as 'production' | 'supply',
+    is_ctkz: false,
+    tags: null as string[] | null
   });
 
   useEffect(() => {
     fetchData();
   }, [locale]);
+
+  // Filter products based on type and CT-KZ filters
+  useEffect(() => {
+    let filtered = products;
+    
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(product => product.type === typeFilter);
+    }
+    
+    if (ctkzFilter !== 'all') {
+      if (ctkzFilter === 'ctkz') {
+        filtered = filtered.filter(product => product.is_ctkz);
+      } else if (ctkzFilter === 'non-ctkz') {
+        filtered = filtered.filter(product => !product.is_ctkz);
+      }
+    }
+    
+    setFilteredProducts(filtered);
+  }, [products, typeFilter, ctkzFilter]);
 
   const fetchData = async () => {
     try {
@@ -105,7 +135,13 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
       if (productsResult.error) throw productsResult.error;
 
       setCategories(categoriesResult.data || []);
-      setProducts(productsResult.data || []);
+      const mappedProducts = (productsResult.data || []).map(product => ({
+        ...product,
+        type: product.type as 'production' | 'supply',
+        tags: product.tags || null
+      }));
+      setProducts(mappedProducts);
+      setFilteredProducts(mappedProducts);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -235,7 +271,10 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
       manufacturer: '',
       specifications: null,
       is_featured: false,
-      order: 0
+      order: 0,
+      type: 'supply',
+      is_ctkz: false,
+      tags: null
     });
     setEditingProduct(null);
   };
@@ -435,6 +474,58 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
                     />
                   </div>
 
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Type</Label>
+                      <RadioGroup 
+                        value={productFormData.type} 
+                        onValueChange={(value: 'production' | 'supply') => {
+                          setProductFormData({ 
+                            ...productFormData, 
+                            type: value,
+                            // Auto-uncheck CT-KZ if switching to supply
+                            is_ctkz: value === 'supply' ? false : productFormData.is_ctkz
+                          });
+                        }}
+                        className="flex gap-6"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="production" id="type_production" />
+                          <Label htmlFor="type_production">Production (CT-KZ)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="supply" id="type_supply" />
+                          <Label htmlFor="type_supply">Supply</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {productFormData.type === 'production' && (
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="product_is_ctkz"
+                          checked={productFormData.is_ctkz}
+                          onCheckedChange={(checked) => setProductFormData({ ...productFormData, is_ctkz: checked })}
+                        />
+                        <Label htmlFor="product_is_ctkz">CT-KZ Certified</Label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="product_tags">Tags (comma separated)</Label>
+                    <Input
+                      id="product_tags"
+                      value={productFormData.tags?.join(', ') || ''}
+                      onChange={(e) => {
+                        const tagsString = e.target.value;
+                        const tagsArray = tagsString ? tagsString.split(',').map(tag => tag.trim()).filter(tag => tag) : null;
+                        setProductFormData({ ...productFormData, tags: tagsArray });
+                      }}
+                      placeholder="Enter tags separated by commas"
+                    />
+                  </div>
+
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="product_is_featured"
@@ -457,28 +548,91 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
             </Dialog>
           </div>
 
+          {/* Filters */}
+          <div className="flex gap-4 items-center">
+            <div>
+              <Label htmlFor="type-filter">Filter by Type:</Label>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="production">Production</SelectItem>
+                  <SelectItem value="supply">Supply</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="ctkz-filter">Filter by CT-KZ:</Label>
+              <Select value={ctkzFilter} onValueChange={setCtkzFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="ctkz">CT-KZ Only</SelectItem>
+                  <SelectItem value="non-ctkz">Non CT-KZ</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setTypeFilter('all');
+                setCtkzFilter('all');
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+
           <div className="grid gap-4">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Card key={product.id}>
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-lg">{product.title}</CardTitle>
                       <p className="text-sm text-muted-foreground">{product.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        {product.sku && (
-                          <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
-                            SKU: {product.sku}
-                          </span>
-                        )}
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          product.is_featured 
-                            ? 'bg-blue-100 text-blue-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {product.is_featured ? 'Featured' : 'Regular'}
-                        </span>
-                      </div>
+                       <div className="flex items-center gap-2 mt-2">
+                         {product.sku && (
+                           <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
+                             SKU: {product.sku}
+                           </span>
+                         )}
+                         
+                         <span className={`px-2 py-1 rounded text-xs ${
+                           product.type === 'production' 
+                             ? 'bg-purple-100 text-purple-800' 
+                             : 'bg-green-100 text-green-800'
+                         }`}>
+                           {product.type === 'production' ? 'Production' : 'Supply'}
+                         </span>
+                         
+                         {product.is_ctkz && (
+                           <span className="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800 flex items-center gap-1">
+                             <Badge className="h-3 w-3" />
+                             CT-KZ
+                           </span>
+                         )}
+                         
+                         <span className={`px-2 py-1 rounded text-xs ${
+                           product.is_featured 
+                             ? 'bg-blue-100 text-blue-800' 
+                             : 'bg-gray-100 text-gray-800'
+                         }`}>
+                           {product.is_featured ? 'Featured' : 'Regular'}
+                         </span>
+                         
+                         {product.tags && product.tags.length > 0 && (
+                           <span className="px-2 py-1 rounded text-xs bg-slate-100 text-slate-800">
+                             {product.tags.length} tag{product.tags.length > 1 ? 's' : ''}
+                           </span>
+                         )}
+                       </div>
                     </div>
                     <div className="flex space-x-2">
                       <Button
@@ -499,7 +653,10 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
                             manufacturer: product.manufacturer || '',
                             specifications: product.specifications,
                             is_featured: product.is_featured,
-                            order: product.order
+                            order: product.order,
+                            type: product.type,
+                            is_ctkz: product.is_ctkz,
+                            tags: product.tags
                           });
                           setIsProductDialogOpen(true);
                         }}
