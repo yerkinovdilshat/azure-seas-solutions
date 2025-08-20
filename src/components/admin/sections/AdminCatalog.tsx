@@ -35,6 +35,7 @@ interface CatalogProduct {
   featured_image: string;
   gallery_images: string[];
   pdf_files: string[];
+  video_url?: string;
   category_id: string | null;
   sku: string;
   manufacturer: string;
@@ -82,6 +83,7 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
     featured_image: '',
     gallery_images: [] as string[],
     pdf_files: [] as string[],
+    video_url: '',
     category_id: null as string | null,
     sku: '',
     manufacturer: '',
@@ -266,6 +268,7 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
       featured_image: '',
       gallery_images: [],
       pdf_files: [],
+      video_url: '',
       category_id: null,
       sku: '',
       manufacturer: '',
@@ -648,6 +651,7 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
                             featured_image: product.featured_image || '',
                             gallery_images: product.gallery_images || [],
                             pdf_files: product.pdf_files || [],
+                            video_url: product.video_url || '',
                             category_id: product.category_id,
                             sku: product.sku || '',
                             manufacturer: product.manufacturer || '',

@@ -308,6 +308,16 @@ const AdminProjects = ({ locale }: AdminProjectsProps) => {
                 />
               </div>
 
+              <div>
+                <Label htmlFor="video_url">Video URL</Label>
+                <Input
+                  id="video_url"
+                  value={formData.video_url}
+                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                  placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="client_name">Client Name</Label>
