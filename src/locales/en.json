@@ -32,6 +32,47 @@
     "published": "Published",
     "draft": "Draft"
   },
+  "advantages": {
+    "title": "Why Choose Us",
+    "subtitle": "We deliver exceptional value through our proven expertise and commitment to excellence",
+    "reliability": {
+      "title": "Reliable Solutions",
+      "description": "Proven track record of delivering dependable marine and industrial services"
+    },
+    "efficiency": {
+      "title": "Time Efficiency", 
+      "description": "Fast turnaround times without compromising on quality standards"
+    },
+    "expertise": {
+      "title": "Expert Team",
+      "description": "Highly skilled professionals with extensive industry experience"
+    },
+    "quality": {
+      "title": "Quality Assurance",
+      "description": "European standard equipment and rigorous quality control processes"
+    }
+  },
+  "catalog": {
+    "title": "Product Categories",
+    "subtitle": "Comprehensive range of marine and industrial equipment from leading European manufacturers",
+    "viewAll": "View All Products"
+  },
+  "services": {
+    "title": "Our Services", 
+    "subtitle": "Complete range of marine and industrial services tailored to your needs",
+    "viewAll": "View All Services"
+  },
+  "projects": {
+    "title": "Completed Projects",
+    "subtitle": "Successful project implementations across Kazakhstan and the Caspian region",
+    "viewAll": "View All Projects"
+  },
+  "news": {
+    "title": "Latest News",
+    "subtitle": "Stay updated with industry insights and company announcements",
+    "viewAll": "View All News",
+    "noNews": "No news articles available"
+  },
   "hero": {
     "title": "Equipment Supply & Integrated Commissioning in Kazakhstan",
     "subtitle": "Reliable supplier of equipment and spares from leading European manufacturers. Full cycle — from supply to installation and commissioning.",
@@ -44,6 +85,42 @@
     "email": "info@marines.kz",
     "workingHours": "Mon-Fri: 9:00 - 18:00",
     "socialMedia": "Follow Us"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "getInTouch": "Get in Touch",
+    "name": "Name",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "namePlaceholder": "Your full name",
+    "phonePlaceholder": "+7 (xxx) xxx-xxxx",
+    "messagePlaceholder": "Tell us about your project or requirements...",
+    "address": "Address",
+    "workingHours": "Working Hours",
+    "email": "Email",
+    "form": {
+      "title": "Request Quote",
+      "subtitle": "Get in touch with us for any inquiries or project discussions",
+      "privacy": "Your information is secure and will only be used to respond to your inquiry"
+    },
+    "validation": {
+      "error": "Validation Error",
+      "nameRequired": "Name is required (minimum 2 characters)",
+      "phoneRequired": "Phone is required (minimum 5 characters)", 
+      "messageRequired": "Message is required (minimum 10 characters)"
+    },
+    "success": {
+      "title": "Message Sent!",
+      "description": "Thank you for your inquiry. We'll get back to you soon."
+    },
+    "error": {
+      "title": "Error",
+      "generic": "Failed to send message. Please try again.",
+      "rateLimited": "Too many requests. Please try again in 15 minutes.",
+      "validation": "Please check your input and try again."
+    }
   },
   "seo": {
     "home": {
