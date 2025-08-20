@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
@@ -8,6 +9,7 @@ import { Menu, X, ChevronDown, Globe } from 'lucide-react';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
+  const { tSafe } = useTranslationHelper();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -141,7 +143,7 @@ const Header = () => {
                               isActive(item.href) ? 'text-primary font-medium bg-accent/30' : 'text-foreground hover:text-primary'
                             }`}
                           >
-                            {t(item.labelKey)}
+                            {tSafe(item.labelKey, item.labelKey.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
                           </Link>
                         ))}
                       </div>
@@ -249,7 +251,7 @@ const Header = () => {
                             }`}
                             onClick={() => setIsMenuOpen(false)}
                           >
-                            {t(item.labelKey)}
+                            {tSafe(item.labelKey, item.labelKey.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
                           </Link>
                         ))}
                       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
+import { useContentResolver } from './useContentResolver';
 
 // Types for content items
 export type ServiceItem = {
@@ -183,19 +184,19 @@ const useContentList = <T>(
 
 // Specific hooks for each content type - single items
 export const useService = (slug: string) => {
-  return useContentItem<ServiceItem>('services', slug);
+  return useContentResolver<ServiceItem>('services', slug);
 };
 
 export const useProject = (slug: string) => {
-  return useContentItem<ProjectItem>('projects', slug);
+  return useContentResolver<ProjectItem>('projects', slug);
 };
 
 export const useNewsArticle = (slug: string) => {
-  return useContentItem<NewsItem>('news', slug);
+  return useContentResolver<NewsItem>('news', slug);
 };
 
 export const useCatalogProduct = (slug: string) => {
-  return useContentItem<CatalogItem>('catalog_products', slug);
+  return useContentResolver<CatalogItem>('catalog_products', slug);
 };
 
 // Specific hooks for content lists

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, showFallbackIndicator } = useTranslationHelper();
-  const { data: project, loading, error } = useProject(slug!);
+  const { data: project, loading, error, isTranslationFallback, translationNote } = useProject(slug!);
 
   if (loading) {
     return (
@@ -181,10 +181,10 @@ const ProjectDetail = () => {
               )}
               
               {/* Translation Notice */}
-              {showFallbackIndicator && (
+              {isTranslationFallback && translationNote && (
                 <div className="mt-12 p-4 bg-muted/50 rounded-lg border border-border/50">
                   <p className="text-sm text-muted-foreground text-center">
-                    {t('common.translationComingSoon')}
+                    {translationNote}
                   </p>
                 </div>
               )}
