@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Wrench, Settings, Hammer } from 'lucide-react';
-import { useFeaturedServices } from '@/hooks/useHomeData';
+import { useFeaturedServices } from '@/hooks/useServicesData';
 
 const ServicesSection: React.FC = () => {
   const { t } = useTranslation();
-  const { data: services, loading, error } = useFeaturedServices();
+  const { services, loading, error } = useFeaturedServices();
 
   if (loading) {
     return (
@@ -81,7 +81,7 @@ const ServicesSection: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {services.map((service: any) => {
+          {services.map((service) => {
             const IconComponent = getServiceIcon(service.icon_key);
             
             return (

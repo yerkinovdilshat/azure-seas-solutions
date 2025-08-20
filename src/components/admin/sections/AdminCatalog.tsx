@@ -14,6 +14,7 @@ import { Plus, Edit, Trash2, Copy, Package, FolderOpen, Badge } from 'lucide-rea
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import FileUpload from '@/components/admin/FileUpload';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 interface CatalogCategory {
   id: string;
@@ -469,7 +470,21 @@ const AdminCatalog = ({ locale }: AdminCatalogProps) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="video_url">Video URL</Label>
+                    <Label>Gallery Images</Label>
+                    <MultiImageUpload
+                      value={productFormData.gallery_images}
+                      onChange={(urls) => setProductFormData({ ...productFormData, gallery_images: urls })}
+                      bucket="images"
+                      folder="catalog/gallery"
+                      accept="image/*"
+                      allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                      maxImages={10}
+                      placeholder="Upload product gallery images"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Video URL</Label>
                     <Input
                       id="video_url"
                       value={productFormData.video_url}
