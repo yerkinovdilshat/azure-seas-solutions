@@ -39,7 +39,7 @@ export const useContentResolver = <T>(
 
   useEffect(() => {
     const fetchContent = async () => {
-      if (!slug) {
+      if (!slug || slug.trim() === '') {
         setError('No slug provided');
         setLoading(false);
         return;
