@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, showFallbackIndicator } = useTranslationHelper();
-  const { data: project, loading, error, isTranslationFallback, translationNote } = useProject(slug!);
+  const { data: project, loading, error, isTranslationFallback, translationNote } = useProject(slug || '');
 
   if (loading) {
     return (

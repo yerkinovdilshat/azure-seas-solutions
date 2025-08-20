@@ -11,6 +11,7 @@ import { Plus, Edit, Trash2, Eye, Copy } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import FileUpload from '@/components/admin/FileUpload';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 interface NewsItem {
   id: string;
@@ -280,6 +281,20 @@ const AdminNews = ({ locale }: AdminNewsProps) => {
                   folder="news"
                   accept="image/*"
                   allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                />
+              </div>
+
+              <div>
+                <Label>Gallery Images</Label>
+                <MultiImageUpload
+                  value={formData.gallery_images}
+                  onChange={(urls) => setFormData({ ...formData, gallery_images: urls })}
+                  bucket="images"
+                  folder="news/gallery"
+                  accept="image/*"
+                  allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                  maxImages={8}
+                  placeholder="Upload news gallery images"
                 />
               </div>
 

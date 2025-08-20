@@ -11,6 +11,7 @@ import { Plus, Edit, Trash2, Copy } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import FileUpload from '@/components/admin/FileUpload';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 interface Service {
   id: string;
@@ -277,6 +278,20 @@ const AdminServices = ({ locale }: AdminServicesProps) => {
                   folder="services"
                   accept="image/*"
                   allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                />
+              </div>
+
+              <div>
+                <Label>Gallery Images</Label>
+                <MultiImageUpload
+                  value={formData.gallery_images}
+                  onChange={(urls) => setFormData({ ...formData, gallery_images: urls })}
+                  bucket="images"
+                  folder="services/gallery"
+                  accept="image/*"
+                  allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                  maxImages={8}
+                  placeholder="Upload service gallery images"
                 />
               </div>
 

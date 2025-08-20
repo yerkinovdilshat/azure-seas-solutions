@@ -40,12 +40,12 @@ const AdvantagesSection: React.FC = () => {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('advantages.title')}
+            {t('advantages.title', 'Why Choose Us')}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t('advantages.subtitle')}
+            {t('advantages.subtitle', 'We deliver exceptional value through our proven expertise and commitment to excellence')}
           </p>
         </div>
 
@@ -66,11 +66,11 @@ const AdvantagesSection: React.FC = () => {
                 </div>
                 
                 <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {advantage.title_key ? t(advantage.title_key) : advantage.title}
+                  {advantage.title_key ? t(advantage.title_key, advantage.title) : advantage.title}
                 </h3>
                 
                 <p className="text-muted-foreground leading-relaxed">
-                  {advantage.description_key ? t(advantage.description_key) : advantage.description}
+                  {advantage.description_key ? t(advantage.description_key, advantage.description) : advantage.description}
                 </p>
               </div>
             );
