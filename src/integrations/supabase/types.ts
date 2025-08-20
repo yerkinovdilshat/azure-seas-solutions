@@ -316,6 +316,7 @@ export type Database = {
           featured_image: string | null
           gallery_images: string[] | null
           id: string
+          is_ctkz: boolean
           is_featured: boolean | null
           locale: string
           manufacturer: string | null
@@ -326,7 +327,9 @@ export type Database = {
           slug: string
           specifications: Json | null
           status: string | null
+          tags: string[] | null
           title: string
+          type: string
           updated_at: string
         }
         Insert: {
@@ -337,6 +340,7 @@ export type Database = {
           featured_image?: string | null
           gallery_images?: string[] | null
           id?: string
+          is_ctkz?: boolean
           is_featured?: boolean | null
           locale: string
           manufacturer?: string | null
@@ -347,7 +351,9 @@ export type Database = {
           slug: string
           specifications?: Json | null
           status?: string | null
+          tags?: string[] | null
           title: string
+          type?: string
           updated_at?: string
         }
         Update: {
@@ -358,6 +364,7 @@ export type Database = {
           featured_image?: string | null
           gallery_images?: string[] | null
           id?: string
+          is_ctkz?: boolean
           is_featured?: boolean | null
           locale?: string
           manufacturer?: string | null
@@ -368,7 +375,9 @@ export type Database = {
           slug?: string
           specifications?: Json | null
           status?: string | null
+          tags?: string[] | null
           title?: string
+          type?: string
           updated_at?: string
         }
         Relationships: [
