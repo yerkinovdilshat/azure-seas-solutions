@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTranslationHelper } from '@/hooks/useTranslationHelper';
+import { useServicesData } from '@/hooks/useServicesData';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown, Globe } from 'lucide-react';
@@ -12,18 +13,19 @@ const Header = () => {
   const { tSafe } = useTranslationHelper();
   const location = useLocation();
   const navigate = useNavigate();
+  const { services } = useServicesData();
 
+  // Create navigation links with dynamic services
   const navigationLinks = [
     { href: '/', labelKey: 'navigation.home' },
     { href: '/about', labelKey: 'navigation.about' },
     { 
       labelKey: 'navigation.services',
       href: '/services',
-      dropdown: [
-        { href: '/services/civil-maintenance', labelKey: 'services.civilMaintenance' },
-        { href: '/services/steel-fabrication', labelKey: 'services.steelFabrication' },
-        { href: '/services/hydraulic-workshop', labelKey: 'services.hydraulicWorkshop' },
-      ]
+      dropdown: services.map(service => ({
+        href: `/services/${service.slug}`,
+        label: service.title
+      }))
     },
     { 
       labelKey: 'navigation.catalog',
@@ -143,7 +145,7 @@ const Header = () => {
                               isActive(item.href) ? 'text-primary font-medium bg-accent/30' : 'text-foreground hover:text-primary'
                             }`}
                           >
-                            {tSafe(item.labelKey, item.labelKey.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
+                            {item.label || tSafe(item.labelKey, item.labelKey?.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
                           </Link>
                         ))}
                       </div>
@@ -251,7 +253,7 @@ const Header = () => {
                             }`}
                             onClick={() => setIsMenuOpen(false)}
                           >
-                            {tSafe(item.labelKey, item.labelKey.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
+                            {item.label || tSafe(item.labelKey, item.labelKey?.split('.').pop()?.replace(/([A-Z])/g, ' $1') || 'Service')}
                           </Link>
                         ))}
                       </div>
