@@ -10,6 +10,7 @@ const useFeaturedContent = <T>(
   filters: Record<string, any> = {}
 ) => {
   const { i18n } = useTranslation();
+  console.log('🌐 useFeaturedContent called for table:', table, 'with locale:', i18n.language);
   const preview = usePreviewMode();
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,7 @@ const useFeaturedContent = <T>(
     const fetchContent = async () => {
       setLoading(true);
       setError(null);
+      console.log('🔄 Fetching data for table:', table, 'locale:', i18n.language, 'filters:', filters);
 
       try {
         // First get featured items
@@ -44,10 +46,42 @@ const useFeaturedContent = <T>(
                                    .order('created_at', { ascending: false });
 
         const { data: featuredData, error: featuredError } = await featuredQuery;
+        console.log('📊 Featured data result for', table, ':', { count: featuredData?.length || 0, error: featuredError });
 
         if (featuredError) throw featuredError;
 
         let finalData = featuredData || [];
+        
+        // If no data found and not English, try English fallback
+        if (finalData.length === 0 && i18n.language !== 'en') {
+          console.log('🔄 No data found for', i18n.language, 'trying English fallback...');
+          
+          let fallbackQuery = (supabase as any)
+            .from(table)
+            .select('*')
+            .eq('locale', 'en')
+            .eq('is_featured', true);
+
+          Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              fallbackQuery = fallbackQuery.eq(key, value);
+            }
+          });
+
+          if (!preview) {
+            fallbackQuery = fallbackQuery.eq('status', 'published');
+          }
+
+          fallbackQuery = fallbackQuery.order('order', { ascending: true })
+                                     .order('created_at', { ascending: false });
+
+          const { data: fallbackFeaturedData, error: fallbackFeaturedError } = await fallbackQuery;
+          console.log('📊 English fallback featured result:', { count: fallbackFeaturedData?.length || 0, error: fallbackFeaturedError });
+          
+          if (!fallbackFeaturedError && fallbackFeaturedData) {
+            finalData = fallbackFeaturedData;
+          }
+        }
 
         // If we need more items, get latest non-featured ones
         if (finalData.length < limit) {
@@ -81,14 +115,47 @@ const useFeaturedContent = <T>(
                                   .limit(remainingCount);
 
           const { data: latestData, error: latestError } = await latestQuery;
+          console.log('📊 Latest data result for', table, ':', { count: latestData?.length || 0, error: latestError });
 
           if (latestError) throw latestError;
 
           finalData = [...finalData, ...(latestData || [])];
+          
+          // If still no data and not English, try English fallback for latest
+          if (finalData.length === 0 && i18n.language !== 'en') {
+            console.log('🔄 No latest data found for', i18n.language, 'trying English fallback...');
+            
+            let fallbackLatestQuery = (supabase as any)
+              .from(table)
+              .select('*')
+              .eq('locale', 'en');
+
+            Object.entries(filters).forEach(([key, value]) => {
+              if (value !== undefined && value !== null) {
+                fallbackLatestQuery = fallbackLatestQuery.eq(key, value);
+              }
+            });
+
+            if (!preview) {
+              fallbackLatestQuery = fallbackLatestQuery.eq('status', 'published');
+            }
+
+            fallbackLatestQuery = fallbackLatestQuery.order('published_at', { ascending: false })
+                                              .order('created_at', { ascending: false })
+                                              .limit(limit);
+
+            const { data: fallbackLatestData, error: fallbackLatestError } = await fallbackLatestQuery;
+            console.log('📊 English fallback latest result:', { count: fallbackLatestData?.length || 0, error: fallbackLatestError });
+            
+            if (!fallbackLatestError && fallbackLatestData) {
+              finalData = fallbackLatestData;
+            }
+          }
         }
 
         // Ensure we don't exceed the limit
         finalData = finalData.slice(0, limit);
+        console.log('✅ Final data for', table, ':', { count: finalData.length, locale: i18n.language });
 
         setData(finalData);
       } catch (err: any) {

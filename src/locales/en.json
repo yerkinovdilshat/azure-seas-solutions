@@ -135,10 +135,11 @@
     },
     "issuer": "Issued by"
   },
-  "contact": {
+  "contacts": {
     "form": {
       "title": "Get in Touch",
-      "subtitle": "Ready to discuss your project? Contact us today for a consultation."
+      "subtitle": "Ready to discuss your project? Contact us today for a consultation.",
+      "privacy": "Your information will be handled according to our privacy policy."
     },
     "name": "Full Name",
     "phone": "Phone Number", 
@@ -147,13 +148,30 @@
     "phonePlaceholder": "Enter your phone number",
     "messagePlaceholder": "Tell us about your project or inquiry...",
     "submit": "Send Message",
+    "sending": "Sending...",
     "getInTouch": "Get in Touch",
     "address": "Address",
     "phone": "Phone",
     "email": "Email",
     "workingHours": "Working Hours",
     "location": "Location",
-    "viewOnMap": "View on Map"
+    "viewOnMap": "View on Map",
+    "validation": {
+      "nameRequired": "Name is required",
+      "phoneRequired": "Phone is required",
+      "messageRequired": "Message is required",
+      "error": "Validation Error"
+    },
+    "success": {
+      "title": "Message Sent",
+      "description": "Thank you for your message. We will get back to you soon."
+    },
+    "error": {
+      "title": "Error",
+      "generic": "Something went wrong. Please try again.",
+      "rateLimited": "Too many requests. Please try again later.",
+      "validation": "Please check your input and try again."
+    }
   },
   "catalog": {
     "title": "Product Categories",

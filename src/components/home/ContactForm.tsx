@@ -16,7 +16,7 @@ interface ContactFormData {
 }
 
 const ContactForm: React.FC = () => {
-  const { t, showFallbackIndicator } = useTranslationHelper();
+  const { tSafe, isUsingFallback } = useTranslationHelper();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<ContactFormData>({
@@ -40,15 +40,15 @@ const ContactForm: React.FC = () => {
     const errors: string[] = [];
 
     if (!formData.name.trim() || formData.name.trim().length < 2) {
-      errors.push(t('contact.validation.nameRequired'));
+      errors.push(tSafe('contacts.validation.nameRequired', 'Name is required'));
     }
 
     if (!formData.phone.trim() || formData.phone.trim().length < 5) {
-      errors.push(t('contact.validation.phoneRequired'));
+      errors.push(tSafe('contacts.validation.phoneRequired', 'Phone is required'));
     }
 
     if (!formData.message.trim() || formData.message.trim().length < 10) {
-      errors.push(t('contact.validation.messageRequired'));
+      errors.push(tSafe('contacts.validation.messageRequired', 'Message is required'));
     }
 
     // Check honeypot
@@ -65,7 +65,7 @@ const ContactForm: React.FC = () => {
     const validation = validateForm();
     if (!validation.valid) {
       toast({
-        title: t('contact.validation.error'),
+        title: tSafe('contacts.validation.error', 'Validation Error'),
         description: validation.errors.join(', '),
         variant: 'destructive'
       });
@@ -86,8 +86,8 @@ const ContactForm: React.FC = () => {
 
       if (data.success) {
         toast({
-          title: t('contact.success.title'),
-          description: t('contact.success.description')
+          title: tSafe('contacts.success.title', 'Message Sent'),
+          description: tSafe('contacts.success.description', 'Thank you for your message. We will get back to you soon.')
         });
 
         // Reset form
@@ -104,16 +104,16 @@ const ContactForm: React.FC = () => {
     } catch (error: any) {
       console.error('Contact form error:', error);
       
-      let errorMessage = t('contact.error.generic');
+      let errorMessage = tSafe('contacts.error.generic', 'Something went wrong. Please try again.');
       
       if (error.message?.includes('Too many requests')) {
-        errorMessage = t('contact.error.rateLimited');
+        errorMessage = tSafe('contacts.error.rateLimited', 'Too many requests. Please try again later.');
       } else if (error.message?.includes('Validation failed')) {
-        errorMessage = t('contact.error.validation');
+        errorMessage = tSafe('contacts.error.validation', 'Please check your input and try again.');
       }
 
       toast({
-        title: t('contact.error.title'),
+        title: tSafe('contacts.error.title', 'Error'),
         description: errorMessage,
         variant: 'destructive'
       });
@@ -126,15 +126,15 @@ const ContactForm: React.FC = () => {
     <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-foreground mb-2">
-          {t('contact.form.title', 'Get in Touch')}
+          {tSafe('contacts.form.title', 'Get in Touch')}
         </h3>
-        {showFallbackIndicator && (
+        {isUsingFallback('contacts.form.title') && (
           <p className="text-xs text-muted-foreground/70 italic mb-2">
-            {t('common.translationComingSoon', 'Translation coming soon')}
+            {tSafe('common.translationComingSoon', 'Translation coming soon')}
           </p>
         )}
         <p className="text-muted-foreground">
-          {t('contact.form.subtitle', 'Ready to discuss your project? Contact us today for a consultation.')}
+          {tSafe('contacts.form.subtitle', 'Ready to discuss your project? Contact us today for a consultation.')}
         </p>
       </div>
 
@@ -152,7 +152,7 @@ const ContactForm: React.FC = () => {
 
         <div className="space-y-2">
           <Label htmlFor="name" className="text-sm font-medium">
-            {t('contact.name')} *
+            {tSafe('contacts.name', 'Full Name')} *
           </Label>
           <Input
             id="name"
@@ -160,7 +160,7 @@ const ContactForm: React.FC = () => {
             type="text"
             value={formData.name}
             onChange={handleInputChange}
-            placeholder={t('contact.namePlaceholder')}
+            placeholder={tSafe('contacts.namePlaceholder', 'Enter your full name')}
             disabled={loading}
             className="w-full"
             maxLength={100}
@@ -170,7 +170,7 @@ const ContactForm: React.FC = () => {
 
         <div className="space-y-2">
           <Label htmlFor="phone" className="text-sm font-medium">
-            {t('contact.phone')} *
+            {tSafe('contacts.phone', 'Phone Number')} *
           </Label>
           <Input
             id="phone"
@@ -178,7 +178,7 @@ const ContactForm: React.FC = () => {
             type="tel"
             value={formData.phone}
             onChange={handleInputChange}
-            placeholder={t('contact.phonePlaceholder')}
+            placeholder={tSafe('contacts.phonePlaceholder', 'Enter your phone number')}
             disabled={loading}
             className="w-full"
             maxLength={20}
@@ -188,14 +188,14 @@ const ContactForm: React.FC = () => {
 
         <div className="space-y-2">
           <Label htmlFor="message" className="text-sm font-medium">
-            {t('contact.message')} *
+            {tSafe('contacts.message', 'Message')} *
           </Label>
           <Textarea
             id="message"
             name="message"
             value={formData.message}
             onChange={handleInputChange}
-            placeholder={t('contact.messagePlaceholder')}
+            placeholder={tSafe('contacts.messagePlaceholder', 'Tell us about your project or inquiry...')}
             disabled={loading}
             className="w-full min-h-[120px]"
             maxLength={1000}
@@ -212,18 +212,18 @@ const ContactForm: React.FC = () => {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('contact.sending')}
+              {tSafe('contacts.sending', 'Sending...')}
             </>
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              {t('contact.submit', 'Send Message')}
+              {tSafe('contacts.submit', 'Send Message')}
             </>
           )}
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          {t('contact.form.privacy', 'Your information will be handled according to our privacy policy.')}
+          {tSafe('contacts.form.privacy', 'Your information will be handled according to our privacy policy.')}
         </p>
       </form>
     </div>

@@ -249,6 +249,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
             folder="team"
             accept="image/*"
             allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
+            maxSize={5}
             placeholder="Upload team member photo"
           />
         </div>
@@ -265,7 +266,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.name || !formData.role || !formData.bio}
+            disabled={!formData.name || !formData.role}
           >
             Save Team Member
           </Button>

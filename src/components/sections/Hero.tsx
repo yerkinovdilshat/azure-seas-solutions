@@ -2,20 +2,21 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Quote } from 'lucide-react';
-import heroImage from '@/assets/hero-marine.jpg';
+import heroImage from '@/assets/hero-industrial.jpg';
 
 const Hero = () => {
   const { t } = useTranslation();
 
   return (
-    <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <picture>
+        <source srcSet={heroImage} type="image/jpeg" />
+        <img 
+          src={heroImage} 
+          alt="Modern industrial facility with advanced equipment and technology"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </picture>
       {/* Subtle bottom gradient only */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
       

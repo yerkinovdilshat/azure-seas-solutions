@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import ContactForm from '@/components/home/ContactForm';
@@ -7,17 +7,17 @@ import { useContacts } from '@/hooks/useContent';
 import { MapPin, Phone, Mail, Clock, ExternalLink } from 'lucide-react';
 
 const Contacts = () => {
-  const { t, i18n } = useTranslation();
+  const { tSafe, isUsingFallback } = useTranslationHelper();
   const { data: contacts, loading, error } = useContacts();
 
   if (loading) {
     return (
       <Layout>
-        <SEO 
-          title={t('seo.contacts.title')}
-          description={t('seo.contacts.description')}
-          canonical="/contacts"
-        />
+      <SEO 
+        title={tSafe('seo.contacts.title', 'Contact Marine Support Services - Aktau Kazakhstan')}
+        description={tSafe('seo.contacts.description', 'Get in touch with Marine Support Services for marine and industrial equipment needs in Kazakhstan.')}
+        canonical="/contacts"
+      />
         
         <section className="py-20">
           <div className="container mx-auto px-4">
@@ -61,8 +61,8 @@ const Contacts = () => {
   return (
     <Layout>
       <SEO 
-        title={t('seo.contacts.title')}
-        description={t('seo.contacts.description')}
+        title={tSafe('seo.contacts.title', 'Contact Marine Support Services - Aktau Kazakhstan')}
+        description={tSafe('seo.contacts.description', 'Get in touch with Marine Support Services for marine and industrial equipment needs in Kazakhstan.')}
         canonical="/contacts"
       />
       
@@ -70,22 +70,22 @@ const Contacts = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-8 text-primary text-center">
-              {t('navigation.contacts')}
+              {tSafe('navigation.contacts', 'Contacts')}
             </h1>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               
               {/* Contact Information */}
               <div className="space-y-8">
-                <h2 className="text-2xl font-semibold text-primary">{t('contacts.getInTouch')}</h2>
+                <h2 className="text-2xl font-semibold text-primary">{tSafe('contacts.getInTouch', 'Get in Touch')}</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
                     <MapPin className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-foreground">{t('contacts.address')}</h3>
+                      <h3 className="font-semibold text-foreground">{tSafe('contacts.address', 'Address')}</h3>
                       <p className="text-muted-foreground">
-                        {contacts?.address || t('footer.address')}
+                        {contacts?.address || tSafe('footer.address', 'Aktau, Kazakhstan')}
                       </p>
                     </div>
                   </div>
@@ -93,9 +93,9 @@ const Contacts = () => {
                   <div className="flex items-start space-x-4">
                     <Phone className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-foreground">{t('contacts.phone')}</h3>
+                      <h3 className="font-semibold text-foreground">{tSafe('contacts.phone', 'Phone')}</h3>
                       <p className="text-muted-foreground">
-                        {contacts?.phone || t('footer.phone')}
+                        {contacts?.phone || tSafe('footer.phone', '+7 (7292) xxx-xxx')}
                       </p>
                     </div>
                   </div>
@@ -103,9 +103,9 @@ const Contacts = () => {
                   <div className="flex items-start space-x-4">
                     <Mail className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-foreground">{t('contacts.email')}</h3>
+                      <h3 className="font-semibold text-foreground">{tSafe('contacts.email', 'Email')}</h3>
                       <p className="text-muted-foreground">
-                        {contacts?.email || t('footer.email')}
+                        {contacts?.email || tSafe('footer.email', 'info@marines.kz')}
                       </p>
                     </div>
                   </div>
@@ -113,9 +113,9 @@ const Contacts = () => {
                   <div className="flex items-start space-x-4">
                     <Clock className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-foreground">{t('contacts.workingHours')}</h3>
+                      <h3 className="font-semibold text-foreground">{tSafe('contacts.workingHours', 'Working Hours')}</h3>
                       <p className="text-muted-foreground">
-                        {contacts?.working_hours || t('footer.workingHours')}
+                        {contacts?.working_hours || tSafe('footer.workingHours', 'Mon-Fri: 9:00 - 18:00')}
                       </p>
                     </div>
                   </div>
@@ -124,14 +124,14 @@ const Contacts = () => {
                     <div className="flex items-start space-x-4">
                       <MapPin className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
                       <div>
-                        <h3 className="font-semibold text-foreground">{t('contacts.location')}</h3>
+                        <h3 className="font-semibold text-foreground">{tSafe('contacts.location', 'Location')}</h3>
                         <a
                           href={contacts.map_link}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary hover:underline flex items-center"
                         >
-                          {t('contacts.viewOnMap')}
+                          {tSafe('contacts.viewOnMap', 'View on Map')}
                           <ExternalLink className="h-4 w-4 ml-1" />
                         </a>
                       </div>
@@ -146,13 +146,13 @@ const Contacts = () => {
             
             {error && (
               <div className="mt-8 text-center">
-                <p className="text-muted-foreground">{t('common.error')}</p>
+                <p className="text-muted-foreground">{tSafe('common.error', 'Something went wrong. Please try again.')}</p>
               </div>
             )}
             
-            {i18n.language !== 'en' && contacts && (
+            {isUsingFallback('contacts.getInTouch') && (
               <p className="text-xs text-muted-foreground text-center mt-8 italic">
-                {t('common.translationNote')}
+                {tSafe('common.translationComingSoon', 'Translation coming soon')}
               </p>
             )}
           </div>

@@ -4,6 +4,7 @@ interface TranslationHelperResult {
   t: (key: string, fallback?: string) => string;
   tSafe: (key: string, fallback: string) => string;
   showFallbackIndicator: boolean;
+  isUsingFallback: (key: string) => boolean;
 }
 
 export const useTranslationHelper = (): TranslationHelperResult => {
@@ -61,9 +62,14 @@ export const useTranslationHelper = (): TranslationHelperResult => {
     }
   };
 
+  const isUsingFallback = (key: string): boolean => {
+    return showFallbackIndicator(key);
+  };
+
   return { 
     t, 
     tSafe, 
-    showFallbackIndicator: !isDefaultLanguage 
+    showFallbackIndicator: !isDefaultLanguage,
+    isUsingFallback
   };
 };
