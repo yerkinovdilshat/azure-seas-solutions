@@ -62,6 +62,22 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
 
   const handleSave = async (memberData: TeamData) => {
     console.log('💾 Saving team member:', memberData);
+    
+    // Prevent if required fields are missing
+    if (!memberData.name || !memberData.role || !memberData.photo) {
+      console.error('❌ Missing required fields:', { 
+        name: memberData.name, 
+        role: memberData.role, 
+        photo: memberData.photo 
+      });
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in name, role, and upload a photo.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const payload = {
         locale,
@@ -75,20 +91,29 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
       console.log('📤 Saving payload:', payload);
 
       if (memberData.id) {
+        console.log('🔄 Updating existing member...');
         const { error } = await supabase
           .from('about_team')
           .update(payload)
           .eq('id', memberData.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Update error:', error);
+          throw error;
+        }
         console.log('✅ Team member updated successfully');
       } else {
-        const { error } = await supabase
+        console.log('➕ Creating new member...');
+        const { error, data } = await supabase
           .from('about_team')
-          .insert([payload]);
+          .insert([payload])
+          .select();
 
-        if (error) throw error;
-        console.log('✅ Team member created successfully');
+        if (error) {
+          console.error('❌ Insert error:', error);
+          throw error;
+        }
+        console.log('✅ Team member created successfully:', data);
       }
 
       toast({
@@ -96,14 +121,14 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         description: "Team member has been saved successfully.",
       });
 
-      fetchTeam();
+      await fetchTeam();
       setDialogOpen(false);
       setEditingMember(null);
     } catch (error: any) {
       console.error('❌ Error saving team member:', error);
       toast({
         title: "Error saving team member",
-        description: error.message,
+        description: error.message || "Failed to save team member",
         variant: "destructive",
       });
     }
@@ -254,8 +279,13 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          console.log('🔥 Form submitted with data:', formData);
+          handleSave(formData);
+        }} className="flex justify-end space-x-2">
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setDialogOpen(false);
@@ -265,12 +295,12 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
             Cancel
           </Button>
           <Button
-            onClick={() => handleSave(formData)}
+            type="submit"
             disabled={!formData.name || !formData.role || !formData.photo}
           >
             Save Team Member
           </Button>
-        </div>
+        </form>
       </div>
     );
   };
