@@ -219,8 +219,15 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
       }
     );
 
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('🔥 Form submitted with data:', formData);
+      await handleSave(formData);
+    };
+
     return (
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
@@ -229,6 +236,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Alexey Petrov"
+              required
             />
           </div>
 
@@ -239,6 +247,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
               value={formData.role}
               onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
               placeholder="General Director"
+              required
             />
           </div>
         </div>
@@ -266,10 +275,13 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label>Photo</Label>
+          <Label>Photo *</Label>
           <FileUpload
             value={formData.photo}
-            onChange={(url) => setFormData(prev => ({ ...prev, photo: url }))}
+            onChange={(url) => {
+              console.log('📸 Photo URL received in form:', url);
+              setFormData(prev => ({ ...prev, photo: url }));
+            }}
             bucket="images"
             folder="team"
             accept="image/*"
@@ -279,15 +291,12 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           />
         </div>
 
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          console.log('🔥 Form submitted with data:', formData);
-          handleSave(formData);
-        }} className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2 pt-4">
           <Button
             type="button"
             variant="outline"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               setDialogOpen(false);
               setEditingMember(null);
             }}
@@ -300,8 +309,8 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           >
             Save Team Member
           </Button>
-        </form>
-      </div>
+        </div>
+      </form>
     );
   };
 
@@ -330,13 +339,15 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
                   Add Team Member
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-2xl" onPointerDownOutside={(e) => e.preventDefault()}>
                 <DialogHeader>
                   <DialogTitle>
                     {editingMember ? 'Edit Team Member' : 'Add New Team Member'}
                   </DialogTitle>
                 </DialogHeader>
-                <TeamForm member={editingMember} />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <TeamForm member={editingMember} />
+                </div>
               </DialogContent>
             </Dialog>
           </div>
