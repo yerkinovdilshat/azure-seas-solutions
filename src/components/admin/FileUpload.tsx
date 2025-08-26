@@ -36,13 +36,19 @@ const FileUpload = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    console.log('📸 FileUpload: File selected:', file.name, file.type, file.size);
+
     // Show preview for images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
-      reader.onload = () => setPreview(reader.result as string);
+      reader.onload = () => {
+        console.log('📸 FileUpload: Preview set');
+        setPreview(reader.result as string);
+      };
       reader.readAsDataURL(file);
     }
 
+    console.log('📤 FileUpload: Starting upload...');
     const url = await uploadFile(file, {
       bucket,
       folder,
@@ -50,8 +56,11 @@ const FileUpload = ({
       maxSize
     });
 
+    console.log('📸 FileUpload: Upload result:', url);
     if (url) {
+      console.log('✅ FileUpload: Calling onChange with URL:', url);
       onChange(url);
+      setPreview(null); // Clear preview since we now have the actual URL
     }
 
     // Reset input
@@ -82,18 +91,24 @@ const FileUpload = ({
         disabled={uploading}
       />
 
-      {value ? (
+      {(value || preview) ? (
         <div className="space-y-2">
           {/* Preview */}
           <div className="border border-border rounded-lg p-4">
-            {isImage ? (
+            {(isImage || preview) ? (
               <div className="flex flex-col items-center space-y-2">
                 <img 
                   src={preview || value} 
                   alt="Preview" 
                   className="max-w-full max-h-48 object-contain rounded"
+                  onError={(e) => {
+                    console.error('❌ FileUpload: Image failed to load:', preview || value);
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
-                <p className="text-sm text-muted-foreground">Image file</p>
+                <p className="text-sm text-muted-foreground">
+                  {preview ? 'Uploading...' : 'Image file'}
+                </p>
               </div>
             ) : isPDF ? (
               <div className="flex items-center space-x-2">

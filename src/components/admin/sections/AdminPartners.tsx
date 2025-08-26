@@ -182,7 +182,7 @@ const AdminPartners = () => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.name}
+            disabled={!formData.name || !formData.logo}
           >
             Save Partner
           </Button>

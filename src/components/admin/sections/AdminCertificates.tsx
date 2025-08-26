@@ -269,7 +269,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.title || !formData.issuer || !formData.date}
+            disabled={!formData.title || !formData.issuer || !formData.date || !formData.image_url}
           >
             Save Certificate
           </Button>

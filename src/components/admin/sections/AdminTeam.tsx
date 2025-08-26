@@ -266,7 +266,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.name || !formData.role}
+            disabled={!formData.name || !formData.role || !formData.photo}
           >
             Save Team Member
           </Button>
