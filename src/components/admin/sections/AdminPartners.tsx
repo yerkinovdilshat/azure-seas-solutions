@@ -127,7 +127,7 @@ const AdminPartners = () => {
   };
 
   const PartnerForm = ({ partner }: { partner: PartnerData | null }) => {
-    const [formData, setFormData] = useState<PartnerData>(
+    const [formData, setFormData] = useState<PartnerData>(() =>
       partner || {
         name: '',
         logo: null,
@@ -183,8 +183,9 @@ const AdminPartners = () => {
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setDialogOpen(false);
@@ -194,12 +195,12 @@ const AdminPartners = () => {
             Cancel
           </Button>
           <Button
-            onClick={() => handleSave(formData)}
+            type="submit"
             disabled={!formData.name}
           >
             Save Partner
           </Button>
-        </div>
+        </form>
       </div>
     );
   };

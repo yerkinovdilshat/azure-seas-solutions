@@ -188,7 +188,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
   };
 
   const CertificateForm = ({ cert }: { cert: CertificateData | null }) => {
-    const [formData, setFormData] = useState<CertificateData>(
+    const [formData, setFormData] = useState<CertificateData>(() => 
       cert || {
         title: '',
         issuer: '',
@@ -270,8 +270,9 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setDialogOpen(false);
@@ -281,12 +282,12 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
             Cancel
           </Button>
           <Button
-            onClick={() => handleSave(formData)}
+            type="submit"
             disabled={!formData.title}
           >
             Save Certificate
           </Button>
-        </div>
+        </form>
       </div>
     );
   };

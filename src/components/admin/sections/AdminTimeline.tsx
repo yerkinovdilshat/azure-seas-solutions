@@ -173,7 +173,7 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
   };
 
   const TimelineForm = ({ item }: { item: TimelineData | null }) => {
-    const [formData, setFormData] = useState<TimelineData>(
+    const [formData, setFormData] = useState<TimelineData>(() =>
       item || {
         year: new Date().getFullYear(),
         title: '',
@@ -244,8 +244,9 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setDialogOpen(false);
@@ -255,12 +256,12 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
             Cancel
           </Button>
           <Button
-            onClick={() => handleSave(formData)}
+            type="submit"
             disabled={!formData.title || !formData.description}
           >
             Save Timeline Item
           </Button>
-        </div>
+        </form>
       </div>
     );
   };

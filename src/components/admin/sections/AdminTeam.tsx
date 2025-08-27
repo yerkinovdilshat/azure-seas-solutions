@@ -219,7 +219,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
   };
 
   const TeamForm = ({ member }: { member: TeamData | null }) => {
-    const [formData, setFormData] = useState<TeamData>(
+    const [formData, setFormData] = useState<TeamData>(() => 
       member || {
         name: '',
         role: '',
@@ -285,7 +285,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label>Photo *</Label>
+          <Label>Photo</Label>
           <FileUpload
             value={formData.photo}
             onChange={(url) => {
