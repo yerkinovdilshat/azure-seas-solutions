@@ -49,13 +49,26 @@ const AdminPartners = () => {
   };
 
   const handleSave = async (partnerData: PartnerData) => {
+    console.log('💾 Saving partner:', partnerData);
+    
+    if (!partnerData.name) {
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in partner name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const payload = {
         name: partnerData.name,
         logo: partnerData.logo,
-        website_url: partnerData.website_url,
+        website_url: partnerData.website_url || '',
         order: partnerData.order,
       };
+      
+      console.log('📤 Saving partner payload:', payload);
 
       if (partnerData.id) {
         const { error } = await supabase
@@ -182,7 +195,7 @@ const AdminPartners = () => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.name || !formData.logo}
+            disabled={!formData.name}
           >
             Save Partner
           </Button>

@@ -63,8 +63,18 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
   const handleSave = async (memberData: TeamData) => {
     console.log('💾 Saving team member:', memberData);
     
+    // Enhanced validation logging
+    console.log('🔍 Validation check:', {
+      name: !!memberData.name,
+      role: !!memberData.role,
+      photo: !!memberData.photo,
+      nameValue: memberData.name,
+      roleValue: memberData.role,
+      photoValue: memberData.photo
+    });
+    
     // Prevent if required fields are missing
-    if (!memberData.name || !memberData.role || !memberData.photo) {
+    if (!memberData.name || !memberData.role) {
       console.error('❌ Missing required fields:', { 
         name: memberData.name, 
         role: memberData.role, 
@@ -72,7 +82,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
       });
       toast({
         title: "Missing required fields",
-        description: "Please fill in name, role, and upload a photo.",
+        description: "Please fill in name and role.",
         variant: "destructive",
       });
       return;
@@ -83,7 +93,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         locale,
         name: memberData.name,
         role: memberData.role,
-        bio: memberData.bio,
+        bio: memberData.bio || '',
         photo: memberData.photo,
         order: memberData.order,
       };
@@ -305,7 +315,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
           </Button>
           <Button
             type="submit"
-            disabled={!formData.name || !formData.role || !formData.photo}
+            disabled={!formData.name || !formData.role}
           >
             Save Team Member
           </Button>

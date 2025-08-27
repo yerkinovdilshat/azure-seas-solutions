@@ -56,16 +56,29 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
   };
 
   const handleSave = async (certData: CertificateData) => {
+    console.log('💾 Saving certificate:', certData);
+    
+    if (!certData.title) {
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in certificate title.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const payload = {
         locale,
         title: certData.title,
-        issuer: certData.issuer,
+        issuer: certData.issuer || '',
         date: certData.date,
         file_url: certData.file_url,
         image_url: certData.image_url,
         order: certData.order,
       };
+      
+      console.log('📤 Saving certificate payload:', payload);
 
       if (certData.id) {
         const { error } = await supabase
@@ -269,7 +282,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           </Button>
           <Button
             onClick={() => handleSave(formData)}
-            disabled={!formData.title || !formData.issuer || !formData.date || !formData.image_url}
+            disabled={!formData.title}
           >
             Save Certificate
           </Button>
