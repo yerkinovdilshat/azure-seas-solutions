@@ -64,9 +64,10 @@ const AdminPartners = () => {
     }
 
     try {
+      // Don't include blob URLs in payload - let saveWithUpload handle the upload
       const payload = {
         name: partnerData.name,
-        logo: partnerData.logo,
+        logo: partnerData.logo?.startsWith('blob:') ? null : partnerData.logo,
         website_url: partnerData.website_url || '',
         order: partnerData.order,
         ...(partnerData.id && { id: partnerData.id })
@@ -134,10 +135,11 @@ const AdminPartners = () => {
 
     const handleFileChange = (file: File | null) => {
       if (file) {
+        const previewUrl = URL.createObjectURL(file);
         setFormData(prev => ({ 
           ...prev, 
           logoFile: file,
-          logo: URL.createObjectURL(file)
+          logo: previewUrl // Preview URL, will be replaced with Storage URL
         }));
       }
     };

@@ -76,12 +76,13 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
     }
 
     try {
+      // Don't include blob URLs in payload - let saveWithUpload handle the upload
       const payload = {
         locale,
         name: memberData.name,
         role: memberData.role,
         bio: memberData.bio || '',
-        photo: memberData.photo,
+        photo: memberData.photo?.startsWith('blob:') ? null : memberData.photo,
         order: memberData.order,
         ...(memberData.id && { id: memberData.id })
       };
@@ -206,11 +207,12 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
 
     const handleFileChange = (file: File | null) => {
       if (file) {
-        // Store file for upload and create preview
+        // Store file for upload and create preview URL
+        const previewUrl = URL.createObjectURL(file);
         setFormData(prev => ({ 
           ...prev, 
           photoFile: file,
-          photo: URL.createObjectURL(file) // Preview URL
+          photo: previewUrl // This will be replaced with actual URL after upload
         }));
       }
     };

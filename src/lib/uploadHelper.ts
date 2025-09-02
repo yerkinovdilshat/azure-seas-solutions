@@ -6,7 +6,7 @@ export interface SaveWithUploadOptions {
   file?: File;
   bucket?: 'images' | 'docs';
   folder?: string;
-  urlField: string;
+  urlField: 'photo' | 'logo' | 'image_url' | 'file_url' | 'image';
 }
 
 /**
@@ -53,13 +53,14 @@ export const saveWithUpload = async (options: SaveWithUploadOptions) => {
 
       console.log('✅ File uploaded successfully:', uploadData);
 
-      // Get public URL
+      // Get public URL - use the returned path from upload
+      const actualPath = uploadData?.path || filePath;
       const { data: urlData } = supabase.storage
         .from(bucket)
-        .getPublicUrl(filePath);
+        .getPublicUrl(actualPath);
 
       if (!urlData.publicUrl) {
-        console.error('❌ Failed to get public URL');
+        console.error('❌ Failed to get public URL for path:', actualPath);
         throw new Error('Failed to get public URL after upload');
       }
 

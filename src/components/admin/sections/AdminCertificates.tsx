@@ -73,7 +73,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
 
     try {
       // First handle image upload if needed
-      let imageUrl = certData.image_url;
+      let imageUrl = certData.image_url?.startsWith('blob:') ? null : certData.image_url;
       if (certData.imageFile) {
         const payload = {
           locale,
@@ -81,7 +81,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           issuer: certData.issuer || '',
           date: certData.date,
           image_url: imageUrl,
-          file_url: certData.file_url,
+          file_url: certData.file_url?.startsWith('blob:') ? null : certData.file_url,
           order: certData.order,
           ...(certData.id && { id: certData.id })
         };
@@ -106,7 +106,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           issuer: certData.issuer || '',
           date: certData.date,
           image_url: imageUrl,
-          file_url: certData.file_url,
+          file_url: certData.file_url?.startsWith('blob:') ? null : certData.file_url,
           order: certData.order,
           ...(certData.id && { id: certData.id })
         };
@@ -127,7 +127,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
           issuer: certData.issuer || '',
           date: certData.date,
           image_url: imageUrl,
-          file_url: certData.file_url,
+          file_url: certData.file_url?.startsWith('blob:') ? null : certData.file_url,
           order: certData.order,
           ...(certData.id && { id: certData.id })
         };

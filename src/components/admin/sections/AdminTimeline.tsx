@@ -62,12 +62,13 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
 
   const handleSave = async (itemData: TimelineFormData) => {
     try {
+      // Don't include blob URLs in payload - let saveWithUpload handle the upload
       const payload = {
         year: itemData.year,
         locale,
         title: itemData.title,
         description: itemData.description,
-        image: itemData.image,
+        image: itemData.image?.startsWith('blob:') ? null : itemData.image,
         order: itemData.order,
         ...(itemData.id && { id: itemData.id })
       };
@@ -185,10 +186,11 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
 
     const handleFileChange = (file: File | null) => {
       if (file) {
+        const previewUrl = URL.createObjectURL(file);
         setFormData(prev => ({ 
           ...prev, 
           imageFile: file,
-          image: URL.createObjectURL(file)
+          image: previewUrl // Preview URL, will be replaced with Storage URL
         }));
       }
     };
