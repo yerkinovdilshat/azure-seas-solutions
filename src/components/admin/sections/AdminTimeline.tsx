@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from '@/components/admin/FileUpload';
 import { Plus, Edit, Trash2, GripVertical, Copy, Calendar } from 'lucide-react';
+import { saveWithUpload } from '@/lib/uploadHelper';
 
 interface AdminTimelineProps {
   locale: string;
@@ -21,6 +22,10 @@ interface TimelineData {
   description: string;
   image: string | null;
   order: number;
+}
+
+interface TimelineFormData extends TimelineData {
+  imageFile?: File;
 }
 
 const AdminTimeline = ({ locale }: AdminTimelineProps) => {
@@ -55,7 +60,7 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
     }
   };
 
-  const handleSave = async (itemData: TimelineData) => {
+  const handleSave = async (itemData: TimelineFormData) => {
     try {
       const payload = {
         year: itemData.year,
@@ -64,22 +69,17 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
         description: itemData.description,
         image: itemData.image,
         order: itemData.order,
+        ...(itemData.id && { id: itemData.id })
       };
 
-      if (itemData.id) {
-        const { error } = await supabase
-          .from('about_timeline')
-          .update(payload)
-          .eq('id', itemData.id);
-
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('about_timeline')
-          .insert([payload]);
-
-        if (error) throw error;
-      }
+      await saveWithUpload({
+        table: 'about_timeline',
+        data: payload,
+        file: itemData.imageFile,
+        bucket: 'images',
+        folder: 'timeline',
+        urlField: 'image'
+      });
 
       toast({
         title: "Timeline item saved",
@@ -173,7 +173,7 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
   };
 
   const TimelineForm = ({ item }: { item: TimelineData | null }) => {
-    const [formData, setFormData] = useState<TimelineData>(() =>
+    const [formData, setFormData] = useState<TimelineFormData>(() =>
       item || {
         year: new Date().getFullYear(),
         title: '',
@@ -182,6 +182,16 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
         order: timeline.length + 1,
       }
     );
+
+    const handleFileChange = (file: File | null) => {
+      if (file) {
+        setFormData(prev => ({ 
+          ...prev, 
+          imageFile: file,
+          image: URL.createObjectURL(file)
+        }));
+      }
+    };
 
     return (
       <div className="space-y-4">
@@ -233,15 +243,21 @@ const AdminTimeline = ({ locale }: AdminTimelineProps) => {
 
         <div className="space-y-2">
           <Label>Image (Optional)</Label>
-          <FileUpload
-            value={formData.image}
-            onChange={(url) => setFormData(prev => ({ ...prev, image: url }))}
-            bucket="images"
-            folder="timeline"
+          <input
+            type="file"
             accept="image/*"
-            allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
-            placeholder="Upload timeline image (optional)"
+            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
+          {formData.image && (
+            <div className="mt-2">
+              <img
+                src={formData.image}
+                alt="Preview"
+                className="w-20 h-20 object-cover rounded border"
+              />
+            </div>
+          )}
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">

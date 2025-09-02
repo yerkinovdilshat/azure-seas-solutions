@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from '@/components/admin/FileUpload';
 import { Plus, Edit, Trash2, GripVertical, ExternalLink, Building } from 'lucide-react';
+import { saveWithUpload } from '@/lib/uploadHelper';
 
 interface PartnerData {
   id?: string;
@@ -15,6 +16,10 @@ interface PartnerData {
   logo: string | null;
   website_url: string | null;
   order: number;
+}
+
+interface PartnerFormData extends PartnerData {
+  logoFile?: File;
 }
 
 const AdminPartners = () => {
@@ -48,9 +53,7 @@ const AdminPartners = () => {
     }
   };
 
-  const handleSave = async (partnerData: PartnerData) => {
-    console.log('💾 Saving partner:', partnerData);
-    
+  const handleSave = async (partnerData: PartnerFormData) => {
     if (!partnerData.name) {
       toast({
         title: "Missing required fields",
@@ -66,24 +69,17 @@ const AdminPartners = () => {
         logo: partnerData.logo,
         website_url: partnerData.website_url || '',
         order: partnerData.order,
+        ...(partnerData.id && { id: partnerData.id })
       };
-      
-      console.log('📤 Saving partner payload:', payload);
 
-      if (partnerData.id) {
-        const { error } = await supabase
-          .from('about_partners')
-          .update(payload)
-          .eq('id', partnerData.id);
-
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('about_partners')
-          .insert([payload]);
-
-        if (error) throw error;
-      }
+      await saveWithUpload({
+        table: 'about_partners',
+        data: payload,
+        file: partnerData.logoFile,
+        bucket: 'images',
+        folder: 'partners',
+        urlField: 'logo'
+      });
 
       toast({
         title: "Partner saved",
@@ -127,7 +123,7 @@ const AdminPartners = () => {
   };
 
   const PartnerForm = ({ partner }: { partner: PartnerData | null }) => {
-    const [formData, setFormData] = useState<PartnerData>(() =>
+    const [formData, setFormData] = useState<PartnerFormData>(() =>
       partner || {
         name: '',
         logo: null,
@@ -135,6 +131,16 @@ const AdminPartners = () => {
         order: partners.length + 1,
       }
     );
+
+    const handleFileChange = (file: File | null) => {
+      if (file) {
+        setFormData(prev => ({ 
+          ...prev, 
+          logoFile: file,
+          logo: URL.createObjectURL(file)
+        }));
+      }
+    };
 
     return (
       <div className="space-y-4">
@@ -172,15 +178,21 @@ const AdminPartners = () => {
 
         <div className="space-y-2">
           <Label>Logo</Label>
-          <FileUpload
-            value={formData.logo}
-            onChange={(url) => setFormData(prev => ({ ...prev, logo: url }))}
-            bucket="images"
-            folder="partners"
+          <input
+            type="file"
             accept="image/*"
-            allowedTypes={['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']}
-            placeholder="Upload partner logo"
+            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
+          {formData.logo && (
+            <div className="mt-2">
+              <img
+                src={formData.logo}
+                alt="Preview"
+                className="w-20 h-20 object-contain rounded border"
+              />
+            </div>
+          )}
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">

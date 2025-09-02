@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from '@/components/admin/FileUpload';
 import { Plus, Edit, Trash2, GripVertical, Copy, User } from 'lucide-react';
+import { saveWithUpload } from '@/lib/uploadHelper';
 
 interface AdminTeamProps {
   locale: string;
@@ -21,6 +22,10 @@ interface TeamData {
   bio: string;
   photo: string | null;
   order: number;
+}
+
+interface TeamFormData extends TeamData {
+  photoFile?: File;
 }
 
 const AdminTeam = ({ locale }: AdminTeamProps) => {
@@ -60,26 +65,8 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
     }
   };
 
-  const handleSave = async (memberData: TeamData) => {
-    console.log('💾 Saving team member:', memberData);
-    
-    // Enhanced validation logging
-    console.log('🔍 Validation check:', {
-      name: !!memberData.name,
-      role: !!memberData.role,
-      photo: !!memberData.photo,
-      nameValue: memberData.name,
-      roleValue: memberData.role,
-      photoValue: memberData.photo
-    });
-    
-    // Prevent if required fields are missing
+  const handleSave = async (memberData: TeamFormData) => {
     if (!memberData.name || !memberData.role) {
-      console.error('❌ Missing required fields:', { 
-        name: memberData.name, 
-        role: memberData.role, 
-        photo: memberData.photo 
-      });
       toast({
         title: "Missing required fields",
         description: "Please fill in name and role.",
@@ -96,35 +83,17 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
         bio: memberData.bio || '',
         photo: memberData.photo,
         order: memberData.order,
+        ...(memberData.id && { id: memberData.id })
       };
 
-      console.log('📤 Saving payload:', payload);
-
-      if (memberData.id) {
-        console.log('🔄 Updating existing member...');
-        const { error } = await supabase
-          .from('about_team')
-          .update(payload)
-          .eq('id', memberData.id);
-
-        if (error) {
-          console.error('❌ Update error:', error);
-          throw error;
-        }
-        console.log('✅ Team member updated successfully');
-      } else {
-        console.log('➕ Creating new member...');
-        const { error, data } = await supabase
-          .from('about_team')
-          .insert([payload])
-          .select();
-
-        if (error) {
-          console.error('❌ Insert error:', error);
-          throw error;
-        }
-        console.log('✅ Team member created successfully:', data);
-      }
+      await saveWithUpload({
+        table: 'about_team',
+        data: payload,
+        file: memberData.photoFile,
+        bucket: 'images',
+        folder: 'team',
+        urlField: 'photo'
+      });
 
       toast({
         title: "Team member saved",
@@ -219,7 +188,7 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
   };
 
   const TeamForm = ({ member }: { member: TeamData | null }) => {
-    const [formData, setFormData] = useState<TeamData>(() => 
+    const [formData, setFormData] = useState<TeamFormData>(() => 
       member || {
         name: '',
         role: '',
@@ -232,8 +201,18 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('🔥 Form submitted with data:', formData);
       await handleSave(formData);
+    };
+
+    const handleFileChange = (file: File | null) => {
+      if (file) {
+        // Store file for upload and create preview
+        setFormData(prev => ({ 
+          ...prev, 
+          photoFile: file,
+          photo: URL.createObjectURL(file) // Preview URL
+        }));
+      }
     };
 
     return (
@@ -286,19 +265,21 @@ const AdminTeam = ({ locale }: AdminTeamProps) => {
 
         <div className="space-y-2">
           <Label>Photo</Label>
-          <FileUpload
-            value={formData.photo}
-            onChange={(url) => {
-              console.log('📸 Photo URL received in form:', url);
-              setFormData(prev => ({ ...prev, photo: url }));
-            }}
-            bucket="images"
-            folder="team"
+          <input
+            type="file"
             accept="image/*"
-            allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
-            maxSize={5}
-            placeholder="Upload team member photo"
+            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
+          {formData.photo && (
+            <div className="mt-2">
+              <img
+                src={formData.photo}
+                alt="Preview"
+                className="w-20 h-20 object-cover rounded-full border"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end space-x-2 pt-4">

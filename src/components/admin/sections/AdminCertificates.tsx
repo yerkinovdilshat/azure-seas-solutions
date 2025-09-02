@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from '@/components/admin/FileUpload';
 import { Plus, Edit, Trash2, GripVertical, Copy, Award, Download, Eye } from 'lucide-react';
+import { saveWithUpload } from '@/lib/uploadHelper';
 
 interface AdminCertificatesProps {
   locale: string;
@@ -21,6 +22,11 @@ interface CertificateData {
   file_url: string | null;
   image_url: string | null;
   order: number;
+}
+
+interface CertificateFormData extends CertificateData {
+  imageFile?: File;
+  pdfFile?: File;
 }
 
 const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
@@ -55,9 +61,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
     }
   };
 
-  const handleSave = async (certData: CertificateData) => {
-    console.log('💾 Saving certificate:', certData);
-    
+  const handleSave = async (certData: CertificateFormData) => {
     if (!certData.title) {
       toast({
         title: "Missing required fields",
@@ -68,29 +72,69 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
     }
 
     try {
-      const payload = {
-        locale,
-        title: certData.title,
-        issuer: certData.issuer || '',
-        date: certData.date,
-        file_url: certData.file_url,
-        image_url: certData.image_url,
-        order: certData.order,
-      };
-      
-      console.log('📤 Saving certificate payload:', payload);
+      // First handle image upload if needed
+      let imageUrl = certData.image_url;
+      if (certData.imageFile) {
+        const payload = {
+          locale,
+          title: certData.title,
+          issuer: certData.issuer || '',
+          date: certData.date,
+          image_url: imageUrl,
+          file_url: certData.file_url,
+          order: certData.order,
+          ...(certData.id && { id: certData.id })
+        };
 
-      if (certData.id) {
+        const result = await saveWithUpload({
+          table: 'about_certificates',
+          data: payload,
+          file: certData.imageFile,
+          bucket: 'images',
+          folder: 'certificates',
+          urlField: 'image_url'
+        });
+        
+        imageUrl = (result as any).image_url;
+      }
+
+      // Then handle PDF upload if needed
+      if (certData.pdfFile) {
+        const payload = {
+          locale,
+          title: certData.title,
+          issuer: certData.issuer || '',
+          date: certData.date,
+          image_url: imageUrl,
+          file_url: certData.file_url,
+          order: certData.order,
+          ...(certData.id && { id: certData.id })
+        };
+
+        await saveWithUpload({
+          table: 'about_certificates',
+          data: payload,
+          file: certData.pdfFile,
+          bucket: 'docs',
+          folder: 'certificates',
+          urlField: 'file_url'
+        });
+      } else if (!certData.pdfFile && !certData.imageFile) {
+        // No files to upload, just save data
+        const payload = {
+          locale,
+          title: certData.title,
+          issuer: certData.issuer || '',
+          date: certData.date,
+          image_url: imageUrl,
+          file_url: certData.file_url,
+          order: certData.order,
+          ...(certData.id && { id: certData.id })
+        };
+
         const { error } = await supabase
           .from('about_certificates')
-          .update(payload)
-          .eq('id', certData.id);
-
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('about_certificates')
-          .insert([payload]);
+          .upsert(payload, { onConflict: 'id' });
 
         if (error) throw error;
       }
@@ -188,7 +232,7 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
   };
 
   const CertificateForm = ({ cert }: { cert: CertificateData | null }) => {
-    const [formData, setFormData] = useState<CertificateData>(() => 
+    const [formData, setFormData] = useState<CertificateFormData>(() => 
       cert || {
         title: '',
         issuer: '',
@@ -198,6 +242,26 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
         order: certificates.length + 1,
       }
     );
+
+    const handleImageChange = (file: File | null) => {
+      if (file) {
+        setFormData(prev => ({ 
+          ...prev, 
+          imageFile: file,
+          image_url: URL.createObjectURL(file)
+        }));
+      }
+    };
+
+    const handlePdfChange = (file: File | null) => {
+      if (file) {
+        setFormData(prev => ({ 
+          ...prev, 
+          pdfFile: file,
+          file_url: URL.createObjectURL(file)
+        }));
+      }
+    };
 
     return (
       <div className="space-y-4">
@@ -246,28 +310,36 @@ const AdminCertificates = ({ locale }: AdminCertificatesProps) => {
 
         <div className="space-y-2">
           <Label>Certificate Image</Label>
-          <FileUpload
-            value={formData.image_url}
-            onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
-            bucket="images"
-            folder="certificates"
+          <input
+            type="file"
             accept="image/*"
-            allowedTypes={['image/jpeg', 'image/png', 'image/webp']}
-            placeholder="Upload certificate image"
+            onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
+          {formData.image_url && (
+            <div className="mt-2">
+              <img
+                src={formData.image_url}
+                alt="Preview"
+                className="w-20 h-20 object-cover rounded border"
+              />
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
           <Label>Certificate File (PDF)</Label>
-          <FileUpload
-            value={formData.file_url}
-            onChange={(url) => setFormData(prev => ({ ...prev, file_url: url }))}
-            bucket="docs"
-            folder="certificates"
+          <input
+            type="file"
             accept=".pdf"
-            allowedTypes={['application/pdf']}
-            placeholder="Upload certificate PDF (optional)"
+            onChange={(e) => handlePdfChange(e.target.files?.[0] || null)}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
+          {formData.file_url && (
+            <div className="mt-2">
+              <p className="text-sm text-green-600">PDF file selected</p>
+            </div>
+          )}
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); handleSave(formData); }} className="flex justify-end space-x-2">
