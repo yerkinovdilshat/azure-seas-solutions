@@ -27,7 +27,7 @@ const Hero = () => {
 
   return (
     <>
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden pt-[140px]">
         <picture>
           <source srcSet={heroImage} type="image/jpeg" />
           <img 
