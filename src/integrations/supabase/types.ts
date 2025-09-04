@@ -639,15 +639,120 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          content_max_width_px: number | null
+          created_at: string | null
+          cta1_link: string | null
+          cta1_text_en: string | null
+          cta1_text_kk: string | null
+          cta1_text_ru: string | null
+          cta2_link: string | null
+          cta2_text_en: string | null
+          cta2_text_kk: string | null
+          cta2_text_ru: string | null
+          hero_bg_url: string | null
+          hero_min_height_vh: number | null
+          hero_overlay_opacity: number | null
+          hero_subtitle_en: string | null
+          hero_subtitle_kk: string | null
+          hero_subtitle_ru: string | null
+          hero_title_en: string | null
+          hero_title_kk: string | null
+          hero_title_ru: string | null
+          hero_top_padding_px: number | null
+          id: string
+          locale_default: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content_max_width_px?: number | null
+          created_at?: string | null
+          cta1_link?: string | null
+          cta1_text_en?: string | null
+          cta1_text_kk?: string | null
+          cta1_text_ru?: string | null
+          cta2_link?: string | null
+          cta2_text_en?: string | null
+          cta2_text_kk?: string | null
+          cta2_text_ru?: string | null
+          hero_bg_url?: string | null
+          hero_min_height_vh?: number | null
+          hero_overlay_opacity?: number | null
+          hero_subtitle_en?: string | null
+          hero_subtitle_kk?: string | null
+          hero_subtitle_ru?: string | null
+          hero_title_en?: string | null
+          hero_title_kk?: string | null
+          hero_title_ru?: string | null
+          hero_top_padding_px?: number | null
+          id?: string
+          locale_default?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content_max_width_px?: number | null
+          created_at?: string | null
+          cta1_link?: string | null
+          cta1_text_en?: string | null
+          cta1_text_kk?: string | null
+          cta1_text_ru?: string | null
+          cta2_link?: string | null
+          cta2_text_en?: string | null
+          cta2_text_kk?: string | null
+          cta2_text_ru?: string | null
+          hero_bg_url?: string | null
+          hero_min_height_vh?: number | null
+          hero_overlay_opacity?: number | null
+          hero_subtitle_en?: string | null
+          hero_subtitle_kk?: string | null
+          hero_subtitle_ru?: string | null
+          hero_title_en?: string | null
+          hero_title_kk?: string | null
+          hero_title_ru?: string | null
+          hero_top_padding_px?: number | null
+          id?: string
+          locale_default?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -774,6 +879,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

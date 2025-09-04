@@ -5,7 +5,8 @@ import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { useServicesData } from '@/hooks/useServicesData';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Menu, X, ChevronDown, Globe } from 'lucide-react';
+import { Menu, X, ChevronDown, Globe, Settings, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,6 +15,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { services } = useServicesData();
+  const { user, isAdmin, signOut } = useAuth();
 
   // Create navigation links with dynamic services
   const navigationLinks = [
@@ -213,13 +215,64 @@ const Header = () => {
 
           <div className="w-px h-6 bg-border/40" />
 
-          {/* Request Quote CTA */}
-          <Link
-            to="/contacts"
-            className="btn-primary text-sm px-6 py-2"
-          >
-            {t('navigation.requestQuote')}
-          </Link>
+          {/* Admin Menu (if logged in) */}
+          {user && (
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent group outline-none">
+                  <Settings className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+                  <span className="text-foreground group-hover:text-primary">
+                    {user.email?.split('@')[0]}
+                  </span>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-foreground group-data-[state=open]:rotate-180 transition-transform" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  className="bg-background/95 backdrop-blur-md border border-border/20 shadow-lg"
+                  sideOffset={8}
+                  align="end"
+                >
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/admin"
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors text-foreground hover:text-primary hover:bg-accent/30"
+                      >
+                        <Settings className="h-4 w-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <button
+                      onClick={signOut}
+                      className="w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors text-foreground hover:text-primary hover:bg-accent/30"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="w-px h-6 bg-border/40" />
+            </>
+          )}
+
+          {/* Login/Request Quote CTA */}
+          {user ? (
+            <Link
+              to="/contacts"
+              className="btn-primary text-sm px-6 py-2"
+            >
+              {t('navigation.requestQuote')}
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="btn-primary text-sm px-6 py-2"
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -299,12 +352,47 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Mobile Request Quote CTA */}
-              <Link to="/contacts" onClick={() => setIsMenuOpen(false)}>
-                <Button className="btn-primary w-full mt-4">
-                  {t('navigation.requestQuote')}
-                </Button>
-              </Link>
+              {/* Mobile Admin Menu (if logged in) */}
+              {user && (
+                <div className="pt-4 border-t border-border/20 space-y-2">
+                  <span className="text-sm font-medium text-muted-foreground">Account: {user.email?.split('@')[0]}</span>
+                  {isAdmin && (
+                    <Link 
+                      to="/admin" 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-2 p-3 rounded-lg text-sm font-medium transition-colors bg-accent/30 text-foreground hover:bg-accent/50"
+                    >
+                      <Settings className="h-4 w-4" />
+                      Admin Panel
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 p-3 rounded-lg text-sm font-medium transition-colors bg-accent/30 text-foreground hover:bg-accent/50 w-full text-left"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+
+              {/* Mobile Request Quote/Login CTA */}
+              {user ? (
+                <Link to="/contacts" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="btn-primary w-full mt-4">
+                    {t('navigation.requestQuote')}
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="btn-primary w-full mt-4">
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
