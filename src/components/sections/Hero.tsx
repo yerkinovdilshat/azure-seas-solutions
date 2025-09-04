@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Quote } from 'lucide-react';
-import heroImage from '@/assets/hero-industrial.jpg';
+import heroImage from '@/assets/hero-caspian-offshore.jpg';
 
 const Hero = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ const Hero = () => {
         <source srcSet={heroImage} type="image/jpeg" />
         <img 
           src={heroImage} 
-          alt="Modern industrial facility with advanced equipment and technology"
+          alt="Offshore oil platforms in the Caspian Sea representing Kazakhstan's energy industry"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </picture>
