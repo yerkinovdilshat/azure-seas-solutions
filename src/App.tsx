@@ -64,11 +64,8 @@ const App = () => (
               <Route path="/news/:slug" element={<NewsDetail />} />
               <Route path="/contacts" element={<Contacts />} />
               
-              {/* Auth routes */}
-              <Route path="/auth" element={<AuthLogin />} />
-              <Route path="/auth/login" element={<AuthLogin />} />
-              
               {/* Admin routes */}
+              <Route path="/auth/login" element={<AuthLogin />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/about" element={<AdminAbout />} />
               <Route path="/admin/news" element={<AdminNews />} />
