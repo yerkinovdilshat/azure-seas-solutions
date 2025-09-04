@@ -17,12 +17,14 @@ const Hero = () => {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </picture>
-      {/* Subtle bottom gradient only */}
+      {/* Dark blue overlay for text readability */}
+      <div className="absolute inset-0 bg-primary/40" />
+      {/* Subtle bottom gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
       
-      {/* Content with generous whitespace */}
+      {/* Content with enhanced background for readability */}
       <div className="relative z-10 container mx-auto px-6 text-center text-white">
-        <div className="max-w-6xl mx-auto space-y-12">
+        <div className="max-w-6xl mx-auto space-y-12 backdrop-blur-sm bg-primary/20 rounded-2xl p-8 lg:p-12">
           
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
