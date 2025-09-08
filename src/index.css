@@ -21,12 +21,12 @@ Typography: Inter/Manrope, airy spacing, soft shadows, rounded xl
     --popover: 0 0% 100%;
     --popover-foreground: 213 40% 7%;
 
-    /* Primary: Navy */
-    --primary: 205 73% 15%; /* #0B2A3E */
+    /* Primary: Brand Blue */
+    --primary: 200 100% 40%; /* #0087ca */
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary: Professional Blue */
-    --secondary: 214 84% 36%; /* #0E5AA7 */
+    /* Secondary: Lighter Blue */
+    --secondary: 200 100% 50%; /* lighter variation of primary */
     --secondary-foreground: 0 0% 100%;
 
     /* Accent: Warm Orange (sparingly) */
@@ -42,7 +42,7 @@ Typography: Inter/Manrope, airy spacing, soft shadows, rounded xl
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 205 73% 15%;
+    --ring: 200 100% 40%;
 
     --radius: 0.5rem;
 
@@ -84,7 +84,7 @@ Typography: Inter/Manrope, airy spacing, soft shadows, rounded xl
     --popover: 212 50% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 198 100% 45%;
+    --primary: 200 100% 50%;
     --primary-foreground: 212 50% 8%;
 
     --secondary: 212 30% 15%;
@@ -101,7 +101,7 @@ Typography: Inter/Manrope, airy spacing, soft shadows, rounded xl
 
     --border: 212 30% 15%;
     --input: 212 30% 15%;
-    --ring: 198 100% 45%;
+    --ring: 200 100% 50%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
