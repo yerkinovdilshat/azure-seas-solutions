@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import AdminLicenses from '@/components/admin/sections/AdminLicenses';
+import AdminAboutItems from '@/components/admin/sections/AdminAboutItems';
 
 const AdminAboutLicenses = () => {
   const [locale, setLocale] = useState('en');
@@ -9,7 +9,7 @@ const AdminAboutLicenses = () => {
     <AdminLayout locale={locale} onLocaleChange={setLocale}>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Licenses Management</h2>
-        <AdminLicenses locale={locale} />
+        <AdminAboutItems kind="license" />
       </div>
     </AdminLayout>
   );

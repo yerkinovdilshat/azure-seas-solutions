@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import AdminCertificates from '@/components/admin/sections/AdminCertificates';
+import AdminAboutItems from '@/components/admin/sections/AdminAboutItems';
 
 const AdminAboutCertificates = () => {
   const [locale, setLocale] = useState('en');
@@ -9,7 +9,7 @@ const AdminAboutCertificates = () => {
     <AdminLayout locale={locale} onLocaleChange={setLocale}>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Certificates Management</h2>
-        <AdminCertificates locale={locale} />
+        <AdminAboutItems kind="certificate" />
       </div>
     </AdminLayout>
   );

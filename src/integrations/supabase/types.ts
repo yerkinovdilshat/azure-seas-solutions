@@ -209,6 +209,69 @@ export type Database = {
         }
         Relationships: []
       }
+      about_items: {
+        Row: {
+          created_at: string
+          date: string | null
+          description_en: string | null
+          description_kz: string | null
+          description_ru: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          issuer_en: string | null
+          issuer_kz: string | null
+          issuer_ru: string | null
+          kind: Database["public"]["Enums"]["about_item_kind"]
+          order_index: number
+          pdf_url: string | null
+          title_en: string | null
+          title_kz: string | null
+          title_ru: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          description_en?: string | null
+          description_kz?: string | null
+          description_ru?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          issuer_en?: string | null
+          issuer_kz?: string | null
+          issuer_ru?: string | null
+          kind: Database["public"]["Enums"]["about_item_kind"]
+          order_index?: number
+          pdf_url?: string | null
+          title_en?: string | null
+          title_kz?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          description_en?: string | null
+          description_kz?: string | null
+          description_ru?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          issuer_en?: string | null
+          issuer_kz?: string | null
+          issuer_ru?: string | null
+          kind?: Database["public"]["Enums"]["about_item_kind"]
+          order_index?: number
+          pdf_url?: string | null
+          title_en?: string | null
+          title_kz?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       about_licenses: {
         Row: {
           created_at: string | null
@@ -944,6 +1007,7 @@ export type Database = {
       }
     }
     Enums: {
+      about_item_kind: "distribution" | "certificate" | "license"
       app_role: "admin" | "user"
     }
     CompositeTypes: {
@@ -1072,6 +1136,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      about_item_kind: ["distribution", "certificate", "license"],
       app_role: ["admin", "user"],
     },
   },
