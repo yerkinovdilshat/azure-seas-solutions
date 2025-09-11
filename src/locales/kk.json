@@ -70,7 +70,20 @@
     "email": "Email",
     "workingHours": "Жұмыс уақыты",
     "location": "Орналасқан жері",
-    "viewOnMap": "Картада көру"
+    "viewOnMap": "Картада көру",
+    "resume": "Резюме (Қосымша)",
+    "resumeDescription": "Резюмеңізді жүктеңіз (PDF, DOC, DOCX - макс. 10МБ)",
+    "uploadResume": "Файл таңдау",
+    "noFileChosen": "Файл таңдалмаған",
+    "fileSelected": "Файл таңдалды:",
+    "validation": {
+      "nameRequired": "Аты міндетті",
+      "phoneRequired": "Телефон міндетті",
+      "messageRequired": "Хабарлама міндетті",
+      "fileTooLarge": "Файл өлшемі 10МБ-тан аз болуы керек",
+      "invalidFileType": "Тек PDF, DOC және DOCX файлдарына рұқсат етіледі",
+      "error": "Тексеру қатесі"
+    }
   },
   "projects": {
     "title": "Аяқталған жобалар",
@@ -125,13 +138,39 @@
     "viewAll": "Барлық қызметтер"
   },
   "about": {
+    "title": "Біз туралы",
+    "tabs": {
+      "general": "Жалпы ақпарат",
+      "safetyQuality": "Қауіпсіздік және сапа",
+      "certificates": "Сертификаттар", 
+      "licenses": "Лицензиялар"
+    },
+    "general": {
+      "title": "Жалпы ақпарат",
+      "content": "Компания туралы жалпы ақпарат осында көрсетіледі."
+    },
+    "safetyQuality": {
+      "title": "Қауіпсіздік және сапа",
+      "content": "Біздің қауіпсіздік стандарттары мен сапа қамтамасыз ету процестері туралы ақпарат."
+    },
+    "certificates": {
+      "title": "Сертификаттар және аккредитациялар",
+      "viewPdf": "PDF көру",
+      "issuedBy": "Берген",
+      "noDescription": "Сипаттама жоқ"
+    },
+    "licenses": {
+      "title": "Лицензиялар",
+      "viewPdf": "PDF көру",
+      "issuedBy": "Берген",
+      "noDescription": "Сипаттама жоқ"
+    },
     "values": {
       "title": "Біздің құндылықтар"
     },
     "timeline": "Біздің жол",
     "team": "Біздің команда",
     "partners": "Біздің серіктестер",
-    "certificates": "Сертификаттар және аккредитациялар",
     "compliance": {
       "title": "Сәйкестік және стандарттар",
       "comingSoon": "Мазмұн жақын арада жарияланады",

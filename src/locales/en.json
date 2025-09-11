@@ -121,13 +121,39 @@
     "socialMedia": "Follow Us"
   },
   "about": {
+    "title": "About Us",
+    "tabs": {
+      "general": "General Information", 
+      "safetyQuality": "Safety & Quality",
+      "certificates": "Certificates",
+      "licenses": "Licenses"
+    },
+    "general": {
+      "title": "General Information",
+      "content": "Company overview and general information will be displayed here."
+    },
+    "safetyQuality": {
+      "title": "Safety & Quality",
+      "content": "Information about our safety standards and quality assurance processes."
+    },
+    "certificates": {
+      "title": "Certificates & Accreditations",
+      "viewPdf": "View PDF",
+      "issuedBy": "Issued by",
+      "noDescription": "No description available"
+    },
+    "licenses": {
+      "title": "Licenses",
+      "viewPdf": "View PDF", 
+      "issuedBy": "Issued by",
+      "noDescription": "No description available"
+    },
     "values": {
       "title": "Our Values"
     },
     "timeline": "Our Journey",
     "team": "Our Team", 
     "partners": "Our Partners",
-    "certificates": "Certificates & Accreditations",
     "compliance": {
       "title": "Compliance & Standards",
       "comingSoon": "Content will be published soon",
@@ -156,10 +182,17 @@
     "workingHours": "Working Hours",
     "location": "Location",
     "viewOnMap": "View on Map",
+    "resume": "Resume (Optional)",
+    "resumeDescription": "Upload your resume (PDF, DOC, DOCX - max 10MB)",
+    "uploadResume": "Choose File",
+    "noFileChosen": "No file chosen",
+    "fileSelected": "File selected:",
     "validation": {
       "nameRequired": "Name is required",
       "phoneRequired": "Phone is required",
       "messageRequired": "Message is required",
+      "fileTooLarge": "File size must be less than 10MB",
+      "invalidFileType": "Only PDF, DOC, and DOCX files are allowed",
       "error": "Validation Error"
     },
     "success": {

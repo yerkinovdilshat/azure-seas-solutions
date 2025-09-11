@@ -137,7 +137,9 @@ Deno.serve(async (req) => {
             ip: clientIP,
             user_agent: req.headers.get('user-agent'),
             timestamp: new Date().toISOString(),
-            referer: req.headers.get('referer')
+            referer: req.headers.get('referer'),
+            resume_url: formData.resumeUrl || null,
+            resume_filename: formData.resumeFileName || null
           }
         }
       ])

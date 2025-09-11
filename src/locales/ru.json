@@ -73,10 +73,17 @@
     "workingHours": "Рабочие часы",
     "location": "Местоположение",
     "viewOnMap": "Посмотреть на карте",
+    "resume": "Резюме (Опционально)",
+    "resumeDescription": "Загрузите ваше резюме (PDF, DOC, DOCX - макс. 10МБ)",
+    "uploadResume": "Выберите файл",
+    "noFileChosen": "Файл не выбран",
+    "fileSelected": "Выбран файл:",
     "validation": {
       "nameRequired": "Имя обязательно",
       "phoneRequired": "Телефон обязателен",
       "messageRequired": "Сообщение обязательно",
+      "fileTooLarge": "Размер файла должен быть менее 10МБ",
+      "invalidFileType": "Разрешены только файлы PDF, DOC и DOCX",
       "error": "Ошибка валидации"
     },
     "success": {
@@ -143,13 +150,39 @@
     "viewAll": "Все услуги"
   },
   "about": {
+    "title": "О нас",
+    "tabs": {
+      "general": "Общая информация",
+      "safetyQuality": "Безопасность и качество", 
+      "certificates": "Сертификаты",
+      "licenses": "Лицензии"
+    },
+    "general": {
+      "title": "Общая информация",
+      "content": "Общая информация о компании будет отображена здесь."
+    },
+    "safetyQuality": {
+      "title": "Безопасность и качество",
+      "content": "Информация о наших стандартах безопасности и процессах обеспечения качества."
+    },
+    "certificates": {
+      "title": "Сертификаты и аккредитации",
+      "viewPdf": "Просмотреть PDF",
+      "issuedBy": "Выдан",
+      "noDescription": "Описание недоступно"
+    },
+    "licenses": {
+      "title": "Лицензии",
+      "viewPdf": "Просмотреть PDF",
+      "issuedBy": "Выдан", 
+      "noDescription": "Описание недоступно"
+    },
     "values": {
       "title": "Наши ценности"
     },
     "timeline": "Наш путь",
     "team": "Наша команда",
     "partners": "Наши партнеры", 
-    "certificates": "Сертификаты и аккредитации",
     "compliance": {
       "title": "Соответствие и стандарты",
       "comingSoon": "Контент будет опубликован в ближайшее время",
