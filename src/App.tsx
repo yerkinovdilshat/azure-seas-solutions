@@ -33,6 +33,10 @@ import AuthLogin from "./pages/AuthLogin";
 import Admin from "./pages/Admin";
 import AdminAbout from "./pages/AdminAbout";
 import AdminAboutStory from "./pages/AdminAboutStory";
+import AdminAboutValues from "./pages/AdminAboutValues";
+import AdminAboutTimeline from "./pages/AdminAboutTimeline";
+import AdminAboutTeam from "./pages/AdminAboutTeam";
+import AdminAboutPartners from "./pages/AdminAboutPartners";
 import AdminAboutDistribution from "./pages/AdminAboutDistribution";
 import AdminNews from "./pages/AdminNews";
 import AdminProjects from "./pages/AdminProjects";
@@ -70,8 +74,12 @@ const App = () => (
               <Route path="/auth/login" element={<AuthLogin />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/about" element={<AdminAbout />} />
-              <Route path="/admin/about/story" element={<AdminAboutStory />} />
-              <Route path="/admin/about/distribution" element={<AdminAboutDistribution />} />
+        <Route path="/admin/about/story" element={<AdminAboutStory />} />
+        <Route path="/admin/about/values" element={<AdminAboutValues />} />
+        <Route path="/admin/about/timeline" element={<AdminAboutTimeline />} />
+        <Route path="/admin/about/team" element={<AdminAboutTeam />} />
+        <Route path="/admin/about/partners" element={<AdminAboutPartners />} />
+        <Route path="/admin/about/distribution" element={<AdminAboutDistribution />} />
               <Route path="/admin/news" element={<AdminNews />} />
               <Route path="/admin/projects" element={<AdminProjects />} />
               <Route path="/admin/services" element={<AdminServices />} />

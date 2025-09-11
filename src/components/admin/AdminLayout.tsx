@@ -3,7 +3,7 @@ import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, User, Globe, FileText, Newspaper, FolderOpen, Wrench, Package, Phone, Info } from 'lucide-react';
+import { LogOut, User, Globe, FileText, Newspaper, FolderOpen, Wrench, Package, Phone, Info, Award, Calendar, Users, Building } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Sidebar,
@@ -33,12 +33,20 @@ const AdminLayout = ({ children, locale, onLocaleChange }: AdminLayoutProps) => 
   const { toast } = useToast();
 
   const sidebarItems = [
-    { title: 'About Us', url: '/admin/about', icon: Info },
     { title: 'News', url: '/admin/news', icon: Newspaper },
     { title: 'Projects', url: '/admin/projects', icon: FolderOpen },
     { title: 'Services', url: '/admin/services', icon: Wrench },
     { title: 'Catalog', url: '/admin/catalog', icon: Package },
     { title: 'Contacts', url: '/admin/contacts', icon: Phone },
+  ];
+
+  const aboutItems = [
+    { title: 'Story', url: '/admin/about/story', icon: FileText },
+    { title: 'Values', url: '/admin/about/values', icon: Award },
+    { title: 'Timeline', url: '/admin/about/timeline', icon: Calendar },
+    { title: 'Team', url: '/admin/about/team', icon: Users },
+    { title: 'Partners', url: '/admin/about/partners', icon: Building },
+    { title: 'Distribution', url: '/admin/about/distribution', icon: Package },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -109,6 +117,31 @@ const AdminLayout = ({ children, locale, onLocaleChange }: AdminLayoutProps) => 
               <p className="text-xs text-muted-foreground">Marine Support Services</p>
             </div>
             
+            <SidebarGroup>
+              <SidebarGroupLabel>About Management</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {aboutItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to={item.url} 
+                          className={({ isActive }) => 
+                            isActive 
+                              ? "bg-muted text-primary font-medium flex items-center space-x-2" 
+                              : "hover:bg-muted/50 flex items-center space-x-2"
+                          }
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
             <SidebarGroup>
               <SidebarGroupLabel>Content Management</SidebarGroupLabel>
               <SidebarGroupContent>
