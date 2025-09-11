@@ -1,92 +1,47 @@
-import React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAboutStory } from '@/hooks/useAboutData';
+import { Card, CardContent } from '@/components/ui/card';
 
-const AboutStory: React.FC = () => {
-  const { t, i18n } = useTranslation();
-  const { data: story, loading, error } = useAboutStory();
+interface AboutStoryProps {
+  data: {
+    id: string;
+    title: string;
+    body_rich: any;
+    hero_image?: string;
+  } | null;
+}
 
-  if (loading) {
-    return (
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Skeleton className="h-12 w-3/4 mb-8" />
-            <div className="space-y-4">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+const AboutStory = ({ data }: AboutStoryProps) => {
+  const { t } = useTranslation();
 
-  if (error) {
-    return (
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-muted-foreground">{t('common.error')}</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!story) {
-    return (
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-muted-foreground">{t('common.noData')}</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (!data) return null;
 
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          {story.hero_image && (
-            <div className="mb-12">
-              <img
-                src={story.hero_image}
-                alt={story.title}
-                className="w-full h-64 md:h-80 object-cover rounded-xl"
-              />
-            </div>
-          )}
-          
-          <h1 className="text-4xl md:text-5xl font-bold mb-8 text-primary">
-            {story.title}
-          </h1>
-          
-          {story.body_rich && (
-            <div className="prose prose-lg max-w-none text-foreground">
-              {typeof story.body_rich === 'string' ? (
-                <div dangerouslySetInnerHTML={{ __html: story.body_rich }} />
-              ) : (
-                story.body_rich.blocks?.map((block: any, index: number) => (
-                  <p key={index} className="mb-4 leading-relaxed">
-                    {block.data?.text || ''}
-                  </p>
-                ))
-              )}
-            </div>
-          )}
-          
-          {i18n.language !== 'en' && (
-            <p className="text-xs text-muted-foreground mt-8 italic">
-              {t('common.translationNote')}
-            </p>
-          )}
-        </div>
+    <section className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold mb-4">{t('about.sections.story')}</h2>
+        <h3 className="text-xl text-muted-foreground mb-6">{data.title}</h3>
       </div>
+
+      {data.hero_image && (
+        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+          <img
+            src={data.hero_image}
+            alt={data.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {data.body_rich && (
+        <Card>
+          <CardContent className="p-8">
+            <div className="prose prose-lg max-w-none">
+              <div dangerouslySetInnerHTML={{ __html: data.body_rich }} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </section>
   );
 };

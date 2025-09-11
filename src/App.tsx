@@ -38,6 +38,8 @@ import AdminAboutTimeline from "./pages/AdminAboutTimeline";
 import AdminAboutTeam from "./pages/AdminAboutTeam";
 import AdminAboutPartners from "./pages/AdminAboutPartners";
 import AdminAboutDistribution from "./pages/AdminAboutDistribution";
+import AdminAboutCertificates from "./pages/AdminAboutCertificates";
+import AdminAboutLicenses from "./pages/AdminAboutLicenses";
 import AdminNews from "./pages/AdminNews";
 import AdminProjects from "./pages/AdminProjects";
 import AdminServices from "./pages/AdminServices";
@@ -80,6 +82,8 @@ const App = () => (
         <Route path="/admin/about/team" element={<AdminAboutTeam />} />
         <Route path="/admin/about/partners" element={<AdminAboutPartners />} />
         <Route path="/admin/about/distribution" element={<AdminAboutDistribution />} />
+        <Route path="/admin/about/certificates" element={<AdminAboutCertificates />} />
+        <Route path="/admin/about/licenses" element={<AdminAboutLicenses />} />
               <Route path="/admin/news" element={<AdminNews />} />
               <Route path="/admin/projects" element={<AdminProjects />} />
               <Route path="/admin/services" element={<AdminServices />} />

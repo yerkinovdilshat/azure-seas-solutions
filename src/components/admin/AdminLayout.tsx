@@ -47,6 +47,8 @@ const AdminLayout = ({ children, locale, onLocaleChange }: AdminLayoutProps) => 
     { title: 'Team', url: '/admin/about/team', icon: Users },
     { title: 'Partners', url: '/admin/about/partners', icon: Building },
     { title: 'Distribution', url: '/admin/about/distribution', icon: Package },
+    { title: 'Certificates', url: '/admin/about/certificates', icon: Award },
+    { title: 'Licenses', url: '/admin/about/licenses', icon: FileText },
   ];
 
   const isActive = (path: string) => location.pathname === path;

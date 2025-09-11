@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAboutBlocks } from '@/hooks/useAboutBlocks';
 import { useAboutCertificates, useAboutStory, useAboutValues, useAboutTimeline, useAboutTeam, useAboutPartners } from '@/hooks/useAboutData';
 import { useAboutLicenses } from '@/hooks/useAboutLicenses';
 import { useAboutDistribution } from '@/hooks/useAboutDistribution';
@@ -11,6 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, ExternalLink } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import AboutStory from '@/components/about/AboutStory';
+import AboutValues from '@/components/about/AboutValues';
+import AboutTimeline from '@/components/about/AboutTimeline';
+import AboutTeam from '@/components/about/AboutTeam';
+import AboutPartners from '@/components/about/AboutPartners';
 
 const About = () => {
   const { t } = useTranslation();
@@ -88,119 +92,13 @@ const About = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="general" className="space-y-8">
-            <div className="max-w-6xl mx-auto space-y-12">
-              {/* Story Section */}
-              {storyData && (
-                <section className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{t('about.sections.story')}</h2>
-                  {storyData.hero_image && (
-                    <img src={storyData.hero_image} alt={storyData.title} className="w-full h-64 object-cover rounded-lg" />
-                  )}
-                  <div className="prose prose-lg max-w-none">
-                    <h3 className="text-xl font-medium mb-4">{storyData.title}</h3>
-                    {storyData.body_rich && (
-                      <div dangerouslySetInnerHTML={{ __html: JSON.stringify(storyData.body_rich) }} />
-                    )}
-                  </div>
-                </section>
-              )}
-
-              {/* Values Section */}
-              {valuesData && valuesData.length > 0 && (
-                <section className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{t('about.sections.values')}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {valuesData.map((value) => (
-                      <Card key={value.id} className="p-6">
-                        <CardContent className="space-y-3">
-                          <h3 className="text-lg font-medium">{value.title}</h3>
-                          {value.description && (
-                            <p className="text-muted-foreground">{value.description}</p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Timeline Section */}
-              {timelineData && timelineData.length > 0 && (
-                <section className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{t('about.sections.timeline')}</h2>
-                  <div className="space-y-6">
-                    {timelineData.map((item) => (
-                      <Card key={item.id} className="p-6">
-                        <CardContent className="flex gap-6">
-                          <div className="text-2xl font-bold text-primary min-w-[80px]">{item.year}</div>
-                          <div className="flex-1">
-                            <h3 className="text-lg font-medium mb-2">{item.title}</h3>
-                            {item.description && (
-                              <p className="text-muted-foreground">{item.description}</p>
-                            )}
-                          </div>
-                          {item.image && (
-                            <img src={item.image} alt={item.title} className="w-24 h-24 object-cover rounded" />
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Team Section */}
-              {teamData && teamData.length > 0 && (
-                <section className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{t('about.sections.team')}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {teamData.map((member) => (
-                      <Card key={member.id} className="overflow-hidden">
-                        {member.photo && (
-                          <img src={member.photo} alt={member.name} className="w-full h-48 object-cover" />
-                        )}
-                        <CardContent className="p-6 space-y-2">
-                          <h3 className="text-lg font-medium">{member.name}</h3>
-                          {member.role && (
-                            <p className="text-primary font-medium">{member.role}</p>
-                          )}
-                          {member.bio && (
-                            <p className="text-muted-foreground text-sm">{member.bio}</p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Partners Section */}
-              {partnersData && partnersData.length > 0 && (
-                <section className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{t('about.sections.partners')}</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {partnersData.map((partner) => (
-                      <Card key={partner.id} className="p-6 text-center">
-                        <CardContent className="space-y-3">
-                          {partner.logo && (
-                            <img src={partner.logo} alt={partner.name} className="w-full h-20 object-contain mx-auto" />
-                          )}
-                          <h3 className="text-sm font-medium">{partner.name}</h3>
-                          {partner.website_url && (
-                            <Button variant="outline" size="sm" asChild>
-                              <a href={partner.website_url} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-3 w-3 mr-1" />
-                                Visit
-                              </a>
-                            </Button>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
+          <TabsContent value="general" className="space-y-12">
+            <div className="max-w-6xl mx-auto space-y-16">
+              <AboutStory data={storyData} />
+              <AboutValues data={valuesData} />
+              <AboutTimeline data={timelineData} />
+              <AboutTeam data={teamData} />
+              <AboutPartners data={partnersData} />
             </div>
           </TabsContent>
 
