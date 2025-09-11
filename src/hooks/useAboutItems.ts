@@ -37,6 +37,7 @@ export const useAboutItems = (kind: AboutItemKind) => {
 
   const fetchItems = async () => {
     try {
+      console.log(`Fetching ${kind} items...`);
       setLoading(true);
       setError(null);
 
@@ -49,9 +50,11 @@ export const useAboutItems = (kind: AboutItemKind) => {
         .order('created_at', { ascending: false });
 
       if (queryError) {
+        console.error(`Query error for ${kind}:`, queryError);
         throw queryError;
       }
 
+      console.log(`Fetched ${items?.length || 0} ${kind} items:`, items);
       setData(items || []);
     } catch (err) {
       console.error(`Error fetching ${kind} items:`, err);

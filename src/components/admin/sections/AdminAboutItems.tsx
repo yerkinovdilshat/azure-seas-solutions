@@ -58,6 +58,7 @@ const AdminAboutItems = ({ kind }: AdminAboutItemsProps) => {
 
   const fetchItems = async () => {
     try {
+      console.log(`Admin: Fetching ${kind} items...`);
       setLoading(true);
       const { data, error } = await supabase
         .from('about_items')
@@ -65,10 +66,15 @@ const AdminAboutItems = ({ kind }: AdminAboutItemsProps) => {
         .eq('kind', kind)
         .order('order_index', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error(`Admin query error for ${kind}:`, error);
+        throw error;
+      }
+      
+      console.log(`Admin: Fetched ${data?.length || 0} ${kind} items:`, data);
       setItems(data || []);
     } catch (error) {
-      console.error('Error fetching items:', error);
+      console.error(`Admin: Error fetching ${kind} items:`, error);
       toast({
         title: "Error",
         description: `Failed to fetch ${kind} items`,
