@@ -32,6 +32,8 @@ import CatalogDetail from "./pages/CatalogDetail";
 import AuthLogin from "./pages/AuthLogin";
 import Admin from "./pages/Admin";
 import AdminAbout from "./pages/AdminAbout";
+import AdminAboutStory from "./pages/AdminAboutStory";
+import AdminAboutDistribution from "./pages/AdminAboutDistribution";
 import AdminNews from "./pages/AdminNews";
 import AdminProjects from "./pages/AdminProjects";
 import AdminServices from "./pages/AdminServices";
@@ -68,6 +70,8 @@ const App = () => (
               <Route path="/auth/login" element={<AuthLogin />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/about" element={<AdminAbout />} />
+              <Route path="/admin/about/story" element={<AdminAboutStory />} />
+              <Route path="/admin/about/distribution" element={<AdminAboutDistribution />} />
               <Route path="/admin/news" element={<AdminNews />} />
               <Route path="/admin/projects" element={<AdminProjects />} />
               <Route path="/admin/services" element={<AdminServices />} />

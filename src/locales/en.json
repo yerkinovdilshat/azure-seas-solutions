@@ -123,10 +123,17 @@
   "about": {
     "title": "About Us",
     "tabs": {
-      "general": "General Information", 
-      "safetyQuality": "Safety & Quality",
-      "certificates": "Certificates",
+      "general": "General Information",
+      "distribution": "Distribution",
+      "certificates": "Certificates", 
       "licenses": "Licenses"
+    },
+    "sections": {
+      "story": "Our Story",
+      "values": "Our Values",
+      "timeline": "Company Timeline",
+      "team": "Our Team",
+      "partners": "Our Partners"
     },
     "general": {
       "title": "General Information",

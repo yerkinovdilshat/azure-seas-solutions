@@ -4,8 +4,9 @@ import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAboutBlocks } from '@/hooks/useAboutBlocks';
-import { useAboutCertificates } from '@/hooks/useAboutData';
+import { useAboutCertificates, useAboutStory, useAboutValues, useAboutTimeline, useAboutTeam, useAboutPartners } from '@/hooks/useAboutData';
 import { useAboutLicenses } from '@/hooks/useAboutLicenses';
+import { useAboutDistribution } from '@/hooks/useAboutDistribution';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, ExternalLink } from 'lucide-react';
@@ -15,14 +16,20 @@ const About = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
   
-  const { getBlock, getLocalizedContent, loading: blocksLoading } = useAboutBlocks();
+  // General Information sections
+  const { data: storyData, loading: storyLoading } = useAboutStory();
+  const { data: valuesData, loading: valuesLoading } = useAboutValues();
+  const { data: timelineData, loading: timelineLoading } = useAboutTimeline();
+  const { data: teamData, loading: teamLoading } = useAboutTeam();
+  const { data: partnersData, loading: partnersLoading } = useAboutPartners();
+  
+  // Other tabs
+  const { data: distributionData, loading: distributionLoading, getLocalizedField: getDistributionField } = useAboutDistribution();
   const { data: certificates, loading: certsLoading } = useAboutCertificates();
   const { data: licenses, loading: licensesLoading, getLocalizedField } = useAboutLicenses();
 
-  const generalBlock = getBlock('general');
-  const safetyBlock = getBlock('safety_quality');
-
-  const loading = blocksLoading || certsLoading || licensesLoading;
+  const loading = storyLoading || valuesLoading || timelineLoading || teamLoading || partnersLoading || 
+                   distributionLoading || certsLoading || licensesLoading;
 
   if (loading) {
     return (
@@ -61,10 +68,10 @@ const About = () => {
                 {t('about.tabs.general')}
               </TabsTrigger>
               <TabsTrigger 
-                value="safety" 
+                value="distribution" 
                 className="text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
               >
-                {t('about.tabs.safetyQuality')}
+                {t('about.tabs.distribution')}
               </TabsTrigger>
               <TabsTrigger 
                 value="certificates" 
@@ -81,37 +88,172 @@ const About = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="general" className="space-y-6">
-            <div className="prose prose-lg max-w-4xl mx-auto">
-              <h2 className="text-2xl font-semibold mb-4">{getLocalizedContent(generalBlock, 'title')}</h2>
-              <div 
-                className="text-muted-foreground"
-                dangerouslySetInnerHTML={{ 
-                  __html: getLocalizedContent(generalBlock, 'content') || t('about.general.content')
-                }}
-              />
+          <TabsContent value="general" className="space-y-8">
+            <div className="max-w-6xl mx-auto space-y-12">
+              {/* Story Section */}
+              {storyData && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{t('about.sections.story')}</h2>
+                  {storyData.hero_image && (
+                    <img src={storyData.hero_image} alt={storyData.title} className="w-full h-64 object-cover rounded-lg" />
+                  )}
+                  <div className="prose prose-lg max-w-none">
+                    <h3 className="text-xl font-medium mb-4">{storyData.title}</h3>
+                    {storyData.body_rich && (
+                      <div dangerouslySetInnerHTML={{ __html: JSON.stringify(storyData.body_rich) }} />
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {/* Values Section */}
+              {valuesData && valuesData.length > 0 && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{t('about.sections.values')}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {valuesData.map((value) => (
+                      <Card key={value.id} className="p-6">
+                        <CardContent className="space-y-3">
+                          <h3 className="text-lg font-medium">{value.title}</h3>
+                          {value.description && (
+                            <p className="text-muted-foreground">{value.description}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Timeline Section */}
+              {timelineData && timelineData.length > 0 && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{t('about.sections.timeline')}</h2>
+                  <div className="space-y-6">
+                    {timelineData.map((item) => (
+                      <Card key={item.id} className="p-6">
+                        <CardContent className="flex gap-6">
+                          <div className="text-2xl font-bold text-primary min-w-[80px]">{item.year}</div>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-medium mb-2">{item.title}</h3>
+                            {item.description && (
+                              <p className="text-muted-foreground">{item.description}</p>
+                            )}
+                          </div>
+                          {item.image && (
+                            <img src={item.image} alt={item.title} className="w-24 h-24 object-cover rounded" />
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Team Section */}
+              {teamData && teamData.length > 0 && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{t('about.sections.team')}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {teamData.map((member) => (
+                      <Card key={member.id} className="overflow-hidden">
+                        {member.photo && (
+                          <img src={member.photo} alt={member.name} className="w-full h-48 object-cover" />
+                        )}
+                        <CardContent className="p-6 space-y-2">
+                          <h3 className="text-lg font-medium">{member.name}</h3>
+                          {member.role && (
+                            <p className="text-primary font-medium">{member.role}</p>
+                          )}
+                          {member.bio && (
+                            <p className="text-muted-foreground text-sm">{member.bio}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Partners Section */}
+              {partnersData && partnersData.length > 0 && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{t('about.sections.partners')}</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {partnersData.map((partner) => (
+                      <Card key={partner.id} className="p-6 text-center">
+                        <CardContent className="space-y-3">
+                          {partner.logo && (
+                            <img src={partner.logo} alt={partner.name} className="w-full h-20 object-contain mx-auto" />
+                          )}
+                          <h3 className="text-sm font-medium">{partner.name}</h3>
+                          {partner.website_url && (
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={partner.website_url} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="h-3 w-3 mr-1" />
+                                Visit
+                              </a>
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           </TabsContent>
 
-          <TabsContent value="safety" className="space-y-6">
-            <div className="prose prose-lg max-w-4xl mx-auto">
-              <h2 className="text-2xl font-semibold mb-4">{getLocalizedContent(safetyBlock, 'title')}</h2>
-              <div 
-                className="text-muted-foreground mb-6"
-                dangerouslySetInnerHTML={{ 
-                  __html: getLocalizedContent(safetyBlock, 'content') || t('about.safetyQuality.content')
-                }}
-              />
+          <TabsContent value="distribution" className="space-y-6">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-2xl font-semibold mb-6 text-center">{t('about.tabs.distribution')}</h2>
               
-              {safetyBlock?.gallery_images && safetyBlock.gallery_images.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                  {safetyBlock.gallery_images.map((imageUrl, index) => (
-                    <img
-                      key={index}
-                      src={imageUrl}
-                      alt={`Safety & Quality ${index + 1}`}
-                      className="rounded-lg shadow-md w-full h-48 object-cover"
-                    />
+              {distributionData.length === 0 ? (
+                <div className="text-center text-muted-foreground py-12">
+                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>{t('common.noData')}</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {distributionData.map((item) => (
+                    <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      {item.image_url && (
+                        <div className="aspect-[4/3] overflow-hidden">
+                          <img
+                            src={item.image_url}
+                            alt={getDistributionField(item, 'title')}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => window.open(item.image_url, '_blank')}
+                          />
+                        </div>
+                      )}
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg">{getDistributionField(item, 'title')}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 space-y-4">
+                        {getDistributionField(item, 'description') && (
+                          <p className="text-sm text-muted-foreground">
+                            {getDistributionField(item, 'description')}
+                          </p>
+                        )}
+                        <div className="flex gap-2">
+                          {item.image_url && (
+                            <Button variant="outline" size="sm" onClick={() => window.open(item.image_url, '_blank')}>
+                              <ExternalLink className="h-4 w-4 mr-2" />
+                              Preview
+                            </Button>
+                          )}
+                          {item.file_url && (
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={item.file_url} target="_blank" rel="noopener noreferrer">
+                                <FileText className="h-4 w-4 mr-2" />
+                                View PDF
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
               )}

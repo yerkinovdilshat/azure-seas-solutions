@@ -62,39 +62,66 @@ export type Database = {
       about_certificates: {
         Row: {
           date: string | null
+          description_en: string | null
+          description_kk: string | null
+          description_ru: string | null
           file_url: string | null
           id: string
           image_url: string | null
           issuer: string | null
+          issuer_en: string | null
+          issuer_kk: string | null
+          issuer_ru: string | null
           locale: string
           order: number | null
           published_at: string | null
           status: string | null
           title: string
+          title_en: string | null
+          title_kk: string | null
+          title_ru: string | null
         }
         Insert: {
           date?: string | null
+          description_en?: string | null
+          description_kk?: string | null
+          description_ru?: string | null
           file_url?: string | null
           id?: string
           image_url?: string | null
           issuer?: string | null
+          issuer_en?: string | null
+          issuer_kk?: string | null
+          issuer_ru?: string | null
           locale: string
           order?: number | null
           published_at?: string | null
           status?: string | null
           title: string
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
         }
         Update: {
           date?: string | null
+          description_en?: string | null
+          description_kk?: string | null
+          description_ru?: string | null
           file_url?: string | null
           id?: string
           image_url?: string | null
           issuer?: string | null
+          issuer_en?: string | null
+          issuer_kk?: string | null
+          issuer_ru?: string | null
           locale?: string
           order?: number | null
           published_at?: string | null
           status?: string | null
           title?: string
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
         }
         Relationships: []
       }
@@ -131,6 +158,57 @@ export type Database = {
         }
         Relationships: []
       }
+      about_distribution: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_kk: string | null
+          description_ru: string | null
+          file_url: string | null
+          id: string
+          image_url: string | null
+          order_index: number | null
+          published_at: string | null
+          status: string | null
+          title_en: string | null
+          title_kk: string | null
+          title_ru: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_kk?: string | null
+          description_ru?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number | null
+          published_at?: string | null
+          status?: string | null
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_kk?: string | null
+          description_ru?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number | null
+          published_at?: string | null
+          status?: string | null
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       about_licenses: {
         Row: {
           created_at: string | null
@@ -142,11 +220,17 @@ export type Database = {
           id: string
           image_url: string | null
           issuer: string | null
+          issuer_en: string | null
+          issuer_kk: string | null
+          issuer_ru: string | null
           locale: string
           order: number | null
           published_at: string | null
           status: string | null
           title: string
+          title_en: string | null
+          title_kk: string | null
+          title_ru: string | null
         }
         Insert: {
           created_at?: string | null
@@ -158,11 +242,17 @@ export type Database = {
           id?: string
           image_url?: string | null
           issuer?: string | null
+          issuer_en?: string | null
+          issuer_kk?: string | null
+          issuer_ru?: string | null
           locale: string
           order?: number | null
           published_at?: string | null
           status?: string | null
           title: string
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
         }
         Update: {
           created_at?: string | null
@@ -174,11 +264,17 @@ export type Database = {
           id?: string
           image_url?: string | null
           issuer?: string | null
+          issuer_en?: string | null
+          issuer_kk?: string | null
+          issuer_ru?: string | null
           locale?: string
           order?: number | null
           published_at?: string | null
           status?: string | null
           title?: string
+          title_en?: string | null
+          title_kk?: string | null
+          title_ru?: string | null
         }
         Relationships: []
       }
