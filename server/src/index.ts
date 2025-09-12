@@ -10,12 +10,12 @@ import pino from 'pino';
 import { prisma } from './lib/prisma';
 import { createUploadDirs } from './lib/uploads';
 import { seedAdmin } from './scripts/seed';
-import authRoutes from './routes/auth';
-import aboutRoutes from './routes/about';
-import catalogRoutes from './routes/catalog';
-import contactRoutes from './routes/contact';
-import adminRoutes from './routes/admin';
-import uploadRoutes from './routes/upload';
+import authRoutes from './routes/auth.js';
+import aboutRoutes from './routes/about.js';
+import catalogRoutes from './routes/catalog.js';
+import contactRoutes from './routes/contacts.js';
+import adminRoutes from './routes/admin.js';
+import uploadRoutes from './routes/uploads.js';
 import { authMiddleware } from './middleware/auth';
 
 const __filename = fileURLToPath(import.meta.url);
