@@ -1,0 +1,408 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum AboutItemKind {
+  distribution
+  certificate
+  license
+}
+
+enum PublishStatus {
+  draft
+  published
+}
+
+enum ProjectStatus {
+  planned
+  in_progress
+  completed
+}
+
+enum ProductType {
+  supply
+  service
+  project
+}
+
+model AboutItems {
+  id             String        @id @db.Char(36) @default(uuid())
+  kind           AboutItemKind
+  title_ru       String?       @db.MediumText
+  title_en       String?       @db.MediumText
+  title_kk       String?       @db.MediumText
+  description_ru String?       @db.MediumText
+  description_en String?       @db.MediumText
+  description_kk String?       @db.MediumText
+  issuer_ru      String?       @db.MediumText
+  issuer_en      String?       @db.MediumText
+  issuer_kk      String?       @db.MediumText
+  date           DateTime?
+  image_url      String?       @db.VarChar(1024)
+  pdf_url        String?       @db.VarChar(1024)
+  is_published   Boolean       @default(true)
+  order_index    Int           @default(0)
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  @@index([kind, is_published, order_index])
+  @@map("about_items")
+}
+
+// Legacy tables for migration purposes
+model AboutDistribution {
+  id             String        @id @db.Char(36) @default(uuid())
+  title_en       String?       @db.MediumText
+  title_ru       String?       @db.MediumText
+  title_kk       String?       @db.MediumText
+  description_en String?       @db.MediumText
+  description_ru String?       @db.MediumText
+  description_kk String?       @db.MediumText
+  image_url      String?       @db.VarChar(1024)
+  file_url       String?       @db.VarChar(1024)
+  order_index    Int           @default(0)
+  status         PublishStatus @default(published)
+  published_at   DateTime?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  @@map("about_distribution")
+}
+
+model AboutLicenses {
+  id             String        @id @db.Char(36) @default(uuid())
+  locale         String        @db.VarChar(8)
+  title          String
+  issuer         String?       @db.MediumText
+  date           DateTime?
+  image_url      String?       @db.VarChar(1024)
+  file_url       String?       @db.VarChar(1024)
+  order          Int           @default(1)
+  created_at     DateTime      @default(now())
+  status         PublishStatus @default(published)
+  published_at   DateTime?
+  description_en String?       @db.MediumText
+  description_ru String?       @db.MediumText
+  description_kk String?       @db.MediumText
+  title_en       String?       @db.MediumText
+  title_ru       String?       @db.MediumText
+  title_kk       String?       @db.MediumText
+  issuer_en      String?       @db.MediumText
+  issuer_ru      String?       @db.MediumText
+  issuer_kk      String?       @db.MediumText
+
+  @@index([locale, order])
+  @@map("about_licenses")
+}
+
+model AboutCertificates {
+  id             String        @id @db.Char(36) @default(uuid())
+  locale         String        @db.VarChar(8)
+  title          String
+  issuer         String?       @db.MediumText
+  date           DateTime?
+  file_url       String?       @db.VarChar(1024)
+  image_url      String?       @db.VarChar(1024)
+  order          Int           @default(0)
+  status         PublishStatus @default(published)
+  published_at   DateTime?
+  title_en       String?       @db.MediumText
+  title_ru       String?       @db.MediumText
+  title_kk       String?       @db.MediumText
+  description_en String?       @db.MediumText
+  description_ru String?       @db.MediumText
+  description_kk String?       @db.MediumText
+  issuer_en      String?       @db.MediumText
+  issuer_ru      String?       @db.MediumText
+  issuer_kk      String?       @db.MediumText
+
+  @@map("about_certificates")
+}
+
+model AboutBlocks {
+  id             String        @id @db.Char(36) @default(uuid())
+  block_key      String        @unique @db.VarChar(64)
+  title_en       String?       @db.MediumText
+  title_ru       String?       @db.MediumText
+  title_kk       String?       @db.MediumText
+  content_en     String?       @db.MediumText
+  content_ru     String?       @db.MediumText
+  content_kk     String?       @db.MediumText
+  gallery_images Json?
+  published_at   DateTime?
+  updated_at     DateTime      @updatedAt
+  status         PublishStatus @default(published)
+
+  @@map("about_blocks")
+}
+
+model AboutStory {
+  id           String        @id @db.Char(36) @default(uuid())
+  locale       String        @db.VarChar(8)
+  title        String
+  body_rich    Json?
+  hero_image   String?       @db.VarChar(1024)
+  updated_at   DateTime      @updatedAt
+  status       PublishStatus @default(published)
+  published_at DateTime?
+
+  @@unique([locale])
+  @@map("about_story")
+}
+
+model AboutValues {
+  id           String        @id @db.Char(36) @default(uuid())
+  locale       String        @db.VarChar(8)
+  title        String
+  description  String?       @db.MediumText
+  icon_key     String?       @db.VarChar(128)
+  order        Int           @default(0)
+  status       PublishStatus @default(published)
+  published_at DateTime?
+
+  @@map("about_values")
+}
+
+model AboutTimeline {
+  id           String        @id @db.Char(36) @default(uuid())
+  year         Int
+  locale       String        @db.VarChar(8)
+  title        String
+  description  String?       @db.MediumText
+  image        String?       @db.VarChar(1024)
+  order        Int           @default(0)
+  status       PublishStatus @default(published)
+  published_at DateTime?
+
+  @@map("about_timeline")
+}
+
+model AboutTeam {
+  id           String        @id @db.Char(36) @default(uuid())
+  locale       String        @db.VarChar(8)
+  name         String
+  role         String?       @db.MediumText
+  bio          String?       @db.MediumText
+  photo        String?       @db.VarChar(1024)
+  order        Int           @default(0)
+  status       PublishStatus @default(published)
+  published_at DateTime?
+
+  @@map("about_team")
+}
+
+model AboutPartners {
+  id           String        @id @db.Char(36) @default(uuid())
+  name         String
+  logo         String?       @db.VarChar(1024)
+  website_url  String?       @db.VarChar(1024)
+  order        Int           @default(0)
+  status       PublishStatus @default(published)
+  published_at DateTime?
+
+  @@map("about_partners")
+}
+
+model CatalogCategories {
+  id           String        @id @db.Char(36) @default(uuid())
+  locale       String        @db.VarChar(8)
+  name         String
+  slug         String        @db.VarChar(191)
+  description  String?       @db.MediumText
+  parent_id    String?       @db.Char(36)
+  order        Int           @default(0)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  status       PublishStatus @default(published)
+  published_at DateTime?
+  is_featured  Boolean       @default(false)
+
+  @@unique([locale, slug])
+  @@index([parent_id])
+  @@map("catalog_categories")
+}
+
+model CatalogProducts {
+  id             String        @id @db.Char(36) @default(uuid())
+  locale         String        @db.VarChar(8)
+  title          String
+  slug           String        @db.VarChar(191)
+  description    String?       @db.MediumText
+  content_rich   Json?
+  featured_image String?       @db.VarChar(1024)
+  gallery_images Json?
+  pdf_files      Json?
+  category_id    String?       @db.Char(36)
+  sku            String?       @db.VarChar(191)
+  manufacturer   String?       @db.MediumText
+  specifications Json?
+  is_featured    Boolean       @default(false)
+  order          Int           @default(0)
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  status         PublishStatus @default(published)
+  published_at   DateTime?
+  type           ProductType   @default(supply)
+  is_ctkz        Boolean       @default(false)
+  tags           Json?
+  video_url      String?       @db.VarChar(1024)
+
+  @@unique([locale, slug])
+  @@index([category_id])
+  @@map("catalog_products")
+}
+
+model Contacts {
+  id              String        @id @db.Char(36) @default(uuid())
+  locale          String        @db.VarChar(8)
+  company_name    String
+  address         String
+  phone           String
+  email           String
+  working_hours   String
+  map_link        String?       @db.VarChar(1024)
+  additional_info Json?
+  updated_at      DateTime      @updatedAt
+  status          PublishStatus @default(published)
+  published_at    DateTime?
+
+  @@unique([locale])
+  @@map("contacts")
+}
+
+model ContactRequests {
+  id         String   @id @db.Char(36) @default(uuid())
+  name       String
+  phone      String
+  message    String
+  created_at DateTime @default(now())
+  meta       Json?
+
+  @@map("contact_requests")
+}
+
+model News {
+  id             String        @id @db.Char(36) @default(uuid())
+  locale         String        @db.VarChar(8)
+  title          String
+  slug           String        @db.VarChar(191)
+  excerpt        String?       @db.MediumText
+  content_rich   Json?
+  featured_image String?       @db.VarChar(1024)
+  gallery_images Json?
+  video_url      String?       @db.VarChar(1024)
+  published_at   DateTime?
+  order          Int           @default(0)
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  status         PublishStatus @default(draft)
+  is_featured    Boolean       @default(false)
+
+  @@unique([locale, slug])
+  @@map("news")
+}
+
+model Projects {
+  id               String        @id @db.Char(36) @default(uuid())
+  locale           String        @db.VarChar(8)
+  title            String
+  slug             String        @db.VarChar(191)
+  description      String?       @db.MediumText
+  content_rich     Json?
+  featured_image   String?       @db.VarChar(1024)
+  gallery_images   Json?
+  video_url        String?       @db.VarChar(1024)
+  client_name      String?       @db.MediumText
+  project_date     DateTime?
+  project_location String?       @db.MediumText
+  project_status   ProjectStatus @default(completed)
+  is_featured      Boolean       @default(false)
+  order            Int           @default(0)
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+  status           PublishStatus @default(published)
+  published_at     DateTime?
+
+  @@unique([locale, slug])
+  @@map("projects")
+}
+
+model Services {
+  id             String        @id @db.Char(36) @default(uuid())
+  locale         String        @db.VarChar(8)
+  title          String
+  slug           String        @db.VarChar(191)
+  description    String?       @db.MediumText
+  content_rich   Json?
+  featured_image String?       @db.VarChar(1024)
+  gallery_images Json?
+  icon_key       String?       @db.VarChar(128)
+  is_featured    Boolean       @default(false)
+  order          Int           @default(0)
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  status         PublishStatus @default(published)
+  published_at   DateTime?
+
+  @@unique([locale, slug])
+  @@map("services")
+}
+
+model SiteSettings {
+  id                   String   @id @db.Char(36) @default(uuid())
+  hero_bg_url          String?  @db.VarChar(1024)
+  hero_overlay_opacity Decimal? @db.Decimal(5, 2)
+  hero_min_height_vh   Int?
+  hero_top_padding_px  Int?
+  content_max_width_px Int?
+  hero_title_ru        String?  @db.MediumText
+  hero_subtitle_ru     String?  @db.MediumText
+  cta1_text_ru         String?  @db.MediumText
+  cta1_link            String?  @db.VarChar(1024)
+  cta2_text_ru         String?  @db.MediumText
+  cta2_link            String?  @db.VarChar(1024)
+  hero_title_en        String?  @db.MediumText
+  hero_subtitle_en     String?  @db.MediumText
+  cta1_text_en         String?  @db.MediumText
+  cta2_text_en         String?  @db.MediumText
+  hero_title_kk        String?  @db.MediumText
+  hero_subtitle_kk     String?  @db.MediumText
+  cta1_text_kk         String?  @db.MediumText
+  cta2_text_kk         String?  @db.MediumText
+  locale_default       String?  @db.VarChar(8)
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(191)
+  passwordHash String   @db.VarChar(191)
+  role         String   @default("admin") @db.VarChar(32)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    Int
+  jwt       String   @db.VarChar(1024)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("sessions")
+}
