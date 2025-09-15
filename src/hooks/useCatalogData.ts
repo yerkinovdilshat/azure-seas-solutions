@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { catalogApi } from '@/lib/api';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
 
 interface CatalogItem {
   id: string;
@@ -31,153 +30,51 @@ interface CatalogFilters {
   manufacturer?: string;
   type?: 'production' | 'supply';
   is_ctkz?: boolean;
+  page?: number;
+  pageSize?: number;
 }
 
 export const useCatalogData = (filters: CatalogFilters = {}) => {
-  const [data, setData] = useState<CatalogItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
   const { i18n } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const isPreview = searchParams.get('preview') === '1';
+  
+  return useQuery({
+    queryKey: ['catalog', 'products', { ...filters, locale: i18n.language }],
+    queryFn: async () => {
+      const result: any = await catalogApi.getProducts({ 
+        ...filters, 
+        locale: i18n.language 
+      });
+      return {
+        data: result?.products || [],
+        totalCount: result?.pagination?.total || 0,
+        loading: false,
+        error: null
+      };
+    },
+  });
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Build query conditions object to avoid complex type chaining
-        const conditions: any = {
-          locale: i18n.language
-        };
-
-        if (!isPreview) {
-          conditions.status = 'published';
-        }
-
-        if (filters.manufacturer) {
-          conditions.manufacturer = filters.manufacturer;
-        }
-
-        // Handle type filters
-        if (filters.type === 'production') {
-          conditions.is_ctkz = true;
-        } else if (filters.type === 'supply') {
-          conditions.is_ctkz = false;
-        }
-
-        if (filters.is_ctkz !== undefined) {
-          conditions.is_ctkz = filters.is_ctkz;
-        }
-
-        // Build the query
-        let query = supabase
-          .from('catalog_products')
-          .select('*', { count: 'exact' })
-          .match(conditions)
-          .order('is_featured', { ascending: false })
-          .order('published_at', { ascending: false });
-
-        // Apply search filter separately to avoid type issues
-        if (filters.search) {
-          query = query.ilike('title', `%${filters.search}%`);
-        }
-
-        const { data: result, error: queryError, count } = await query;
-
-        if (queryError) throw queryError;
-
-        // Fallback to default locale if no results
-        if ((!result || result.length === 0) && i18n.language !== 'en') {
-          const fallbackConditions: any = {
-            locale: 'en'
-          };
-
-          if (!isPreview) {
-            fallbackConditions.status = 'published';
-          }
-
-          if (filters.manufacturer) {
-            fallbackConditions.manufacturer = filters.manufacturer;
-          }
-
-          if (filters.type === 'production') {
-            fallbackConditions.is_ctkz = true;
-          } else if (filters.type === 'supply') {
-            fallbackConditions.is_ctkz = false;
-          }
-
-          if (filters.is_ctkz !== undefined) {
-            fallbackConditions.is_ctkz = filters.is_ctkz;
-          }
-
-          let fallbackQuery = supabase
-            .from('catalog_products')
-            .select('*', { count: 'exact' })
-            .match(fallbackConditions)
-            .order('is_featured', { ascending: false })
-            .order('published_at', { ascending: false });
-
-          if (filters.search) {
-            fallbackQuery = fallbackQuery.ilike('title', `%${filters.search}%`);
-          }
-
-          const { data: fallbackData, error: fallbackError, count: fallbackCount } = await fallbackQuery;
-          if (fallbackError) throw fallbackError;
-          setData(fallbackData || []);
-          setTotalCount(fallbackCount || 0);
-        } else {
-          setData(result || []);
-          setTotalCount(count || 0);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [i18n.language, isPreview, filters.search, filters.manufacturer, filters.type, filters.is_ctkz]);
-
-  return { data, loading, error, totalCount };
+export const useCatalogProduct = (slug: string) => {
+  const { i18n } = useTranslation();
+  
+  return useQuery({
+    queryKey: ['catalog', 'product', slug, i18n.language],
+    queryFn: () => catalogApi.getProduct(slug, i18n.language),
+    enabled: !!slug,
+  });
 };
 
 export const useCatalogManufacturers = () => {
-  const [manufacturers, setManufacturers] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    const fetchManufacturers = async () => {
-      try {
-        setLoading(true);
-        
-        const { data, error } = await supabase
-          .from('catalog_products')
-          .select('manufacturer')
-          .eq('locale', i18n.language)
-          .eq('status', 'published')
-          .not('manufacturer', 'is', null);
-
-        if (error) throw error;
-
-        const uniqueManufacturers = [...new Set(
-          data?.map(item => item.manufacturer).filter(Boolean) || []
-        )].sort();
-
-        setManufacturers(uniqueManufacturers as string[]);
-      } catch (err) {
-        console.error('Error fetching manufacturers:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchManufacturers();
-  }, [i18n.language]);
-
-  return { manufacturers, loading };
+  
+  return useQuery({
+    queryKey: ['catalog', 'manufacturers', i18n.language],
+    queryFn: async () => {
+      // For now, return empty array until manufacturers API is implemented
+      return {
+        manufacturers: [] as string[],
+        loading: false
+      };
+    },
+  });
 };

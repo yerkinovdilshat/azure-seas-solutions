@@ -16,10 +16,11 @@ const Catalog = () => {
   const itemsPerPage = 8;
 
   // Get all products without filtering
-  const { data: allProducts, loading, error } = useCatalogData({});
+  const { data: catalogResponse, isLoading: loading, error } = useCatalogData({});
+  const allProducts = catalogResponse?.data || [];
 
   // Filter products locally for search
-  const filteredProducts = allProducts.filter(product => {
+  const filteredProducts = allProducts.filter((product: any) => {
     if (!searchTerm) return true;
     
     const search = searchTerm.toLowerCase();

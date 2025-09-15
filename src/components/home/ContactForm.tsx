@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { useSubmitContactForm } from '@/hooks/useContactsData';
 import { Loader2, Send, Upload, File, X } from 'lucide-react';
 
 interface ContactFormData {
@@ -28,6 +28,8 @@ const ContactForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { mutateAsync: submitForm } = useSubmitContactForm();
+
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     phone: '',
@@ -35,36 +37,31 @@ const ContactForm: React.FC = () => {
     _hp: ''
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
+    // Validate file type
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       toast({
-        title: tSafe('contacts.validation.error', 'Validation Error'),
-        description: tSafe('contacts.validation.fileTooLarge', 'File size must be less than 10MB'),
-        variant: 'destructive'
+        title: tSafe('contact.form.error.fileType', 'Invalid file type'),
+        description: tSafe('contact.form.error.fileTypeDesc', 'Please upload PDF or Word documents only'),
+        variant: "destructive",
       });
       return;
     }
 
-    // Validate file type
-    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
       toast({
-        title: tSafe('contacts.validation.error', 'Validation Error'),
-        description: tSafe('contacts.validation.invalidFileType', 'Only PDF, DOC, and DOCX files are allowed'),
-        variant: 'destructive'
+        title: tSafe('contact.form.error.fileSize', 'File too large'),
+        description: tSafe('contact.form.error.fileSizeDesc', 'File must be smaller than 10MB'),
+        variant: "destructive",
       });
       return;
     }
@@ -79,38 +76,20 @@ const ContactForm: React.FC = () => {
     }
   };
 
-  const validateForm = (): { valid: boolean; errors: string[] } => {
-    const errors: string[] = [];
-
-    if (!formData.name.trim() || formData.name.trim().length < 2) {
-      errors.push(tSafe('contacts.validation.nameRequired', 'Name is required'));
-    }
-
-    if (!formData.phone.trim() || formData.phone.trim().length < 5) {
-      errors.push(tSafe('contacts.validation.phoneRequired', 'Phone is required'));
-    }
-
-    if (!formData.message.trim() || formData.message.trim().length < 10) {
-      errors.push(tSafe('contacts.validation.messageRequired', 'Message is required'));
-    }
-
-    // Check honeypot
-    if (formData._hp.trim() !== '') {
-      errors.push('Bot detected');
-    }
-
-    return { valid: errors.length === 0, errors };
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const validation = validateForm();
-    if (!validation.valid) {
+    // Check honeypot
+    if (formData._hp) {
+      return; // Silent fail for bots
+    }
+
+    // Validate required fields
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.message.trim()) {
       toast({
-        title: tSafe('contacts.validation.error', 'Validation Error'),
-        description: validation.errors.join(', '),
-        variant: 'destructive'
+        title: tSafe('contact.form.error.required', 'Required fields missing'),
+        description: tSafe('contact.form.error.requiredDesc', 'Please fill in all required fields'),
+        variant: "destructive",
       });
       return;
     }
@@ -118,75 +97,34 @@ const ContactForm: React.FC = () => {
     setLoading(true);
 
     try {
-      let resumeUrl = null;
-
-      // Upload resume if selected
+      const formDataToSubmit = new FormData();
+      formDataToSubmit.append('name', formData.name);
+      formDataToSubmit.append('phone', formData.phone);
+      formDataToSubmit.append('message', formData.message);
+      
       if (selectedFile) {
-        const fileName = `${Date.now()}_${selectedFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('docs')
-          .upload(`resumes/${fileName}`, selectedFile);
-
-        if (uploadError) {
-          throw new Error(`Resume upload failed: ${uploadError.message}`);
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('docs')
-          .getPublicUrl(uploadData.path);
-
-        resumeUrl = publicUrl;
+        formDataToSubmit.append('resume', selectedFile);
       }
 
-      // Call edge function for contact form submission
-      const { data, error } = await supabase.functions.invoke('contact-form', {
-        body: {
-          ...formData,
-          resumeUrl,
-          resumeFileName: selectedFile?.name
-        }
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.success) {
-        toast({
-          title: tSafe('contacts.success.title', 'Message Sent'),
-          description: tSafe('contacts.success.description', 'Thank you for your message. We will get back to you soon.')
-        });
-
-        // Reset form
-        setFormData({
-          name: '',
-          phone: '',
-          message: '',
-          _hp: ''
-        });
-        setSelectedFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      } else {
-        throw new Error(data.error || 'Submission failed');
-      }
-
-    } catch (error: any) {
-      console.error('Contact form error:', error);
+      await submitForm(formDataToSubmit);
       
-      let errorMessage = tSafe('contacts.error.generic', 'Something went wrong. Please try again.');
-      
-      if (error.message?.includes('Too many requests')) {
-        errorMessage = tSafe('contacts.error.rateLimited', 'Too many requests. Please try again later.');
-      } else if (error.message?.includes('Validation failed')) {
-        errorMessage = tSafe('contacts.error.validation', 'Please check your input and try again.');
+      // Reset form
+      setFormData({ name: '', phone: '', message: '', _hp: '' });
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
 
       toast({
-        title: tSafe('contacts.error.title', 'Error'),
-        description: errorMessage,
-        variant: 'destructive'
+        title: tSafe('contact.form.success.title', 'Message sent successfully'),
+        description: tSafe('contact.form.success.description', 'We will get back to you soon'),
+      });
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+      toast({
+        title: tSafe('contact.form.error.send', 'Failed to send message'),
+        description: error.message || tSafe('contact.form.error.sendDesc', 'Please try again later'),
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -194,165 +132,165 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
-      <div className="mb-6">
-        <h3 className="text-2xl font-bold text-foreground mb-2">
-          {tSafe('contacts.form.title', 'Get in Touch')}
-        </h3>
-        {isUsingFallback('contacts.form.title') && (
-          <p className="text-xs text-muted-foreground/70 italic mb-2">
-            {tSafe('common.translationComingSoon', 'Translation coming soon')}
-          </p>
-        )}
-        <p className="text-muted-foreground">
-          {tSafe('contacts.form.subtitle', 'Ready to discuss your project? Contact us today for a consultation.')}
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Honeypot field - hidden from users */}
-        <input
-          type="text"
-          name="_hp"
-          value={formData._hp}
-          onChange={handleInputChange}
-          className="hidden"
-          tabIndex={-1}
-          autoComplete="off"
-        />
-
-        <div className="space-y-2">
-          <Label htmlFor="name" className="text-sm font-medium">
-            {tSafe('contacts.name', 'Full Name')} *
-          </Label>
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder={tSafe('contacts.namePlaceholder', 'Enter your full name')}
-            disabled={loading}
-            className="w-full"
-            maxLength={100}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phone" className="text-sm font-medium">
-            {tSafe('contacts.phone', 'Phone Number')} *
-          </Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleInputChange}
-            placeholder={tSafe('contacts.phonePlaceholder', 'Enter your phone number')}
-            disabled={loading}
-            className="w-full"
-            maxLength={20}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="message" className="text-sm font-medium">
-            {tSafe('contacts.message', 'Message')} *
-          </Label>
-          <Textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleInputChange}
-            placeholder={tSafe('contacts.messagePlaceholder', 'Tell us about your project or inquiry...')}
-            disabled={loading}
-            className="w-full min-h-[120px]"
-            maxLength={1000}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="resume" className="text-sm font-medium">
-            {tSafe('contacts.resume', 'Resume (Optional)')}
-          </Label>
-          <div className="space-y-2">
-            <p className="text-xs text-muted-foreground">
-              {tSafe('contacts.resumeDescription', 'Upload your resume (PDF, DOC, DOCX - max 10MB)')}
+    <section className="py-16 bg-background relative">
+      <div className="container mx-auto px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              {tSafe('contact.form.title', 'Send us a message')}
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              {tSafe('contact.form.subtitle', 'We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.')}
             </p>
-            <div className="flex items-center gap-2">
-              <input
-                ref={fileInputRef}
-                id="resume"
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileSelect}
-                disabled={loading}
-                className="hidden"
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Honeypot field - hidden from users */}
+            <input
+              type="text"
+              name="_hp"
+              value={formData._hp}
+              onChange={handleInputChange}
+              style={{ position: 'absolute', left: '-9999px' }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-foreground">
+                  {tSafe('contact.form.name', 'Full Name')} *
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full"
+                  placeholder={tSafe('contact.form.namePlaceholder', 'Your full name')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-foreground">
+                  {tSafe('contact.form.phone', 'Phone Number')} *
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full"
+                  placeholder={tSafe('contact.form.phonePlaceholder', '+7 (xxx) xxx-xx-xx')}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="message" className="text-foreground">
+                {tSafe('contact.form.message', 'Message')} *
+              </Label>
+              <Textarea
+                id="message"
+                name="message"
+                required
+                value={formData.message}
+                onChange={handleInputChange}
+                rows={6}
+                className="w-full resize-none"
+                placeholder={tSafe('contact.form.messagePlaceholder', 'Tell us about your project or inquiry...')}
               />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <Upload className="h-4 w-4" />
-                {tSafe('contacts.uploadResume', 'Choose File')}
-              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="resume" className="text-foreground">
+                {tSafe('contact.form.resume', 'Resume/CV')} 
+                <span className="text-muted-foreground text-sm ml-2">
+                  ({tSafe('contact.form.optional', 'optional')})
+                </span>
+              </Label>
               
-              {selectedFile ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <File className="h-4 w-4" />
-                  <span className="truncate max-w-48">
-                    {tSafe('contacts.fileSelected', 'File selected:')} {selectedFile.name}
-                  </span>
+              {!selectedFile ? (
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="resume"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {tSafe('contact.form.uploadText', 'Click to upload or drag and drop')}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {tSafe('contact.form.fileTypes', 'PDF, DOC, DOCX (max 10MB)')}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {tSafe('contact.form.chooseFile', 'Choose File')}
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between bg-muted p-4 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <File className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={removeFile}
-                    disabled={loading}
-                    className="h-auto p-1"
+                    className="text-muted-foreground hover:text-destructive"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="w-4 h-4" />
                   </Button>
                 </div>
-              ) : (
-                <span className="text-sm text-muted-foreground">
-                  {tSafe('contacts.noFileChosen', 'No file chosen')}
-                </span>
               )}
             </div>
-          </div>
+
+            <Button
+              type="submit"
+              className="w-full btn-primary"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {tSafe('contact.form.sending', 'Sending...')}
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  {tSafe('contact.form.submit', 'Send Message')}
+                </>
+              )}
+            </Button>
+
+            <p className="text-xs text-muted-foreground text-center">
+              {tSafe('contact.form.privacy', 'By submitting this form, you agree to our privacy policy.')}
+            </p>
+          </form>
         </div>
-
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full btn-primary"
-          size="lg"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {tSafe('contacts.sending', 'Sending...')}
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 h-4 w-4" />
-              {tSafe('contacts.submit', 'Send Message')}
-            </>
-          )}
-        </Button>
-
-        <p className="text-xs text-muted-foreground text-center">
-          {tSafe('contacts.form.privacy', 'Your information will be handled according to our privacy policy.')}
-        </p>
-      </form>
-    </div>
+      </div>
+    </section>
   );
 };
 
