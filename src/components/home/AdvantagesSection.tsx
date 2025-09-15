@@ -17,7 +17,7 @@ const iconMap = {
 
 const AdvantagesSection: React.FC = () => {
   const { t } = useTranslation();
-  const { data: advantages, loading } = useAdvantages();
+  const { data: advantages, isLoading: loading } = useAdvantages();
 
   if (loading) {
     return (
@@ -66,11 +66,11 @@ const AdvantagesSection: React.FC = () => {
                 </div>
                 
                 <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {advantage.title_key ? t(advantage.title_key, advantage.title) : advantage.title}
+                  {advantage.title_key ? t(advantage.title_key) : 'Advantage'}
                 </h3>
                 
                 <p className="text-muted-foreground leading-relaxed">
-                  {advantage.description_key ? t(advantage.description_key, advantage.description) : advantage.description}
+                  {advantage.description_key ? t(advantage.description_key) : 'Advantage description'}
                 </p>
               </div>
             );

@@ -1,150 +1,66 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
-export interface Service {
+interface ServiceItem {
   id: string;
-  locale: string;
   title: string;
+  description?: string;
   slug: string;
-  description: string;
-  content_rich: any;
-  featured_image: string;
-  gallery_images: string[];
-  icon_key: string;
-  status: 'draft' | 'published';
+  featured_image?: string;
+  gallery_images?: string[];
+  content_rich?: any;
+  icon_key?: string;
   is_featured: boolean;
-  order: number;
-  published_at: string;
+  locale: string;
+  status: string;
+  published_at?: string;
   created_at: string;
   updated_at: string;
 }
 
-export const useServicesData = (isPreview: boolean = false) => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface ServiceFilters {
+  search?: string;
+  page?: number;
+  perPage?: number;
+}
+
+export const useFeaturedServices = () => {
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    fetchServices();
-  }, [i18n.language, isPreview]);
-
-  const fetchServices = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      let query = supabase
-        .from('services')
-        .select('*')
-        .eq('locale', i18n.language);
-
-      // Only show published services in non-preview mode
-      if (!isPreview) {
-        query = query.eq('status', 'published');
-      }
-
-      const { data, error } = await query.order('order', { ascending: true });
-
-      if (error) throw error;
-
-      // If no services found in current language, try English as fallback
-      if (!data || data.length === 0 && i18n.language !== 'en') {
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('services')
-          .select('*')
-          .eq('locale', 'en')
-          .eq('status', 'published')
-          .order('order', { ascending: true });
-
-        if (fallbackError) throw fallbackError;
-        setServices((fallbackData || []).map(service => ({
-          ...service,
-          status: service.status as 'draft' | 'published'
-        })));
-      } else {
-        setServices((data || []).map(service => ({
-          ...service,
-          status: service.status as 'draft' | 'published'
-        })));
-      }
-    } catch (err: any) {
-      setError(err.message);
-      console.error('Error fetching services:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    services,
-    loading,
-    error,
-    refetch: fetchServices
-  };
+  
+  return useQuery({
+    queryKey: ['services', 'featured', i18n.language],
+    queryFn: async () => {
+      // For now, return empty array until services API is implemented
+      return [];
+    },
+  });
 };
 
-export const useFeaturedServices = (limit: number = 3) => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const useServicesData = (filters: ServiceFilters = {}) => {
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    fetchFeaturedServices();
-  }, [i18n.language, limit]);
-
-  const fetchFeaturedServices = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('locale', i18n.language)
-        .eq('status', 'published')
-        .eq('is_featured', true)
-        .order('order', { ascending: true })
-        .limit(limit);
-
-      if (error) throw error;
-
-      // If no featured services found in current language, try English as fallback
-      if (!data || data.length === 0 && i18n.language !== 'en') {
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('services')
-          .select('*')
-          .eq('locale', 'en')
-          .eq('status', 'published')
-          .eq('is_featured', true)
-          .order('order', { ascending: true })
-          .limit(limit);
-
-        if (fallbackError) throw fallbackError;
-        setServices((fallbackData || []).map(service => ({
-          ...service,
-          status: service.status as 'draft' | 'published'
-        })));
-      } else {
-        setServices((data || []).map(service => ({
-          ...service,
-          status: service.status as 'draft' | 'published'
-        })));
-      }
-    } catch (err: any) {
-      setError(err.message);
-      console.error('Error fetching featured services:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    services,
-    loading,
-    error,
-    refetch: fetchFeaturedServices
-  };
+  
+  return useQuery({
+    queryKey: ['services', 'list', { ...filters, locale: i18n.language }],
+    queryFn: async (): Promise<{
+      data: ServiceItem[];
+      loading: boolean;
+      error: string | null;
+      totalCount: number;
+      currentPage: number;
+      totalPages: number;
+      perPage: number;
+    }> => {
+      // For now, return empty data until services API is implemented
+      const perPage = filters.perPage || 12;
+      return {
+        data: [],
+        loading: false,
+        error: null,
+        totalCount: 0,
+        currentPage: filters.page || 1,
+        totalPages: 0,
+        perPage
+      };
+    },
+  });
 };

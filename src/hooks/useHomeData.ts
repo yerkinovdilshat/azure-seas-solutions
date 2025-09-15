@@ -1,287 +1,98 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { catalogApi } from '@/lib/api';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
-import { usePreviewMode } from '@/hooks/useContent';
-
-// Hook for fetching featured/latest content with fallback logic
-const useFeaturedContent = <T>(
-  table: string,
-  limit: number,
-  filters: Record<string, any> = {}
-) => {
-  const { i18n } = useTranslation();
-  console.log('🌐 useFeaturedContent called for table:', table, 'with locale:', i18n.language);
-  const preview = usePreviewMode();
-  const [data, setData] = useState<T[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      setLoading(true);
-      setError(null);
-      console.log('🔄 Fetching data for table:', table, 'locale:', i18n.language, 'filters:', filters);
-
-      try {
-        // First get featured items
-        let featuredQuery = (supabase as any)
-          .from(table)
-          .select('*')
-          .eq('locale', i18n.language)
-          .eq('is_featured', true);
-
-        // Add additional filters
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            featuredQuery = featuredQuery.eq(key, value);
-          }
-        });
-
-        // Add status filter unless preview mode
-        if (!preview) {
-          featuredQuery = featuredQuery.eq('status', 'published');
-        }
-
-        featuredQuery = featuredQuery.order('order', { ascending: true })
-                                   .order('created_at', { ascending: false });
-
-        const { data: featuredData, error: featuredError } = await featuredQuery;
-        console.log('📊 Featured data result for', table, ':', { count: featuredData?.length || 0, error: featuredError });
-
-        if (featuredError) throw featuredError;
-
-        let finalData = featuredData || [];
-        
-        // If no data found and not English, try English fallback
-        if (finalData.length === 0 && i18n.language !== 'en') {
-          console.log('🔄 No data found for', i18n.language, 'trying English fallback...');
-          
-          let fallbackQuery = (supabase as any)
-            .from(table)
-            .select('*')
-            .eq('locale', 'en')
-            .eq('is_featured', true);
-
-          Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-              fallbackQuery = fallbackQuery.eq(key, value);
-            }
-          });
-
-          if (!preview) {
-            fallbackQuery = fallbackQuery.eq('status', 'published');
-          }
-
-          fallbackQuery = fallbackQuery.order('order', { ascending: true })
-                                     .order('created_at', { ascending: false });
-
-          const { data: fallbackFeaturedData, error: fallbackFeaturedError } = await fallbackQuery;
-          console.log('📊 English fallback featured result:', { count: fallbackFeaturedData?.length || 0, error: fallbackFeaturedError });
-          
-          if (!fallbackFeaturedError && fallbackFeaturedData) {
-            finalData = fallbackFeaturedData;
-          }
-        }
-
-        // If we need more items, get latest non-featured ones
-        if (finalData.length < limit) {
-          const remainingCount = limit - finalData.length;
-          const featuredIds = finalData.map((item: any) => item.id);
-
-          let latestQuery = (supabase as any)
-            .from(table)
-            .select('*')
-            .eq('locale', i18n.language);
-
-          // Exclude already featured items
-          if (featuredIds.length > 0) {
-            latestQuery = latestQuery.not('id', 'in', `(${featuredIds.join(',')})`);
-          }
-
-          // Add additional filters
-          Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-              latestQuery = latestQuery.eq(key, value);
-            }
-          });
-
-          // Add status filter unless preview mode
-          if (!preview) {
-            latestQuery = latestQuery.eq('status', 'published');
-          }
-
-          latestQuery = latestQuery.order('published_at', { ascending: false })
-                                  .order('created_at', { ascending: false })
-                                  .limit(remainingCount);
-
-          const { data: latestData, error: latestError } = await latestQuery;
-          console.log('📊 Latest data result for', table, ':', { count: latestData?.length || 0, error: latestError });
-
-          if (latestError) throw latestError;
-
-          finalData = [...finalData, ...(latestData || [])];
-          
-          // If still no data and not English, try English fallback for latest
-          if (finalData.length === 0 && i18n.language !== 'en') {
-            console.log('🔄 No latest data found for', i18n.language, 'trying English fallback...');
-            
-            let fallbackLatestQuery = (supabase as any)
-              .from(table)
-              .select('*')
-              .eq('locale', 'en');
-
-            Object.entries(filters).forEach(([key, value]) => {
-              if (value !== undefined && value !== null) {
-                fallbackLatestQuery = fallbackLatestQuery.eq(key, value);
-              }
-            });
-
-            if (!preview) {
-              fallbackLatestQuery = fallbackLatestQuery.eq('status', 'published');
-            }
-
-            fallbackLatestQuery = fallbackLatestQuery.order('published_at', { ascending: false })
-                                              .order('created_at', { ascending: false })
-                                              .limit(limit);
-
-            const { data: fallbackLatestData, error: fallbackLatestError } = await fallbackLatestQuery;
-            console.log('📊 English fallback latest result:', { count: fallbackLatestData?.length || 0, error: fallbackLatestError });
-            
-            if (!fallbackLatestError && fallbackLatestData) {
-              finalData = fallbackLatestData;
-            }
-          }
-        }
-
-        // Ensure we don't exceed the limit
-        finalData = finalData.slice(0, limit);
-        console.log('✅ Final data for', table, ':', { count: finalData.length, locale: i18n.language });
-
-        setData(finalData);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch content');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchContent();
-  }, [table, limit, i18n.language, preview, JSON.stringify(filters)]);
-
-  return { data, loading, error };
-};
 
 // Specific hooks for home page sections
 export const useFeaturedCatalogProducts = () => {
-  return useFeaturedContent('catalog_products', 6);
+  const { i18n } = useTranslation();
+  
+  return useQuery({
+    queryKey: ['catalog', 'featured', i18n.language],
+    queryFn: async () => {
+      try {
+        const result = await catalogApi.getProducts({ 
+          page: 1, 
+          pageSize: 6, 
+          locale: i18n.language
+        });
+        return result.products || [];
+      } catch (error) {
+        return [];
+      }
+    },
+  });
 };
 
 export const useFeaturedServices = () => {
-  return useFeaturedContent('services', 3);
+  const { i18n } = useTranslation();
+  
+  return useQuery({
+    queryKey: ['services', 'featured', i18n.language],
+    queryFn: async () => {
+      // For now, return empty array until services API is implemented
+      return [];
+    },
+  });
 };
 
 export const useLatestProjects = () => {
-  return useFeaturedContent('projects', 3);
+  const { i18n } = useTranslation();
+  
+  return useQuery({
+    queryKey: ['projects', 'latest', i18n.language],
+    queryFn: async () => {
+      // For now, return empty array until projects API is implemented
+      return [];
+    },
+  });
 };
 
 export const useLatestNews = () => {
-  return useFeaturedContent('news', 3);
+  const { i18n } = useTranslation();
+  
+  return useQuery({
+    queryKey: ['news', 'latest', i18n.language],
+    queryFn: async () => {
+      // For now, return empty array until news API is implemented
+      return [];
+    },
+  });
 };
 
-// Hook for advantages (could be from settings or a dedicated table)
+// Hook for advantages (hardcoded for now)
 export const useAdvantages = () => {
   const { i18n } = useTranslation();
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAdvantages = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        // Try to fetch from a hypothetical advantages table first
-        // If it doesn't exist, we'll use fallback data
-        const { data: advantagesData, error: advantagesError } = await (supabase as any)
-          .from('site_advantages')
-          .select('*')
-          .eq('locale', i18n.language)
-          .order('order', { ascending: true });
-
-        if (advantagesError && !advantagesError.message.includes('does not exist')) {
-          throw advantagesError;
+  
+  return useQuery({
+    queryKey: ['advantages', i18n.language],
+    queryFn: async () => {
+      const fallbackAdvantages = [
+        {
+          id: '1',
+          icon: 'Shield',
+          title_key: 'advantages.reliability.title',
+          description_key: 'advantages.reliability.description'
+        },
+        {
+          id: '2',
+          icon: 'Clock',
+          title_key: 'advantages.efficiency.title',
+          description_key: 'advantages.efficiency.description'
+        },
+        {
+          id: '3',
+          icon: 'Users',
+          title_key: 'advantages.expertise.title',
+          description_key: 'advantages.expertise.description'
+        },
+        {
+          id: '4',
+          icon: 'Award',
+          title_key: 'advantages.quality.title',
+          description_key: 'advantages.quality.description'
         }
-
-        if (advantagesData && advantagesData.length > 0) {
-          setData(advantagesData);
-        } else {
-          // Fallback to hardcoded advantages with i18n keys
-          const fallbackAdvantages = [
-            {
-              id: '1',
-              icon: 'Shield',
-              title_key: 'advantages.reliability.title',
-              description_key: 'advantages.reliability.description'
-            },
-            {
-              id: '2',
-              icon: 'Clock',
-              title_key: 'advantages.efficiency.title',
-              description_key: 'advantages.efficiency.description'
-            },
-            {
-              id: '3',
-              icon: 'Users',
-              title_key: 'advantages.expertise.title',
-              description_key: 'advantages.expertise.description'
-            },
-            {
-              id: '4',
-              icon: 'Award',
-              title_key: 'advantages.quality.title',
-              description_key: 'advantages.quality.description'
-            }
-          ];
-          setData(fallbackAdvantages);
-        }
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch advantages');
-        // Set fallback data even on error
-        const fallbackAdvantages = [
-          {
-            id: '1',
-            icon: 'Shield',
-            title_key: 'advantages.reliability.title',
-            description_key: 'advantages.reliability.description'
-          },
-          {
-            id: '2',
-            icon: 'Clock',
-            title_key: 'advantages.efficiency.title',
-            description_key: 'advantages.efficiency.description'
-          },
-          {
-            id: '3',
-            icon: 'Users',
-            title_key: 'advantages.expertise.title',
-            description_key: 'advantages.expertise.description'
-          },
-          {
-            id: '4',
-            icon: 'Award',
-            title_key: 'advantages.quality.title',
-            description_key: 'advantages.quality.description'
-          }
-        ];
-        setData(fallbackAdvantages);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdvantages();
-  }, [i18n.language]);
-
-  return { data, loading, error };
+      ];
+      return fallbackAdvantages;
+    },
+  });
 };

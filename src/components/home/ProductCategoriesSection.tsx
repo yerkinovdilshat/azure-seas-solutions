@@ -9,7 +9,7 @@ import { useFeaturedCatalogProducts } from '@/hooks/useHomeData';
 
 const ProductCategoriesSection: React.FC = () => {
   const { t } = useTranslation();
-  const { data: products, loading, error } = useFeaturedCatalogProducts();
+  const { data: products, isLoading: loading, error } = useFeaturedCatalogProducts();
 
   if (loading) {
     return (
@@ -35,7 +35,7 @@ const ProductCategoriesSection: React.FC = () => {
     );
   }
 
-  if (error || products.length === 0) {
+  if (error || !products || products.length === 0) {
     return (
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 text-center">

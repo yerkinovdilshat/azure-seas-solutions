@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { aboutApi } from '@/lib/api';
 import { useTranslation } from 'react-i18next';
 
 export interface AboutBlock {
@@ -18,41 +18,15 @@ export interface AboutBlock {
 }
 
 export const useAboutBlocks = () => {
-  const [data, setData] = useState<AboutBlock[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    const fetchBlocks = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data: blocks, error: queryError } = await supabase
-          .from('about_blocks')
-          .select('*')
-          .eq('status', 'published')
-          .order('block_key');
-
-        if (queryError) {
-          throw queryError;
-        }
-
-        setData(blocks || []);
-      } catch (err) {
-        console.error('Error fetching about blocks:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch about blocks');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlocks();
-  }, []);
+  
+  const { data, isLoading: loading, error } = useQuery({
+    queryKey: ['about', 'blocks', i18n.language],
+    queryFn: () => aboutApi.getGeneral(i18n.language),
+  });
 
   const getBlock = (key: string): AboutBlock | null => {
-    return data.find(block => block.block_key === key) || null;
+    return data?.find((block: AboutBlock) => block.block_key === key) || null;
   };
 
   const getLocalizedContent = (block: AboutBlock | null, field: 'title' | 'content'): string => {
@@ -67,9 +41,9 @@ export const useAboutBlocks = () => {
   };
 
   return {
-    data,
+    data: data || [],
     loading,
-    error,
+    error: error?.message || null,
     getBlock,
     getLocalizedContent
   };

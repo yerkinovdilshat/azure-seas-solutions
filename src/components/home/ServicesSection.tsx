@@ -9,7 +9,7 @@ import { useFeaturedServices } from '@/hooks/useServicesData';
 
 const ServicesSection: React.FC = () => {
   const { t } = useTranslation();
-  const { services, loading, error } = useFeaturedServices();
+  const { data: services, isLoading: loading, error } = useFeaturedServices();
 
   if (loading) {
     return (
@@ -36,7 +36,7 @@ const ServicesSection: React.FC = () => {
     );
   }
 
-  if (error || services.length === 0) {
+  if (error || !services || services.length === 0) {
     return (
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 text-center">

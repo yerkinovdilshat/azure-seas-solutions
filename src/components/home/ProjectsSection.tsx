@@ -9,7 +9,7 @@ import { useLatestProjects } from '@/hooks/useHomeData';
 
 const ProjectsSection: React.FC = () => {
   const { t, showFallbackIndicator } = useTranslationHelper();
-  const { data: projects, loading, error } = useLatestProjects();
+  const { data: projects, isLoading: loading, error } = useLatestProjects();
 
   if (loading) {
     return (
@@ -36,7 +36,7 @@ const ProjectsSection: React.FC = () => {
     );
   }
 
-  if (error || projects.length === 0) {
+  if (error || !projects || projects.length === 0) {
     return (
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 text-center">

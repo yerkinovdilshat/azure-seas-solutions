@@ -9,7 +9,7 @@ import { useLatestNews } from '@/hooks/useHomeData';
 
 const NewsSection: React.FC = () => {
   const { t, showFallbackIndicator } = useTranslationHelper();
-  const { data: news, loading, error } = useLatestNews();
+  const { data: news, isLoading: loading, error } = useLatestNews();
 
   if (loading) {
     return (
@@ -36,7 +36,7 @@ const NewsSection: React.FC = () => {
     );
   }
 
-  if (error || news.length === 0) {
+  if (error || !news || news.length === 0) {
     return (
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 text-center">
