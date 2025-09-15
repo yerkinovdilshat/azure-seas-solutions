@@ -20,9 +20,13 @@ export interface AboutBlock {
 export const useAboutBlocks = () => {
   const { i18n } = useTranslation();
   
-  const { data, isLoading: loading, error } = useQuery({
+  const { data, isLoading: loading, error } = useQuery<AboutBlock[]>({
     queryKey: ['about', 'blocks', i18n.language],
-    queryFn: () => aboutApi.getGeneral(i18n.language),
+    queryFn: async () => {
+      const res: any = await aboutApi.getGeneral(i18n.language);
+      // Accept both array or object with blocks
+      return Array.isArray(res) ? res as AboutBlock[] : (res?.blocks as AboutBlock[] ?? []);
+    },
   });
 
   const getBlock = (key: string): AboutBlock | null => {
@@ -41,9 +45,9 @@ export const useAboutBlocks = () => {
   };
 
   return {
-    data: data || [],
+    data: (data as AboutBlock[]) || [],
     loading,
-    error: error?.message || null,
+    error: (error as any)?.message || null,
     getBlock,
     getLocalizedContent
   };

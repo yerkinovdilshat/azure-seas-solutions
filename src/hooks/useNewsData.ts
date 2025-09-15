@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 interface NewsItem {
@@ -27,44 +26,19 @@ interface NewsFilters {
 
 export const useNewsData = (filters: NewsFilters = {}) => {
   const { i18n } = useTranslation();
-  
-  return useQuery({
-    queryKey: ['news', 'list', { ...filters, locale: i18n.language }],
-    queryFn: async (): Promise<{
-      data: NewsItem[];
-      totalCount: number;
-      currentPage: number;
-      totalPages: number;
-      perPage: number;
-      loading: boolean;
-      error: string | null;
-    }> => {
-      // For now, return empty data until news API is implemented
-      const perPage = filters.perPage || 12;
-      return {
-        data: [],
-        totalCount: 0,
-        currentPage: filters.page || 1,
-        totalPages: 0,
-        perPage,
-        loading: false,
-        error: null
-      };
-    },
-  });
+  const perPage = filters.perPage || 12;
+  return {
+    data: [] as NewsItem[],
+    totalCount: 0,
+    currentPage: filters.page || 1,
+    totalPages: 0,
+    perPage,
+    loading: false,
+    error: null as string | null,
+  };
 };
 
 export const useNewsYears = () => {
   const { i18n } = useTranslation();
-  
-  return useQuery({
-    queryKey: ['news', 'years', i18n.language],
-    queryFn: async (): Promise<{ years: string[]; loading: boolean }> => {
-      // For now, return empty years until news API is implemented
-      return {
-        years: [],
-        loading: false
-      };
-    },
-  });
+  return { years: [] as string[], loading: false };
 };

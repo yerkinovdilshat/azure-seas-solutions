@@ -13,8 +13,7 @@ const Header = () => {
   const { tSafe } = useTranslationHelper();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: servicesData } = useServicesData();
-  const services = servicesData?.data || [];
+  const { services } = useServicesData();
 
   // Create navigation links with dynamic services
   const navigationLinks = [

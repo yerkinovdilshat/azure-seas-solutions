@@ -10,14 +10,14 @@ export const useFeaturedCatalogProducts = () => {
     queryKey: ['catalog', 'featured', i18n.language],
     queryFn: async () => {
       try {
-        const result = await catalogApi.getProducts({ 
+        const result: any = await catalogApi.getProducts({ 
           page: 1, 
           pageSize: 6, 
           locale: i18n.language
         });
-        return result.products || [];
+        return (result?.products ?? []) as any[];
       } catch (error) {
-        return [];
+        return [] as any[];
       }
     },
   });

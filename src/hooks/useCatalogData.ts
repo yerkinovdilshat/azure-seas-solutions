@@ -168,7 +168,7 @@ export const useCatalogManufacturers = () => {
           data?.map(item => item.manufacturer).filter(Boolean) || []
         )].sort();
 
-        setManufacturers(uniqueManufacturers);
+        setManufacturers(uniqueManufacturers as string[]);
       } catch (err) {
         console.error('Error fetching manufacturers:', err);
       } finally {

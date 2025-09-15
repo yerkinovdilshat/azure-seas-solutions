@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 interface ProjectItem {
@@ -31,37 +30,15 @@ interface ProjectFilters {
 
 export const useProjectsData = (filters: ProjectFilters = {}) => {
   const { i18n } = useTranslation();
-  
-  return useQuery({
-    queryKey: ['projects', 'list', { ...filters, locale: i18n.language }],
-    queryFn: async (): Promise<{
-      data: ProjectItem[];
-      loading: boolean;
-      error: string | null;
-      totalCount: number;
-    }> => {
-      // For now, return empty data until projects API is implemented
-      return {
-        data: [],
-        loading: false,
-        error: null,
-        totalCount: 0
-      };
-    },
-  });
+  return {
+    data: [] as ProjectItem[],
+    loading: false,
+    error: null as string | null,
+    totalCount: 0,
+  };
 };
 
 export const useProjectYears = () => {
   const { i18n } = useTranslation();
-  
-  return useQuery({
-    queryKey: ['projects', 'years', i18n.language],
-    queryFn: async (): Promise<{ years: string[]; loading: boolean }> => {
-      // For now, return empty years until projects API is implemented
-      return {
-        years: [],
-        loading: false
-      };
-    },
-  });
+  return { years: [] as string[], loading: false };
 };

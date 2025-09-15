@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense } from 'react';
-import { AuthProvider } from '@/hooks/useAuth';
+// AuthProvider temporarily disabled during migration
 
 // Import i18n configuration
 import './i18n';
@@ -52,7 +52,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      
         <TooltipProvider>
           <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
           <Toaster />
@@ -101,7 +101,7 @@ const App = () => (
           </BrowserRouter>
         </Suspense>
       </TooltipProvider>
-    </AuthProvider>
+    
     </QueryClientProvider>
   </HelmetProvider>
 );
