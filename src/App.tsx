@@ -19,50 +19,33 @@ import CatalogProduction from "./pages/CatalogProduction";
 import CatalogSupply from "./pages/CatalogSupply";
 import Projects from "./pages/Projects";
 import News from "./pages/News";
+import Contacts from "./pages/Contacts";
 import Error404 from "./pages/Error404";
 import Error500 from "./pages/Error500";
 
 // Detail pages
 import ServiceDetail from "./pages/ServiceDetail";
 import ProjectDetail from "./pages/ProjectDetail";
+import NewsDetail from "./pages/NewsDetail";
+import CatalogDetail from "./pages/CatalogDetail";
 
-// Simplified Contacts page component
-const Contacts = () => (
-  <div className="container mx-auto px-4 py-8">
-    <h1 className="text-4xl font-bold">Contact Us</h1>
-    <p className="mt-4">Contact form will be implemented here</p>
-  </div>
-);
-
-// Simplified detail pages
-const NewsDetail = () => (
-  <div className="container mx-auto px-4 py-8">
-    <h1 className="text-4xl font-bold">News Article</h1>
-    <p className="mt-4">News details will be implemented here</p>
-  </div>
-);
-
-const CatalogDetail = () => (
-  <div className="container mx-auto px-4 py-8">
-    <h1 className="text-4xl font-bold">Product Details</h1>
-    <p className="mt-4">Product details will be implemented here</p>
-  </div>
-);
-
-// Simplified admin pages
-const AuthLogin = () => (
-  <div className="container mx-auto px-4 py-8">
-    <h1 className="text-4xl font-bold">Admin Login</h1>
-    <p className="mt-4">Admin authentication will be implemented here</p>
-  </div>
-);
-
-const Admin = () => (
-  <div className="container mx-auto px-4 py-8">
-    <h1 className="text-4xl font-bold">Admin Panel</h1>
-    <p className="mt-4">Admin panel will be implemented here</p>
-  </div>
-);
+// Admin pages
+import AuthLogin from "./pages/AuthLogin";
+import Admin from "./pages/Admin";
+import AdminAbout from "./pages/AdminAbout";
+import AdminAboutStory from "./pages/AdminAboutStory";
+import AdminAboutValues from "./pages/AdminAboutValues";
+import AdminAboutTimeline from "./pages/AdminAboutTimeline";
+import AdminAboutTeam from "./pages/AdminAboutTeam";
+import AdminAboutPartners from "./pages/AdminAboutPartners";
+import AdminAboutDistribution from "./pages/AdminAboutDistribution";
+import AdminAboutCertificates from "./pages/AdminAboutCertificates";
+import AdminAboutLicenses from "./pages/AdminAboutLicenses";
+import AdminNews from "./pages/AdminNews";
+import AdminProjects from "./pages/AdminProjects";
+import AdminServices from "./pages/AdminServices";
+import AdminCatalog from "./pages/AdminCatalog";
+import AdminContacts from "./pages/AdminContacts";
 
 const queryClient = new QueryClient();
 
@@ -91,9 +74,23 @@ const App = () => (
               <Route path="/news/:slug" element={<NewsDetail />} />
               <Route path="/contacts" element={<Contacts />} />
               
-              {/* Admin routes - temporarily simplified during migration */}
+              {/* Admin routes */}
               <Route path="/auth/login" element={<AuthLogin />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/about" element={<AdminAbout />} />
+        <Route path="/admin/about/story" element={<AdminAboutStory />} />
+        <Route path="/admin/about/values" element={<AdminAboutValues />} />
+        <Route path="/admin/about/timeline" element={<AdminAboutTimeline />} />
+        <Route path="/admin/about/team" element={<AdminAboutTeam />} />
+        <Route path="/admin/about/partners" element={<AdminAboutPartners />} />
+        <Route path="/admin/about/distribution" element={<AdminAboutDistribution />} />
+        <Route path="/admin/about/certificates" element={<AdminAboutCertificates />} />
+        <Route path="/admin/about/licenses" element={<AdminAboutLicenses />} />
+              <Route path="/admin/news" element={<AdminNews />} />
+              <Route path="/admin/projects" element={<AdminProjects />} />
+              <Route path="/admin/services" element={<AdminServices />} />
+              <Route path="/admin/catalog" element={<AdminCatalog />} />
+              <Route path="/admin/contacts" element={<AdminContacts />} />
               
               {/* Error routes */}
               <Route path="/404" element={<Error404 />} />

@@ -111,21 +111,7 @@
     "title": "Equipment Supply & Integrated Commissioning in Kazakhstan",
     "subtitle": "Marine Support Services is a reliable partner in HVAC service, equipment supply and industrial solutions in Kazakhstan since 2012.",
     "exploreServices": "Explore Services",
-    "requestQuote": "Request Quote",
-    "features": {
-      "equipmentSupply": {
-        "title": "Equipment Supply",
-        "description": "High-quality industrial equipment and spare parts from European manufacturers for oil & gas sector."
-      },
-      "technicalMaintenance": {
-        "title": "Technical Maintenance", 
-        "description": "Professional HVAC maintenance, repair services and commissioning for industrial facilities."
-      },
-      "industrialSolutions": {
-        "title": "Industrial Solutions",
-        "description": "Comprehensive engineering solutions and project management for complex industrial projects."
-      }
-    }
+    "requestQuote": "Request Quote"
   },
   "footer": {
     "address": "Aktau, Kazakhstan",

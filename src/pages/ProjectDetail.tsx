@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import SEO from '@/components/SEO';
 import { CustomBreadcrumb } from '@/components/ui/custom-breadcrumb';
-// import { useProject } from '@/hooks/useContent';
+import { useProject } from '@/hooks/useContent';
 import { useTranslationHelper } from '@/hooks/useTranslationHelper';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, MapPin, User, Activity } from 'lucide-react';
@@ -11,12 +11,7 @@ import { Link } from 'react-router-dom';
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, showFallbackIndicator } = useTranslationHelper();
-  // TODO: Implement with MariaDB API
-  const project = null;
-  const loading = false;
-  const error = null;
-  const isTranslationFallback = false;
-  const translationNote = '';
+  const { data: project, loading, error, isTranslationFallback, translationNote } = useProject(slug || '');
 
   if (loading) {
     return (
