@@ -28,6 +28,7 @@ import adminSiteSettings from './routes/admin/siteSettings.js';
 import adminAboutItems from './routes/admin/aboutItems.js';
 import adminNews from './routes/admin/news.js';
 import adminProjects from './routes/admin/projects.js';
+import adminServices from './routes/admin/services.js';
 const config = getConfig();
 
 const __filename = fileURLToPath(import.meta.url);
