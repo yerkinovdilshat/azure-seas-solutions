@@ -20,6 +20,19 @@ class AdminApi {
   }
 
   // Auth
+  async login(credentials: { email: string; password: string }) {
+    return this.request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async logout() {
+    return this.request('/auth/logout', {
+      method: 'POST',
+    });
+  }
+
   async me() {
     return this.request('/auth/me');
   }

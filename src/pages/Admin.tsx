@@ -2,6 +2,9 @@ import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/components/layout/Layout';
 import Protected from '@/components/admin/Protected';
+import { Button } from '@/components/ui/button';
+import { adminApi } from '@/lib/adminApi';
+import { toast } from 'sonner';
 
 const adminTabs = [
   { value: 'site', label: 'Site Settings', path: '/admin/site' },
@@ -15,14 +18,29 @@ export default function Admin() {
   const location = useLocation();
   const currentTab = adminTabs.find(tab => tab.path === location.pathname)?.value || 'site';
 
+  const handleLogout = async () => {
+    try {
+      await adminApi.logout();
+      toast.success('Logged out successfully');
+      window.location.href = '/auth/login';
+    } catch (error) {
+      toast.error('Logout failed');
+    }
+  };
+
   return (
     <Protected>
       <Layout>
         <div className="min-h-screen bg-background">
           <div className="container mx-auto px-4 py-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-              <p className="text-muted-foreground">Manage your site content and settings</p>
+            <div className="mb-8 flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+                <p className="text-muted-foreground">Manage your site content and settings</p>
+              </div>
+              <Button variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
             </div>
 
             <Tabs value={currentTab} className="w-full">

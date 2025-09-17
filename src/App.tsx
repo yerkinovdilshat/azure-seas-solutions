@@ -27,6 +27,7 @@ import AdminAboutItems from "./pages/AdminAboutItems";
 import AdminNews from "./pages/AdminNews";
 import AdminProjects from "./pages/AdminProjects";
 import AdminServices from "./pages/AdminServices";
+import AuthLogin from "./pages/AuthLogin";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,9 @@ const App = () => (
               <Route path="/catalog/supply" element={<CatalogSupply />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/news" element={<News />} />
+              
+              {/* Auth Route */}
+              <Route path="/auth/login" element={<AuthLogin />} />
               
               {/* Admin Routes */}
               <Route path="/admin" element={<Admin />}>

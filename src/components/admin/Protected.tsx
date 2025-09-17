@@ -29,7 +29,7 @@ export default function Protected({ children }: ProtectedProps) {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Not Authorized</h1>
           <p className="text-muted-foreground mb-4">You need admin access to view this page.</p>
-          <a href="/login" className="text-primary hover:underline">
+          <a href="/auth/login" className="text-primary hover:underline">
             Login as Admin
           </a>
         </div>
