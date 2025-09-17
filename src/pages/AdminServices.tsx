@@ -202,12 +202,12 @@ export default function AdminServices() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="order">Order</Label>
+                  <Label htmlFor="order_index">Order</Label>
                   <Input
-                    id="order"
-                    name="order"
+                    id="order_index"
+                    name="order_index"
                     type="number"
-                    defaultValue={editingItem?.order || 0}
+                    defaultValue={editingItem?.order_index || 0}
                     placeholder="0"
                   />
                 </div>

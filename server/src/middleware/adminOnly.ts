@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config.js';
+import { getConfig } from '../config.js';
 import { prisma } from '../lib/prisma.js';
+
+const config = getConfig();
 
 export interface AdminRequest extends Request {
   user?: {

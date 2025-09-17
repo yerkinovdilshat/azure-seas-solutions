@@ -8,7 +8,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import pino from 'pino';
 
-import { config } from './config.js';
+import { getConfig } from './config.js';
 import { prisma } from './lib/prisma.js';
 import { createUploadDirs } from './lib/uploads.js';
 import { seedAdmin } from './scripts/seed.js';
@@ -28,7 +28,7 @@ import adminSiteSettings from './routes/admin/siteSettings.js';
 import adminAboutItems from './routes/admin/aboutItems.js';
 import adminNews from './routes/admin/news.js';
 import adminProjects from './routes/admin/projects.js';
-import adminServices from './routes/admin/services.js';
+const config = getConfig();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,7 +40,7 @@ const logger = pino({
 const app = express();
 
 // Trust proxy if behind nginx/Plesk
-app.set('trust proxy', config.NODE_ENV === 'production');
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({

@@ -4,8 +4,9 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { authMiddleware, AuthRequest } from '../middleware/auth.js';
-import { config } from '../config.js';
+import { getConfig } from '../config.js';
 
+const config = getConfig();
 const router = express.Router();
 
 const loginSchema = z.object({
@@ -62,13 +63,30 @@ router.post('/login', async (req, res) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-  res.clearCookie(config.SESSION_COOKIE_NAME);
+  res.clearCookie(config.SESSION_COOKIE_NAME, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: config.NODE_ENV === 'production',
+    path: '/',
+  });
   res.json({ ok: true });
 });
 
 // Get current user
-router.get('/me', authMiddleware, (req: AuthRequest, res) => {
-  res.json({ user: req.user });
+router.get('/me', async (req, res) => {
+  try {
+    const token = req.cookies?.[config.SESSION_COOKIE_NAME];
+    if (!token) return res.status(401).json({ error: 'Not authenticated' });
+    const payload = jwt.verify(token, config.JWT_SECRET) as { userId: number; role: string };
+    const user = await prisma.user.findUnique({ 
+      where: { id: payload.userId }, 
+      select: { id: true, email: true, role: true } 
+    });
+    if (!user) return res.status(401).json({ error: 'Invalid session' });
+    res.json(user);
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
 });
 
 // Change password

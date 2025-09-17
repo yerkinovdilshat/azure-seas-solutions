@@ -28,6 +28,7 @@ import AdminNews from "./pages/AdminNews";
 import AdminProjects from "./pages/AdminProjects";
 import AdminServices from "./pages/AdminServices";
 import AuthLogin from "./pages/AuthLogin";
+import Protected from "./components/admin/Protected";
 
 const queryClient = new QueryClient();
 
@@ -55,7 +56,7 @@ const App = () => (
               <Route path="/auth/login" element={<AuthLogin />} />
               
               {/* Admin Routes */}
-              <Route path="/admin" element={<Admin />}>
+              <Route path="/admin" element={<Protected><Admin /></Protected>}>
                 <Route path="site" element={<AdminSiteSettings />} />
                 <Route path="about" element={<AdminAboutItems />} />
                 <Route path="news" element={<AdminNews />} />

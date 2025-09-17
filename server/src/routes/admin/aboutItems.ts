@@ -85,11 +85,11 @@ router.post('/', async (req, res) => {
 // PUT update
 router.put('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     const data = aboutItemSchema.parse(req.body);
     
     const item = await prisma.aboutItems.update({
-      where: { id },
+      where: { id: idNum },
       data: {
         ...data,
         date: data.date ? new Date(data.date) : null,
@@ -106,10 +106,10 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     
     await prisma.aboutItems.delete({
-      where: { id }
+      where: { id: idNum }
     });
     
     res.json({ success: true });
