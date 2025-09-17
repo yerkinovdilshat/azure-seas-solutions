@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import pino from 'pino';
 
@@ -57,12 +58,11 @@ app.use(helmet({
   },
 }));
 
+app.use(cookieParser());
 app.use(cors({
-  origin: config.CORS_ORIGIN === "*" ? (config.NODE_ENV === 'production' ? false : "*") : config.CORS_ORIGIN,
+  origin: config.CORS_ORIGIN,
   credentials: true,
 }));
-
-app.use(cookieParser());
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
@@ -81,13 +81,14 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth', authLimiter);
 
-// Serve static files
+// ensure uploads dir exists
+if (!fs.existsSync(config.FILE_UPLOAD_DIR)) {
+  fs.mkdirSync(config.FILE_UPLOAD_DIR, { recursive: true });
+}
 app.use('/uploads', express.static(config.FILE_UPLOAD_DIR));
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ ok: true, timestamp: new Date().toISOString() });
-});
+// health
+app.get('/api/health', (_req, res) => res.json({ ok: true, timestamp: new Date().toISOString() }));
 
 // API routes
 app.use('/api/auth', authRoutes);

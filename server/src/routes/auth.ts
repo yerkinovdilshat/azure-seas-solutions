@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { authMiddleware, AuthRequest } from '../middleware/auth.js';
+import { config } from '../config.js';
 
 const router = express.Router();
 
@@ -26,20 +27,28 @@ router.post('/login', async (req, res) => {
       where: { email: email.toLowerCase() }
     });
     
-    if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+    // Support both plain password and bcrypt hash for compatibility
+    const isValidPassword = user?.password 
+      ? password === user.password 
+      : user?.passwordHash 
+        ? await bcrypt.compare(password, user.passwordHash)
+        : false;
+    
+    if (!user || !isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id, role: user.role }, config.JWT_SECRET, { expiresIn: '7d' });
     
-    res.cookie(process.env.SESSION_COOKIE_NAME || 'ms_session', token, {
+    res.cookie(config.SESSION_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
     
     res.json({
+      ok: true,
       user: {
         id: user.id,
         email: user.email,
@@ -53,8 +62,8 @@ router.post('/login', async (req, res) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-  res.clearCookie(process.env.SESSION_COOKIE_NAME || 'ms_session');
-  res.json({ success: true });
+  res.clearCookie(config.SESSION_COOKIE_NAME);
+  res.json({ ok: true });
 });
 
 // Get current user

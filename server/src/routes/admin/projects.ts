@@ -19,7 +19,7 @@ const projectSchema = z.object({
   project_location: z.string().optional(),
   project_status: z.enum(['planned', 'in_progress', 'completed']).default('completed'),
   is_featured: z.boolean().default(false),
-  order: z.number().default(0),
+  order_index: z.number().default(0),
   status: z.enum(['draft', 'published']).default('published'),
   published_at: z.string().optional(),
 });
@@ -42,7 +42,8 @@ router.get('/', async (req, res) => {
       prisma.projects.findMany({
         where,
         orderBy: [
-          { order: 'asc' },
+          { is_featured: 'desc' },
+          { project_date: 'desc' },
           { created_at: 'desc' }
         ],
         skip,
@@ -81,11 +82,11 @@ router.post('/', async (req, res) => {
 // PUT update
 router.put('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     const data = projectSchema.parse(req.body);
     
     const item = await prisma.projects.update({
-      where: { id },
+      where: { id: idNum },
       data: {
         ...data,
         project_date: data.project_date ? new Date(data.project_date) : null,
@@ -103,10 +104,10 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     
     await prisma.projects.delete({
-      where: { id }
+      where: { id: idNum }
     });
     
     res.json({ success: true });

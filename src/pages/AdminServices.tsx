@@ -73,7 +73,7 @@ export default function AdminServices() {
       featured_image: formData.get('featured_image'),
       icon_key: formData.get('icon_key'),
       is_featured: formData.get('is_featured') === 'on',
-      order: parseInt(formData.get('order') as string) || 0,
+      order_index: parseInt(formData.get('order_index') as string) || 0,
       status: formData.get('status'),
       published_at: formData.get('published_at') || null,
     };

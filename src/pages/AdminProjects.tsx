@@ -77,7 +77,7 @@ export default function AdminProjects() {
       project_location: formData.get('project_location'),
       project_status: formData.get('project_status'),
       is_featured: formData.get('is_featured') === 'on',
-      order: parseInt(formData.get('order') as string) || 0,
+      order_index: parseInt(formData.get('order_index') as string) || 0,
       status: formData.get('status'),
       published_at: formData.get('published_at') || null,
     };

@@ -73,7 +73,7 @@ export default function AdminNews() {
       featured_image: formData.get('featured_image'),
       video_url: formData.get('video_url'),
       published_at: formData.get('published_at') || null,
-      order: parseInt(formData.get('order') as string) || 0,
+      order_index: parseInt(formData.get('order_index') as string) || 0,
       status: formData.get('status'),
       is_featured: formData.get('is_featured') === 'on',
     };
@@ -202,12 +202,12 @@ export default function AdminNews() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="order">Order</Label>
+                  <Label htmlFor="order_index">Order</Label>
                   <Input
-                    id="order"
-                    name="order"
+                    id="order_index"
+                    name="order_index"
                     type="number"
-                    defaultValue={editingItem?.order || 0}
+                    defaultValue={editingItem?.order_index || 0}
                     placeholder="0"
                   />
                 </div>

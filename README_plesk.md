@@ -1,67 +1,64 @@
-# Marine Support Services - Plesk Deployment Guide
+# Plesk Deployment Guide
 
-## Project Overview
-- **Frontend**: React + Vite SPA (TypeScript)  
-- **Backend**: Express.js + Prisma + MariaDB/MySQL
-- **Authentication**: JWT with HTTP-only cookies
-- **File Uploads**: Local filesystem storage
+This document provides instructions for deploying the application on Plesk hosting with MariaDB.
 
-## Environment Variables
-Copy these to your Plesk environment (replace placeholder values):
+## Prerequisites
+
+- Plesk hosting environment
+- MariaDB database access
+- Node.js support
+
+## Environment Configuration
+
+### Required Environment Variables
+
+Set these variables in Plesk environment settings (no secrets in code):
 
 ```bash
-# Database
-DATABASE_URL="mysql://username:password@localhost:3306/marine_support"
-
-# Application
-APP_URL="https://yourdomain.com"
-NODE_ENV="production"
+DATABASE_URL=mysql://DB_USER:DB_PASS@localhost:3306/DB_NAME
+APP_URL=https://yourdomain.com
+NODE_ENV=production
 PORT=3000
-FILE_UPLOAD_DIR="./uploads"
-
-# Security
-JWT_SECRET="generate-a-secure-32-character-string-here"
-SESSION_COOKIE_NAME="ms_session"
-CORS_ORIGIN="https://yourdomain.com"
-
-# SMTP Configuration (for contact forms)
-SMTP_HOST="mail.yourdomain.com"
+FILE_UPLOAD_DIR=./server/uploads
+JWT_SECRET=your-secure-jwt-secret-minimum-32-chars
+SESSION_COOKIE_NAME=ms_session
+CORS_ORIGIN=https://yourdomain.com
+SMTP_HOST=your-smtp-host
 SMTP_PORT=587
-SMTP_USER="no-reply@yourdomain.com"
-SMTP_PASS="your_email_password"
-SMTP_FROM="Marine Support Services <no-reply@yourdomain.com>"
-CONTACTS_TO="contact@yourdomain.com"
-
-# Admin User (created automatically on first startup)
-ADMIN_EMAIL="admin@yourdomain.com"
-ADMIN_PASSWORD="choose-a-strong-admin-password"
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-password
+SMTP_FROM=noreply@yourdomain.com
+CONTACTS_TO=contact@yourdomain.com
+ADMIN_EMAIL=admin@yourdomain.com
+ADMIN_PASSWORD=secure-admin-password
 ```
 
-## Build Order
+## Build Process
 
-### 1. Install Dependencies
-```bash
-npm install
-cd server && npm install
-```
+### 1. Install Dependencies and Build Client
 
-### 2. Build Frontend
 ```bash
+npm i
 npm run build
 ```
 
-### 3. Build Backend
+### 2. Build Server
+
 ```bash
 cd server
-npm run generate  # Generate Prisma client
-npm run build     # Compile TypeScript
+npm i
+npx prisma generate
+npm run build
 ```
 
-### 4. Database Setup
+## Database Setup
+
+### Reflect Existing Schema (Non-destructive)
+
 ```bash
 cd server
-npx prisma migrate deploy  # Run migrations
-npm run db:seed           # Seed initial data
+npx prisma db pull
+npx prisma generate
 ```
 
 ## Deployment Configuration

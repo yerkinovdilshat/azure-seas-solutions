@@ -15,7 +15,7 @@ const newsSchema = z.object({
   gallery_images: z.any().optional(),
   video_url: z.string().optional(),
   published_at: z.string().optional(),
-  order: z.number().default(0),
+  order_index: z.number().default(0),
   status: z.enum(['draft', 'published']).default('draft'),
   is_featured: z.boolean().default(false),
 });
@@ -38,7 +38,8 @@ router.get('/', async (req, res) => {
       prisma.news.findMany({
         where,
         orderBy: [
-          { order: 'asc' },
+          { is_featured: 'desc' },
+          { published_at: 'desc' },
           { created_at: 'desc' }
         ],
         skip,
@@ -76,11 +77,11 @@ router.post('/', async (req, res) => {
 // PUT update
 router.put('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     const data = newsSchema.parse(req.body);
     
     const item = await prisma.news.update({
-      where: { id },
+      where: { id: idNum },
       data: {
         ...data,
         published_at: data.published_at ? new Date(data.published_at) : null,
@@ -97,10 +98,10 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     
     await prisma.news.delete({
-      where: { id }
+      where: { id: idNum }
     });
     
     res.json({ success: true });

@@ -15,7 +15,7 @@ const serviceSchema = z.object({
   gallery_images: z.any().optional(),
   icon_key: z.string().optional(),
   is_featured: z.boolean().default(false),
-  order: z.number().default(0),
+  order_index: z.number().default(0),
   status: z.enum(['draft', 'published']).default('published'),
   published_at: z.string().optional(),
 });
@@ -38,7 +38,8 @@ router.get('/', async (req, res) => {
       prisma.services.findMany({
         where,
         orderBy: [
-          { order: 'asc' },
+          { is_featured: 'desc' },
+          { order_index: 'asc' },
           { created_at: 'desc' }
         ],
         skip,
@@ -76,11 +77,11 @@ router.post('/', async (req, res) => {
 // PUT update
 router.put('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     const data = serviceSchema.parse(req.body);
     
     const item = await prisma.services.update({
-      where: { id },
+      where: { id: idNum },
       data: {
         ...data,
         published_at: data.published_at ? new Date(data.published_at) : null,
@@ -97,10 +98,10 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const idNum = Number(req.params.id);
     
     await prisma.services.delete({
-      where: { id }
+      where: { id: idNum }
     });
     
     res.json({ success: true });
