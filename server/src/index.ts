@@ -22,6 +22,13 @@ import projectsRoutes from './routes/projects.js';
 import servicesRoutes from './routes/services.js';
 import { authMiddleware } from './middleware/auth.js';
 
+// Admin routes
+import adminSiteSettings from './routes/admin/siteSettings.js';
+import adminAboutItems from './routes/admin/aboutItems.js';
+import adminNews from './routes/admin/news.js';
+import adminProjects from './routes/admin/projects.js';
+import adminServices from './routes/admin/services.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -92,6 +99,13 @@ app.use('/api/projects', projectsRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/admin', authMiddleware, adminRoutes);
 app.use('/api/uploads', authMiddleware, uploadRoutes);
+
+// Admin routes
+app.use('/api/admin/site-settings', adminSiteSettings);
+app.use('/api/admin/about/items', adminAboutItems);
+app.use('/api/admin/news', adminNews);
+app.use('/api/admin/projects', adminProjects);
+app.use('/api/admin/services', adminServices);
 
 // Serve client in production
 if (config.NODE_ENV === 'production') {

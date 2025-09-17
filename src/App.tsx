@@ -21,8 +21,12 @@ import Projects from "./pages/Projects";
 import News from "./pages/News";
 import Error404 from "./pages/Error404";
 import Error500 from "./pages/Error500";
-
-// Admin functionality migrated to Express backend
+import Admin from "./pages/Admin";
+import AdminSiteSettings from "./pages/AdminSiteSettings";
+import AdminAboutItems from "./pages/AdminAboutItems";
+import AdminNews from "./pages/AdminNews";
+import AdminProjects from "./pages/AdminProjects";
+import AdminServices from "./pages/AdminServices";
 
 const queryClient = new QueryClient();
 
@@ -45,7 +49,15 @@ const App = () => (
               <Route path="/catalog/supply" element={<CatalogSupply />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/news" element={<News />} />
-              {/* Admin and detail pages migrated to Express backend */}
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<Admin />}>
+                <Route path="site" element={<AdminSiteSettings />} />
+                <Route path="about" element={<AdminAboutItems />} />
+                <Route path="news" element={<AdminNews />} />
+                <Route path="projects" element={<AdminProjects />} />
+                <Route path="services" element={<AdminServices />} />
+              </Route>
               
               {/* Error routes */}
               <Route path="/404" element={<Error404 />} />
