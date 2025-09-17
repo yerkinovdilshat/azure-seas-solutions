@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,8 +8,6 @@
 Modern B2B industrial supplier palette: navy #0B2A3E, blue #0E5AA7, light #F6F8FB, text #0D1117, accent #FDB515
 Typography: Inter/Manrope, airy spacing, soft shadows, rounded xl
 */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {

@@ -7,16 +7,20 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import pino from 'pino';
 
-import { prisma } from './lib/prisma';
-import { createUploadDirs } from './lib/uploads';
-import { seedAdmin } from './scripts/seed';
+import { config } from './config.js';
+import { prisma } from './lib/prisma.js';
+import { createUploadDirs } from './lib/uploads.js';
+import { seedAdmin } from './scripts/seed.js';
 import authRoutes from './routes/auth.js';
 import aboutRoutes from './routes/about.js';
 import catalogRoutes from './routes/catalog.js';
 import contactRoutes from './routes/contacts.js';
 import adminRoutes from './routes/admin.js';
 import uploadRoutes from './routes/uploads.js';
-import { authMiddleware } from './middleware/auth';
+import newsRoutes from './routes/news.js';
+import projectsRoutes from './routes/projects.js';
+import servicesRoutes from './routes/services.js';
+import { authMiddleware } from './middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +30,9 @@ const logger = pino({
 });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// Trust proxy if behind nginx/Plesk
+app.set('trust proxy', config.NODE_ENV === 'production');
 
 // Security middleware
 app.use(helmet({
@@ -34,10 +40,10 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "blob:", "https:"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https:"],
       fontSrc: ["'self'", "https:"],
-      frameSrc: ["'self'", "https://docs.google.com", "https://drive.google.com"],
+      connectSrc: ["'self'"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
     },
@@ -45,7 +51,7 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "*",
+  origin: config.CORS_ORIGIN === "*" ? (config.NODE_ENV === 'production' ? false : "*") : config.CORS_ORIGIN,
   credentials: true,
 }));
 
@@ -69,10 +75,10 @@ const authLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(config.FILE_UPLOAD_DIR));
 
 // Health check
-app.get('/healthz', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
 
@@ -81,15 +87,19 @@ app.use('/api/auth', authRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/projects', projectsRoutes);
+app.use('/api/services', servicesRoutes);
 app.use('/api/admin', authMiddleware, adminRoutes);
 app.use('/api/uploads', authMiddleware, uploadRoutes);
 
 // Serve client in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
+if (config.NODE_ENV === 'production') {
+  const clientDistPath = path.join(__dirname, '../../dist');
+  app.use(express.static(clientDistPath));
   
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+    res.sendFile(path.join(clientDistPath, 'index.html'));
   });
 }
 
@@ -113,8 +123,8 @@ async function startServer() {
     await seedAdmin();
     logger.info('Admin user seeded');
 
-    app.listen(PORT, () => {
-      logger.info(`Server running on port ${PORT}`);
+    app.listen(config.PORT, () => {
+      logger.info(`Server running on port ${config.PORT} in ${config.NODE_ENV} mode`);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);

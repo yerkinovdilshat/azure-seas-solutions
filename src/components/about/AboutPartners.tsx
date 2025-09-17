@@ -1,67 +1,58 @@
-import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '@/components/ui/card';
-
-interface Partner {
-  id: string;
-  name: string;
-  logo?: string;
-  website_url?: string;
-  order: number;
-}
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ExternalLink } from 'lucide-react';
+import { Partner } from '@/hooks/useAboutData';
 
 interface AboutPartnersProps {
   data: Partner[];
 }
 
-const AboutPartners = ({ data }: AboutPartnersProps) => {
-  const { t } = useTranslation();
-
-  if (!data || data.length === 0) return null;
+const AboutPartners: React.FC<AboutPartnersProps> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return null;
+  }
 
   return (
-    <section className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-2">{t('about.sections.partners')}</h2>
-      </div>
-
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-          {data.map((partner) => (
-            <Card 
-              key={partner.id} 
-              className={`group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
-                partner.website_url ? 'cursor-pointer' : ''
-              }`}
-              onClick={() => {
-                if (partner.website_url) {
-                  window.open(partner.website_url, '_blank', 'noopener,noreferrer');
-                }
-              }}
-            >
-              <CardContent className="p-6 h-32 flex flex-col items-center justify-center space-y-3">
-                {partner.logo ? (
-                  <img
-                    src={partner.logo}
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-center text-foreground">Our Partners</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data.map((partner) => (
+          <Card key={partner.id} className="card-modern">
+            <CardHeader className="text-center">
+              {partner.logo_url && (
+                <div className="h-20 flex items-center justify-center mb-4">
+                  <img 
+                    src={partner.logo_url} 
                     alt={partner.name}
-                    className="max-w-full max-h-16 object-contain group-hover:scale-105 transition-transform duration-300"
+                    className="max-h-full max-w-full object-contain"
                   />
-                ) : (
-                  <div className="w-full h-16 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg flex items-center justify-center">
-                    <span className="text-primary/50 font-medium text-xs text-center">
-                      {partner.name}
-                    </span>
-                  </div>
-                )}
-                
-                <h3 className="text-xs font-medium text-center text-muted-foreground group-hover:text-primary transition-colors">
-                  {partner.name}
-                </h3>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </div>
+              )}
+              <CardTitle className="text-xl">{partner.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {partner.description && (
+                <p className="text-muted-foreground text-sm">{partner.description}</p>
+              )}
+              {partner.website_url && (
+                <Button variant="outline" className="w-full" asChild>
+                  <a 
+                    href={partner.website_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    Visit Website
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ))}
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -20,14 +20,14 @@ const About = () => {
   const [activeTab, setActiveTab] = useState('general');
   
   // General Information sections
-  const { data: storyData, loading: storyLoading } = useAboutStory();
-  const { data: valuesData, loading: valuesLoading } = useAboutValues();
-  const { data: timelineData, loading: timelineLoading } = useAboutTimeline();
-  const { data: teamData, loading: teamLoading } = useAboutTeam();
-  const { data: partnersData, loading: partnersLoading } = useAboutPartners();
+  const { data: storyData, isLoading: storyLoading } = useAboutStory();
+  const { data: valuesData, isLoading: valuesLoading } = useAboutValues();
+  const { data: timelineData, isLoading: timelineLoading } = useAboutTimeline();
+  const { data: teamData, isLoading: teamLoading } = useAboutTeam();
+  const { data: partnersData, isLoading: partnersLoading } = useAboutPartners();
   
   // Other tabs
-  const { data: certificates, loading: certsLoading } = useAboutCertificates();
+  const { data: certificates, isLoading: certsLoading } = useAboutCertificates();
 
   const loading = storyLoading || valuesLoading || timelineLoading || teamLoading || partnersLoading || certsLoading;
 
@@ -90,11 +90,11 @@ const About = () => {
 
           <TabsContent value="general" className="space-y-12">
             <div className="max-w-6xl mx-auto space-y-16">
-              <AboutStory data={storyData} />
-              <AboutValues data={valuesData} />
-              <AboutTimeline data={timelineData} />
-              <AboutTeam data={teamData} />
-              <AboutPartners data={partnersData} />
+              <AboutStory data={storyData || { id: '', title: '', body_rich: null }} />
+              <AboutValues data={valuesData || []} />
+              <AboutTimeline data={timelineData || []} />
+              <AboutTeam data={teamData || []} />
+              <AboutPartners data={partnersData || []} />
             </div>
           </TabsContent>
 
