@@ -71,7 +71,8 @@ router.post('/', async (req, res) => {
     const item = await prisma.aboutItems.create({
       data: {
         ...data,
-        date: data.date ? new Date(data.date) : null,
+        order_index: Number(data.order_index) || 0,
+        date: data.date ? new Date(String(data.date)) : null,
       }
     });
     
@@ -92,7 +93,8 @@ router.put('/:id', async (req, res) => {
       where: { id: idNum },
       data: {
         ...data,
-        date: data.date ? new Date(data.date) : null,
+        order_index: Number(data.order_index) || 0,
+        date: data.date ? new Date(String(data.date)) : null,
       }
     });
     

@@ -67,8 +67,9 @@ router.post('/', async (req, res) => {
     const item = await prisma.projects.create({
       data: {
         ...data,
-        project_date: data.project_date ? new Date(data.project_date) : null,
-        published_at: data.published_at ? new Date(data.published_at) : null,
+        order_index: Number(data.order_index) || 0,
+        project_date: data.project_date ? new Date(String(data.project_date)) : null,
+        published_at: data.published_at ? new Date(String(data.published_at)) : null,
       }
     });
     
@@ -89,8 +90,9 @@ router.put('/:id', async (req, res) => {
       where: { id: idNum },
       data: {
         ...data,
-        project_date: data.project_date ? new Date(data.project_date) : null,
-        published_at: data.published_at ? new Date(data.published_at) : null,
+        order_index: Number(data.order_index) || 0,
+        project_date: data.project_date ? new Date(String(data.project_date)) : null,
+        published_at: data.published_at ? new Date(String(data.published_at)) : null,
       }
     });
     
